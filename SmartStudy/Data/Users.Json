@@ -20,7 +20,7 @@
 		"Id": "u003",
 		"Username": "carol",
 		"Password": "s3cr3t",
-		"Role": "Instructor",
+		"Role": "Teacher",
 		"DisplayName": "Dr. Carol Lee",
 		"Classes": ["Math101"]
 	},
@@ -28,7 +28,7 @@
 		"Id": "u004",
 		"Username": "dave",
 		"Password": "passw0rd",
-		"Role": "Admin",
+		"Role": "Teacher",
 		"DisplayName": "Dave Kim",
 		"Classes": []
 	},
