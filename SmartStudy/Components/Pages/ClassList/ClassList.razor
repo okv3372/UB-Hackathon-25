@@ -1,11 +1,16 @@
 @page "/{userId}/ClassList"
 
-<h1>Class List</h1>
-<p>This is a placeholder page for listing classes.</p>
+@using SmartStudy.Components.Pages.ClassList
 
-@if (!string.IsNullOrWhiteSpace(UserId))
-{
-	<p>Viewing classes for user: <strong>@UserId</strong></p>
-}
+<div class="container mt-4">
+	<h1 class="mb-4">My Classes</h1>
 
-<button class="btn btn-primary" @onclick="NavigateToClass">Go To Sample Class</button>
+	<div class="row g-4">
+		@foreach (var c in _mockClasses)
+		{
+			<div class="col-12 col-md-6 col-lg-4">
+				<ClassItem Id="@c.Id" Name="@c.Name" Teacher="@c.Teacher" Color="@c.Color" OnOpen="NavigateToClass" />
+			</div>
+		}
+	</div>
+</div>
