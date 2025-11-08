@@ -1,0 +1,27 @@
+[
+  {
+    "Id": "Math101",
+    "Name": "Algebra I",
+    "TeacherId": "u003"
+  },
+  {
+    "Id": "Bio202",
+    "Name": "Biology II",
+    "TeacherId": "u003"
+  },
+  {
+    "Id": "Chem101",
+    "Name": "Chemistry I",
+    "TeacherId": "u003"
+  },
+  {
+    "Id": "Hist300",
+    "Name": "World History",
+    "TeacherId": "u003"
+  },
+  {
+    "Id": "Phys210",
+    "Name": "Physics II",
+    "TeacherId": "u003"
+  }
+]

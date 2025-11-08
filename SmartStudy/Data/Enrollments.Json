@@ -1,0 +1,11 @@
+[
+  { "ClassId": "Math101", "StudentId": "u001" },
+  { "ClassId": "Bio202", "StudentId": "u001" },
+
+  { "ClassId": "Chem101", "StudentId": "u002" },
+  { "ClassId": "Math101", "StudentId": "u002" },
+  { "ClassId": "Hist300", "StudentId": "u002" },
+
+  { "ClassId": "Bio202", "StudentId": "u005" },
+  { "ClassId": "Phys210", "StudentId": "u005" }
+]

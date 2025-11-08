@@ -1,0 +1,43 @@
+
+[
+	{
+		"Id": "u001",
+		"Username": "alice",
+		"Password": "password123",
+		"Role": "Student",
+		"DisplayName": "Alice Johnson",
+		"Classes": ["Math101", "Bio202"]
+	},
+	{
+		"Id": "u002",
+		"Username": "bob",
+		"Password": "hunter2",
+		"Role": "Student",
+		"DisplayName": "Bob Martinez",
+		"Classes": ["Chem101", "Math101", "Hist300"]
+	},
+	{
+		"Id": "u003",
+		"Username": "carol",
+		"Password": "s3cr3t",
+		"Role": "Instructor",
+		"DisplayName": "Dr. Carol Lee",
+		"Classes": ["Math101"]
+	},
+	{
+		"Id": "u004",
+		"Username": "dave",
+		"Password": "passw0rd",
+		"Role": "Admin",
+		"DisplayName": "Dave Kim",
+		"Classes": []
+	},
+	{
+		"Id": "u005",
+		"Username": "erin",
+		"Password": "letmein",
+		"Role": "Student",
+		"DisplayName": "Erin O'Neil",
+		"Classes": ["Bio202", "Phys210"]
+	}
+]

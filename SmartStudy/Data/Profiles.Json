@@ -1,0 +1,29 @@
+[
+  {
+    "UserId": "u001",
+    "StudentId": "S1001",
+    "PictureUrl": "https://example.com/images/alice.jpg",
+    "Bio": "Enthusiastic sophomore who loves biology and math.",
+    "GradeLevel": "10",
+    "GuardianName": "Karen Johnson",
+    "GuardianEmail": "karen.johnson@example.com"
+  },
+  {
+    "UserId": "u002",
+    "StudentId": "S1002",
+    "PictureUrl": "https://example.com/images/bob.jpg",
+    "Bio": "Aspiring chemist and member of the robotics club.",
+    "GradeLevel": "11",
+    "GuardianName": "Luis Martinez",
+    "GuardianEmail": "luis.martinez@example.com"
+  },
+  {
+    "UserId": "u005",
+    "StudentId": "S1005",
+    "PictureUrl": "https://example.com/images/erin.jpg",
+    "Bio": "Loves physics and plays on the school soccer team.",
+    "GradeLevel": "12",
+    "GuardianName": "Pat O'Neil",
+    "GuardianEmail": "pat.oneil@example.com"
+  }
+]

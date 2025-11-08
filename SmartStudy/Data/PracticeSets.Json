@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "p001",
+    "StudentId": "u001",
+    "ClassId": "Math101",
+    "SrcAssignmentId": "a001",
+    "FilePath": "",
+    "Notes": "Extra practice on quadratic equations."
+  },
+  {
+    "Id": "p002",
+    "StudentId": "u002",
+    "ClassId": "Chem101",
+    "SrcAssignmentId": "a002",
+    "FilePath": "",
+    "Notes": "Focus on titration calculations."
+  },
+  {
+    "Id": "p003",
+    "StudentId": "u005",
+    "ClassId": "Phys210",
+    "SrcAssignmentId": "a003",
+    "FilePath": "",
+    "Notes": "Kinematics practice problems."
+  }
+]
