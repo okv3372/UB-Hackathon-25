@@ -1,10 +1,9 @@
 @page "/{userId}/Class/{classId}"
 
-<h1>Class</h1>
 
 @if (!string.IsNullOrWhiteSpace(ClassId))
 {
-	<p>Class ID: <strong>@ClassId</strong></p>
+	<h1 class="text-center">@ClassId</h1>
 }
 else
 {
@@ -42,7 +41,8 @@ else
 			ProfileImageUrl="https://via.placeholder.com/90/F7C59F/004E89?text=A"
 			ProfileDetailPageUrl="@($"/{UserId}/Class/{ClassId}/Student/studentId1")"
 			UserEmail="alice.johnson@example.com"
-			UserPhoneNumber="+155555501" />
+			UserPhoneNumber="+155555501"
+			OnViewProfile="@OnStudentViewProfile" />
 
 		<UserProfileCard 
 			UserName="Brian Lee"
@@ -50,7 +50,8 @@ else
 			ProfileImageUrl="https://via.placeholder.com/90/F7C59F/004E89?text=B"
 			ProfileDetailPageUrl="@($"/{UserId}/Class/{ClassId}/Student/studentId2")"
 			UserEmail="brian.lee@example.com"
-			UserPhoneNumber="+155555502" />
+			UserPhoneNumber="+155555502"
+			OnViewProfile="@OnStudentViewProfile" />
 
 		<UserProfileCard 
 			UserName="Carla Martinez"
@@ -58,7 +59,16 @@ else
 			ProfileImageUrl="https://via.placeholder.com/90/F7C59F/004E89?text=C"
 			ProfileDetailPageUrl="@($"/{UserId}/Class/{ClassId}/Student/studentId3")"
 			UserEmail="carla.martinez@example.com"
-			UserPhoneNumber="+155555503" />
+			UserPhoneNumber="+155555503"
+			OnViewProfile="@OnStudentViewProfile" />
 	</div>
 </div>
+
+@* A single modal instance at page level *@
+<ProfileModal @ref="profileModalRef"
+			  UserName="@SelectedUserName"
+			  ProfilePictureUrl="@SelectedProfileImageUrl"
+			  UserInterests="@SelectedUserInterests"
+			  Title="@SelectedTitle"
+			  EnableEditButton="false" />
 

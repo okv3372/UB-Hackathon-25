@@ -3,7 +3,6 @@
 @using SmartStudy.Components.Pages.Class
 
 <div class="user-profile-card">
-    <ProfileModal @ref="profileModalRef" />
     <div class="profile-header">
         <img src="@(string.IsNullOrWhiteSpace(ProfileImageUrl) ? "/favicon.png" : ProfileImageUrl)" alt="Profile Picture" class="profile-image" onerror="this.onerror=null;this.src='/favicon.png';">
         <h3 class="user-name">@UserName</h3>
@@ -13,15 +12,15 @@
         }
     </div>
     <div class="profile-actions">
-        <button class="action-button-main" @onclick="NavigateToAssignments">
-            View Profile
+        <button class="action-button-main" @onclick="OpenAssignmentsPage">
+            Assignments
         </button>
-        <button class="action-button-secondary" @onclick="NavigateToAssignments" title="View Profile">
+        <button class="action-button-secondary" @onclick="InvokeViewProfile" title="View Profile">
             <i class="bi bi-person icon" aria-label="Profile"></i>
         </button>
-        <button class="action-button-secondary" @onclick="OpenUploadModal">
-            <i class="bi bi-upload icon" aria-label="Upload"></i>
-        </button>
+            <button class="action-button-secondary" @onclick="OpenAssignmentsPage" title="Go to Assignment">
+                <i class="bi bi-journal-text icon" aria-label="Assignment"></i>
+            </button>
     </div>
 </div>
 

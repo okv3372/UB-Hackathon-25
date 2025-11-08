@@ -1,145 +1,104 @@
 
-<button class="btn btn-primary" @onclick="OpenModal">View Profile</button>
+@* Profile modal is controlled by the parent page via @ref and parameters. *@
 @if (showModal)
-
 {
-
     <div class="modal fade show" style="display: block;" tabindex="-1">
-
         <div class="modal-dialog">
-
             <div class="modal-content">
-
                 <div class="modal-header">
-
-                    <h5 class="modal-title">Ryan Miner (The GOAT)</h5>
-
+                    <h5 class="modal-title">@DisplayTitle</h5>
                     <button type="button" class="btn-close" @onclick="CloseModal" aria-label="Close"></button>
-
                 </div>
-
                 <div class="modal-body">
-
                     <div class="text-center mb-3">
-
-                        <img src="@profilePictureUrl" class="rounded-circle" style="width: 150px; height: 150px;" alt="Profile Picture" />
-
+                        <img src="@ResolvedPictureUrl" class="rounded-circle" style="width: 150px; height: 150px; object-fit: cover;" alt="Profile Picture" />
                     </div>
-
-                   
-
                     <div class="text-center mb-3">
-
-                        <h4> @userName</h4>
-
+                        <h4>@(string.IsNullOrWhiteSpace(UserName) ? "Unnamed" : UserName)</h4>
                     </div>
-
-                   
-
                     <div class="mb-3">
-
                         <label class="form-label fw-bold">Interests:</label>
-
                         @if (isEditing)
-
                         {
-
-                            <textarea class="form-control" rows="4" @bind="userInterests"></textarea>
-
+                            <textarea class="form-control" rows="4" @bind="UserInterests"></textarea>
                         }
-
                         else
-
                         {
-
-                            <p style="white-space: pre-line;">@userInterests</p>
-
+                            <p style="white-space: pre-line;">@(!string.IsNullOrWhiteSpace(UserInterests) ? UserInterests : "No interests provided.")</p>
                         }
-
                     </div>
-
                 </div>
-
                 <div class="modal-footer">
-
                     <button type="button" class="btn btn-secondary" @onclick="CloseModal">Close</button>
-
-                    @if (isEditing)
-
+                    @if (EnableEditButton)
                     {
-
-                        <button type="button" class="btn btn-success" @onclick="SaveProfile">Save</button>
-
+                        @if (isEditing)
+                        {
+                            <button type="button" class="btn btn-success" @onclick="SaveProfile">Save</button>
+                        }
+                        else
+                        {
+                            <button type="button" class="btn btn-primary" @onclick="EnableEditing">Edit</button>
+                        }
                     }
-
-                    else
-
-                    {
-
-                        <button type="button" class="btn btn-primary" @onclick="EnableEditing">Edit</button>
-
-                    }
-
                 </div>
-
             </div>
-
         </div>
-
     </div>
-
     <div class="modal-backdrop fade show"></div>
-
 }
 
 @code {
-
+    // Visibility & state
     private bool showModal = false;
-
     private bool isEditing = false;
 
-    private string profilePictureUrl = "/images/oliver.png";
+    // Parameters provided by parent
+    [Parameter]
+    public string? UserName { get; set; }
 
-    private string userName = "John Doe";
+    [Parameter]
+    public string? ProfilePictureUrl { get; set; }
 
-    private string userInterests = "Reading, hiking, photography, and coding.";
+    [Parameter]
+    public string? UserInterests { get; set; }
 
+    // Optional title to show in header (falls back to name)
+    [Parameter]
+    public string? Title { get; set; }
+
+    // Whether to show Edit/Save buttons
+    [Parameter]
+    public bool EnableEditButton { get; set; } = false;
+
+    private string ResolvedPictureUrl => string.IsNullOrWhiteSpace(ProfilePictureUrl) ? "/favicon.png" : ProfilePictureUrl;
+    private string DisplayTitle => !string.IsNullOrWhiteSpace(Title)
+        ? Title!
+        : (!string.IsNullOrWhiteSpace(UserName) ? UserName! : "Profile");
+
+    // Control methods exposed to parent
     public void OpenModal()
-
     {
-
         showModal = true;
-
         isEditing = false; // Reset to non-edit mode when opening
-
+        StateHasChanged();
     }
 
-    private void CloseModal()
-
+    public void CloseModal()
     {
-
         showModal = false;
-
         isEditing = false; // Reset edit mode when closing
-
+        StateHasChanged();
     }
 
     private void EnableEditing()
-
     {
-
         isEditing = true;
-
     }
 
     private void SaveProfile()
-
     {
-
-        // Here you would typically save the updated profile information to a database
-
+        // TODO: wire to backend to persist changes if needed.
         isEditing = false; // Switch back to view mode
-
     }
-
 }

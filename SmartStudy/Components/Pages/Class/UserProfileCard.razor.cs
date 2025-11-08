@@ -3,8 +3,18 @@ namespace SmartStudy.Components.Pages;
 
 public partial class UserProfileCard : ComponentBase
 {
-    // Reference to the ProfileModal component to control it from this card
-    private Components.Pages.Class.ProfileModal? profileModalRef;
+    // Event emitted to parent when user wants to view profile
+    [Parameter]
+    public EventCallback<UserProfileCard> OnViewProfile { get; set; }
+    
+    // Context identifiers needed to navigate to assignment page
+    [Parameter]
+    public string? UserId { get; set; }
+    [Parameter]
+    public string? ClassId { get; set; }
+    // Default placeholder assignment id; parent can override
+    [Parameter]
+    public string AssignmentId { get; set; } = "assignmentId1";
     [Parameter]
     public string UserName { get; set; } = "No Name";
 
@@ -26,15 +36,29 @@ public partial class UserProfileCard : ComponentBase
     [Inject]
     protected NavigationManager NavigationManager { get; set; } = default!;
 
-    protected void NavigateToAssignments()
+    protected void OpenAssignmentsPage()
     {
-        NavigationManager.NavigateTo(ProfileDetailPageUrl);
+        // Ensure required route segments are present before navigating
+        if (string.IsNullOrWhiteSpace(UserId) || string.IsNullOrWhiteSpace(ClassId) || string.IsNullOrWhiteSpace(AssignmentId))
+        {
+            // Could log or show a message; for now just do nothing if data incomplete
+            return;
+        }
+        var targetUrl = $"/{UserId}/Class/{ClassId}/assignment/{AssignmentId}";
+        NavigationManager.NavigateTo(targetUrl);
     }
 
-    protected void OpenProfileModal()
+    protected async Task InvokeViewProfile()
     {
-        // Open the embedded profile modal instead of navigating
-        profileModalRef?.OpenModal();
+        if (OnViewProfile.HasDelegate)
+        {
+            await OnViewProfile.InvokeAsync(this);
+        }
+        else
+        {
+            // Fallback: navigate to detail page if no modal wiring
+            NavigationManager.NavigateTo(ProfileDetailPageUrl);
+        }
     }
 
     protected void OpenUploadModal()
