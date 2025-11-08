@@ -1,6 +1,10 @@
 @page "/login"
 @page "/"
 <div class="login-container">
+    <div class="company-header">
+        <img src="/images/icons8-study-50.png" alt="SmartStudy Logo" class="company-logo" />
+        <h2 class="company-name">SmartStudy</h2>
+    </div>
     <div class="login-card">
         <h1 class="mb-3 text-center">Login</h1>
         <div class="mb-3">
@@ -34,13 +38,14 @@
     }
     .login-container {
         display: flex;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
         min-height: 100vh;
         height: 100%;
-        padding: 0; /* Removed padding */
+        padding: 0;
         margin: 0;
-        position: fixed; /* Fix the container in place */
+        position: fixed;
         top: 0;
         left: 0;
         right: 0;
@@ -51,6 +56,30 @@
         background-repeat: no-repeat;
     }
     
+    .company-header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+        margin-bottom: 20px;
+        position: relative;
+    }
+    
+    .company-logo {
+        height: 50px;
+        width: auto;
+    }
+    
+    .company-name {
+        margin: 0;
+        font-size: 28px;
+        font-weight: 600;
+        color: #004E89;
+        position: relative;
+        top: 2px;
+        left: -5px;
+    }
+    
     .login-card {
         width: 100%;
         max-width: 500px;
@@ -59,7 +88,7 @@
         border-radius: 10px;
         box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         background-color: #fff;
-        margin: 0 auto; /* Center horizontally */
+        margin: 0 auto;
     }
     
     .form-control:focus {
@@ -73,7 +102,7 @@
     }
     
     .btn-primary {
-        min-width: 150px;
+        
     }
     
     .signup-link {
