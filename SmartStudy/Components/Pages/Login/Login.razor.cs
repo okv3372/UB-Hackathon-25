@@ -5,6 +5,7 @@ public partial class Login : ComponentBase
     [Inject]
     private NavigationManager Navigation { get; set; } = default!;
     protected string? UserIdInput { get; set; }
+    protected string? PasswordInput { get; set; } // Added password field
     protected void GoToClassList()
     {
         var userId = string.IsNullOrWhiteSpace(UserIdInput) ? "" : UserIdInput.Trim();
