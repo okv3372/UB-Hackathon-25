@@ -1,0 +1,12 @@
+@page "/login"
+@page "/"
+
+<h1>Login</h1>
+<p>This is a placeholder login page.</p>
+
+<div class="mb-3">
+	<label for="userId" class="form-label">User ID</label>
+	<input id="userId" class="form-control" @bind="UserIdInput" placeholder="Enter your user ID" />
+	<div class="form-text">We'll use this to route you to your class list.</div>
+	<button class="btn btn-primary mt-2" @onclick="GoToClassList">Go to Class List</button>
+</div>

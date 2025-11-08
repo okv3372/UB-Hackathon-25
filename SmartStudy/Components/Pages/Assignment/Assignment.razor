@@ -1,0 +1,13 @@
+@page "/{userId}/Class/{classId}/assignment/{assignmentId}"
+
+<h1>Assignment</h1>
+
+@if (!string.IsNullOrWhiteSpace(ClassId) && !string.IsNullOrWhiteSpace(AssignmentId))
+{
+	<p>Class ID: <strong>@ClassId</strong></p>
+	<p>Assignment ID: <strong>@AssignmentId</strong></p>
+}
+else
+{
+	<p>Missing class or assignment context.</p>
+}

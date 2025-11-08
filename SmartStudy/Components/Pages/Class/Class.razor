@@ -1,0 +1,27 @@
+@page "/{userId}/Class/{classId}"
+
+<h1>Class</h1>
+
+@if (!string.IsNullOrWhiteSpace(ClassId))
+{
+	<p>Class ID: <strong>@ClassId</strong></p>
+}
+else
+{
+	<p>No class selected.</p>
+}
+
+<div class="mt-3">
+	<h3>Assignments</h3>
+	<NavLink class="btn btn-outline-primary me-2" href="@($"/{UserId}/Class/{ClassId}/assignment/assignmentId1")">Assignment 1</NavLink>
+	<NavLink class="btn btn-outline-primary me-2" href="@($"/{UserId}/Class/{ClassId}/assignment/assignmentId2")">Assignment 2</NavLink>
+	<NavLink class="btn btn-outline-primary" href="@($"/{UserId}/Class/{ClassId}/assignment/assignmentId3")">Assignment 3</NavLink>
+</div>
+
+<div class="mt-3">
+	<h3>Students</h3>
+	<NavLink class="btn btn-outline-secondary me-2" href="@($"/{UserId}/Class/{ClassId}/Student/studentId1")">Student 1</NavLink>
+	<NavLink class="btn btn-outline-secondary me-2" href="@($"/{UserId}/Class/{ClassId}/Student/studentId2")">Student 2</NavLink>
+	<NavLink class="btn btn-outline-secondary" href="@($"/{UserId}/Class/{ClassId}/Student/studentId3")">Student 3</NavLink>
+</div>
+
