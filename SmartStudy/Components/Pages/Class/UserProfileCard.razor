@@ -1,0 +1,141 @@
+@* UserProfileCard.razor *@
+@namespace SmartStudy.Components.Pages
+@using SmartStudy.Components.Pages.Class
+
+<div class="user-profile-card">
+    <ProfileModal @ref="profileModalRef" />
+    <div class="profile-header">
+        <img src="@(string.IsNullOrWhiteSpace(ProfileImageUrl) ? "/favicon.png" : ProfileImageUrl)" alt="Profile Picture" class="profile-image" onerror="this.onerror=null;this.src='/favicon.png';">
+        <h3 class="user-name">@UserName</h3>
+        @if (!string.IsNullOrWhiteSpace(UserTitle))
+        {
+            <p class="user-title">@UserTitle</p>
+        }
+    </div>
+    <div class="profile-actions">
+        <button class="action-button-main" @onclick="NavigateToAssignments">
+            View Profile
+        </button>
+        <button class="action-button-secondary" @onclick="NavigateToAssignments" title="View Profile">
+            <i class="bi bi-person icon" aria-label="Profile"></i>
+        </button>
+        <button class="action-button-secondary" @onclick="OpenUploadModal">
+            <i class="bi bi-upload icon" aria-label="Upload"></i>
+        </button>
+    </div>
+</div>
+
+<style>
+    /* UserProfileCard.razor CSS - Inlined */
+    .user-profile-card {
+        background-color: #FFFFFF; /* White */
+        border-radius: 15px;
+        box-shadow: 0 4px 20px rgba(0, 78, 137, 0.08); /* Soft shadow with 004E89 base */
+        border: 1px solid rgba(26, 101, 158, 0.1); /* Subtle border with 1A659E base */
+        width: 250px; /* Fixed width for the square aspect */
+        height: 280px; /* Fixed height for the square aspect (slightly taller for content) */
+        display: flex;
+        flex-direction: column;
+        overflow: hidden; /* Ensures nothing spills out of rounded corners */
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
+
+    .user-profile-card:hover {
+        transform: translateY(-5px); /* Lift effect on hover */
+        box-shadow: 0 8px 25px rgba(0, 78, 137, 0.15); /* Enhanced shadow on hover */
+    }
+
+    .profile-header {
+        flex: 3; /* Takes approximately 3/4 of the height */
+        display: flex;
+        flex-direction: column;
+        justify-content: center; /* Center content vertically */
+        align-items: center; /* Center content horizontally */
+        padding: 15px 10px;
+        background-color: #FFFFFF; /* Unified white background to match bottom */
+        border-bottom: 1px solid rgba(0, 78, 137, 0.05); /* Subtle separator */
+    }
+
+    .profile-image {
+        width: 90px;
+        height: 90px;
+        border-radius: 50%; /* Circular image */
+        border: 3px solid #F7C59F; /* Light Peach border */
+        object-fit: cover; /* Ensures image covers the circle without distortion */
+        margin-bottom: 10px;
+    }
+
+    .user-name {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Modern font */
+        color: #004E89; /* Deep Blue */
+        font-size: 1.3em;
+        margin: 0 0 5px 0; /* Adjust spacing */
+        font-weight: 600; /* Semi-bold */
+        text-align: center;
+    }
+
+    .user-title {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Modern font */
+        color: #1A659E; /* Medium Blue */
+        font-size: 0.85em;
+        margin: 0;
+        text-align: center;
+    }
+
+    .profile-actions {
+        flex: 1; /* Takes approximately 1/4 of the height */
+        display: flex;
+        justify-content: space-around; /* Distributes space */
+        align-items: center; /* Vertically center buttons */
+        padding: 10px;
+        gap: 8px; /* Space between buttons */
+        background-color: #FFFFFF; /* White background for button area */
+    }
+
+    .action-button-main {
+        background-color: #FF6B35; /* Vibrant Orange */
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 0; /* Vertical padding, horizontal handled by flex */
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-size: 0.9em;
+        cursor: pointer;
+        transition: background-color 0.2s ease, transform 0.2s ease;
+        flex: 2; /* Takes 2 parts out of 4 (i.e., 1/2 width) */
+        white-space: nowrap; /* Prevent text wrap */
+        text-overflow: ellipsis; /* Handle overflow if text is too long */
+        overflow: hidden;
+    }
+
+    .action-button-main:hover {
+        background-color: #E65A2C; /* Darker orange on hover */
+        transform: translateY(-1px);
+    }
+
+    .action-button-secondary {
+        background-color: #1A659E; /* Medium Blue */
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-size: 0.9em;
+        cursor: pointer;
+        transition: background-color 0.2s ease, transform 0.2s ease;
+        flex: 1; /* Takes 1 part out of 4 (i.e., 1/4 width) */
+        display: flex; /* For icon centering */
+        justify-content: center;
+        align-items: center;
+    }
+
+    .action-button-secondary:hover {
+        background-color: #004E89; /* Darker blue on hover */
+        transform: translateY(-1px);
+    }
+
+    .action-button-secondary .icon {
+        font-size: 1.1em; /* Larger icon */
+    }
+
+</style>

@@ -12,16 +12,53 @@ else
 }
 
 <div class="mt-3">
-	<h3>Assignments</h3>
-	<NavLink class="btn btn-outline-primary me-2" href="@($"/{UserId}/Class/{ClassId}/assignment/assignmentId1")">Assignment 1</NavLink>
-	<NavLink class="btn btn-outline-primary me-2" href="@($"/{UserId}/Class/{ClassId}/assignment/assignmentId2")">Assignment 2</NavLink>
-	<NavLink class="btn btn-outline-primary" href="@($"/{UserId}/Class/{ClassId}/assignment/assignmentId3")">Assignment 3</NavLink>
+	<h3 class="text-center">Assignments</h3>
+	<!-- Temporary hardcoded assignment list items -->
+	<div class="d-flex flex-column align-items-center">
+		<AssignmentListItem 
+			AssignmentName="Intro Worksheet"
+			GradedFileName="intro_worksheet.pdf"
+			DetailPageUrl="@($"/{UserId}/Class/{ClassId}/assignment/assignmentId1")" />
+
+		<AssignmentListItem 
+			AssignmentName="Reading Quiz 1"
+			GradedFileName="quiz1_results.pdf"
+			DetailPageUrl="@($"/{UserId}/Class/{ClassId}/assignment/assignmentId2")" />
+
+		<AssignmentListItem 
+			AssignmentName="Project Proposal"
+			GradedFileName="proposal.docx"
+			DetailPageUrl="@($"/{UserId}/Class/{ClassId}/assignment/assignmentId3")" />
+	</div>
 </div>
 
 <div class="mt-3">
-	<h3>Students</h3>
-	<NavLink class="btn btn-outline-secondary me-2" href="@($"/{UserId}/Class/{ClassId}/Student/studentId1")">Student 1</NavLink>
-	<NavLink class="btn btn-outline-secondary me-2" href="@($"/{UserId}/Class/{ClassId}/Student/studentId2")">Student 2</NavLink>
-	<NavLink class="btn btn-outline-secondary" href="@($"/{UserId}/Class/{ClassId}/Student/studentId3")">Student 3</NavLink>
+	<h3 class="text-center">Students</h3>
+	<!-- Temporary hardcoded student profile cards -->
+	<div class="d-flex flex-wrap justify-content-center gap-3 mb-4">
+		<UserProfileCard 
+			UserName="Alice Johnson"
+			UserTitle="Freshman"
+			ProfileImageUrl="https://via.placeholder.com/90/F7C59F/004E89?text=A"
+			ProfileDetailPageUrl="@($"/{UserId}/Class/{ClassId}/Student/studentId1")"
+			UserEmail="alice.johnson@example.com"
+			UserPhoneNumber="+155555501" />
+
+		<UserProfileCard 
+			UserName="Brian Lee"
+			UserTitle="Sophomore"
+			ProfileImageUrl="https://via.placeholder.com/90/F7C59F/004E89?text=B"
+			ProfileDetailPageUrl="@($"/{UserId}/Class/{ClassId}/Student/studentId2")"
+			UserEmail="brian.lee@example.com"
+			UserPhoneNumber="+155555502" />
+
+		<UserProfileCard 
+			UserName="Carla Martinez"
+			UserTitle="Junior"
+			ProfileImageUrl="https://via.placeholder.com/90/F7C59F/004E89?text=C"
+			ProfileDetailPageUrl="@($"/{UserId}/Class/{ClassId}/Student/studentId3")"
+			UserEmail="carla.martinez@example.com"
+			UserPhoneNumber="+155555503" />
+	</div>
 </div>
 

@@ -1,0 +1,145 @@
+
+<button class="btn btn-primary" @onclick="OpenModal">View Profile</button>
+@if (showModal)
+
+{
+
+    <div class="modal fade show" style="display: block;" tabindex="-1">
+
+        <div class="modal-dialog">
+
+            <div class="modal-content">
+
+                <div class="modal-header">
+
+                    <h5 class="modal-title">Ryan Miner (The GOAT)</h5>
+
+                    <button type="button" class="btn-close" @onclick="CloseModal" aria-label="Close"></button>
+
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="text-center mb-3">
+
+                        <img src="@profilePictureUrl" class="rounded-circle" style="width: 150px; height: 150px;" alt="Profile Picture" />
+
+                    </div>
+
+                   
+
+                    <div class="text-center mb-3">
+
+                        <h4> @userName</h4>
+
+                    </div>
+
+                   
+
+                    <div class="mb-3">
+
+                        <label class="form-label fw-bold">Interests:</label>
+
+                        @if (isEditing)
+
+                        {
+
+                            <textarea class="form-control" rows="4" @bind="userInterests"></textarea>
+
+                        }
+
+                        else
+
+                        {
+
+                            <p style="white-space: pre-line;">@userInterests</p>
+
+                        }
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-secondary" @onclick="CloseModal">Close</button>
+
+                    @if (isEditing)
+
+                    {
+
+                        <button type="button" class="btn btn-success" @onclick="SaveProfile">Save</button>
+
+                    }
+
+                    else
+
+                    {
+
+                        <button type="button" class="btn btn-primary" @onclick="EnableEditing">Edit</button>
+
+                    }
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="modal-backdrop fade show"></div>
+
+}
+
+@code {
+
+    private bool showModal = false;
+
+    private bool isEditing = false;
+
+    private string profilePictureUrl = "/images/oliver.png";
+
+    private string userName = "John Doe";
+
+    private string userInterests = "Reading, hiking, photography, and coding.";
+
+    public void OpenModal()
+
+    {
+
+        showModal = true;
+
+        isEditing = false; // Reset to non-edit mode when opening
+
+    }
+
+    private void CloseModal()
+
+    {
+
+        showModal = false;
+
+        isEditing = false; // Reset edit mode when closing
+
+    }
+
+    private void EnableEditing()
+
+    {
+
+        isEditing = true;
+
+    }
+
+    private void SaveProfile()
+
+    {
+
+        // Here you would typically save the updated profile information to a database
+
+        isEditing = false; // Switch back to view mode
+
+    }
+
+}
