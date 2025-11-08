@@ -6,8 +6,14 @@
         <img src="/images/icons8-study-50.png" alt="SmartStudy Logo" class="company-logo" />
         <h2 class="company-name">SmartStudy</h2>
     </div>
+
     <div class="login-card" role="form" aria-labelledby="login-title">
         <h1 id="login-title" class="login-title">Sign In</h1>
+
+        @if (!string.IsNullOrWhiteSpace(Error))
+        {
+            <div class="alert alert-danger" role="alert" aria-live="assertive">@Error</div>
+        }
 
         <div class="mb-3">
             <label for="userId" class="form-label">Username</label>
@@ -25,7 +31,11 @@
             </div>
         </div>
 
-        <button class="btn-primary-cta" @onclick="GoToClassList">Continue</button>
+        <button class="btn-primary-cta"
+                @onclick="HandleLoginAsync"
+                disabled="@IsSubmitting">
+            @(IsSubmitting ? "Signing in..." : "Continue")
+        </button>
 
         <div class="text-center mt-3">
             <small class="text-muted">
@@ -34,151 +44,3 @@
         </div>
     </div>
 </div>
-
-<style>
-:root, body, html {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    font-size: 16px;
-}
-
-.login-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    padding: 2vh 2vw;
-    position: fixed;
-    inset: 0;
-    background-image: url('/images/image.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-}
-
-.company-header {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
-    margin-bottom: 1.75rem;
-}
-
-.company-logo {
-    height: 58px;
-    width: auto;
-    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.12));
-}
-
-.company-name {
-    margin: 0;
-    font-size: 1.9rem;
-    font-weight: 700;
-    color: #004E89;
-}
-
-/* ----- Bigger Card ----- */
-.login-card {
-    width: min(85vw, 700px);
-    padding: clamp(28px, 5vh, 48px);
-    border-radius: 20px;
-    background: rgba(255,255,255,0.62);
-    backdrop-filter: blur(14px) saturate(120%);
-    -webkit-backdrop-filter: blur(14px) saturate(120%);
-    border: 1px solid rgba(255,255,255,0.7);
-    box-shadow:
-        0 28px 60px -18px rgba(0,0,0,0.28),
-        0 3px 8px rgba(0,0,0,0.08);
-    transition: transform .25s ease, box-shadow .25s ease;
-}
-.login-card:hover {
-    transform: translateY(-3px);
-    box-shadow:
-        0 40px 80px -24px rgba(0,0,0,0.32),
-        0 6px 12px rgba(0,0,0,0.12);
-}
-
-.login-title {
-    text-align: center;
-    margin-bottom: 24px;
-    font-size: clamp(1.6rem, 2.5vw, 2.3rem);
-    font-weight: 700;
-    color: #1f2a37;
-}
-
-/* ----- Inputs w/ Icons ----- */
-.input-wrap {
-    position: relative;
-    display: flex;
-    align-items: center;
-    border: 1px solid #dfe3ea;
-    border-radius: 14px;
-    background: white;
-    transition: border-color .2s ease, box-shadow .2s ease, transform .12s ease;
-}
-.input-wrap:focus-within {
-    border-color: #6aa6ff;
-    box-shadow: 0 0 0 4px rgba(13,110,253,.12);
-    transform: translateY(-1px);
-}
-
-.input-icon {
-    position: absolute;
-    left: 12px;
-    font-size: 1.1rem;
-    opacity: 0.6;
-}
-
-.form-control {
-    width: 100%;
-    border: none;
-    outline: none;
-    padding: 14px 16px 14px 44px;
-    font-size: 1.1rem;
-    border-radius: 14px;
-}
-
-/* ----- BIG Button ----- */
-.btn-primary-cta {
-    width: 100%;
-    margin-top: 10px;
-    padding: 14px 18px;
-    border-radius: 14px;
-    font-size: 1.1rem;
-    font-weight: 600;
-    border: none;
-    cursor: pointer;
-    color: #fff;
-    background: #1e63d9;
-    box-shadow:
-        0 12px 20px -8px rgba(32,111,255,.45),
-        0 3px 6px rgba(0,0,0,.08);
-    transition: transform .15s ease, filter .25s ease;
-}
-.btn-primary-cta:hover {
-    transform: translateY(-2px);
-    filter: brightness(1.05);
-}
-
-.signup-link {
-    color: #1e63d9;
-    text-decoration: none;
-}
-.signup-link:hover {
-    text-decoration: underline;
-}
-
-.text-muted {
-    color: #6c757d;
-    font-size: .95rem;
-}
-
-/* ----- Mobile Tweaks ----- */
-@@media (max-width: 600px) {
-    .company-logo { height: 48px; }
-    .company-name { font-size: 1.6rem; }
-    .login-card { padding: 28px; }
-}
-</style>

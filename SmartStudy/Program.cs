@@ -1,10 +1,12 @@
 using SmartStudy.Components;
+using SmartStudy.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+builder.Services.AddSingleton<UsersService>();
 
 var app = builder.Build();
 
