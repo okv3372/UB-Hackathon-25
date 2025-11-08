@@ -1,6 +1,6 @@
 namespace SmartStudy.Models;
 
-public class Profile
+public class ProfileDTO
 {
     // School-specific student identifier
     public string StudentId { get; set; } = string.Empty;

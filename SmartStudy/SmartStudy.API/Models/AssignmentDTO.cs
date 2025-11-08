@@ -1,6 +1,6 @@
 namespace SmartStudy.Models;
 
-public class Assignment
+public class AssignmentDTO
 {
     public string Id { get; set; } = string.Empty;
     public string StudentId { get; set; } = string.Empty;

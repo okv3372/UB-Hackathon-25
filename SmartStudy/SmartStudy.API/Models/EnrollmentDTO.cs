@@ -1,6 +1,6 @@
 namespace SmartStudy.Models;
 
-public class Enrollment
+public class EnrollmentDTO
 {
     // Class Id (references SchoolClass.Id)
     public string ClassId { get; set; } = string.Empty;

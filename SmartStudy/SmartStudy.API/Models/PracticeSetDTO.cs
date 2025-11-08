@@ -1,6 +1,6 @@
 namespace SmartStudy.Models;
 
-public class PracticeSet
+public class PracticeSetDTO
 {
     public string Id { get; set; } = string.Empty;
     public string StudentId { get; set; } = string.Empty;
