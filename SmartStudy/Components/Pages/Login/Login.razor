@@ -1,12 +1,91 @@
 @page "/login"
 @page "/"
-
-<h1>Login</h1>
-<p>This is a placeholder login page.</p>
-
-<div class="mb-3">
-	<label for="userId" class="form-label">User ID</label>
-	<input id="userId" class="form-control" @bind="UserIdInput" placeholder="Enter your user ID" />
-	<div class="form-text">We'll use this to route you to your class list.</div>
-	<button class="btn btn-primary mt-2" @onclick="GoToClassList">Go to Class List</button>
+<div class="login-container">
+    <div class="login-card">
+        <h1 class="mb-3 text-center">Login</h1>
+        <div class="mb-3">
+            <div class="text-start">
+                <label for="userId" class="form-label">Username</label>
+            </div>
+            <input id="userId" class="form-control" @bind="UserIdInput" placeholder="Enter your username" />
+        </div>
+        <div class="mb-4">
+            <div class="text-start">
+                <label for="password" class="form-label">Password</label>
+            </div>
+            <input id="password" type="password" class="form-control" @bind="PasswordInput" placeholder="Enter your password" />
+        </div>
+        <div class="text-center mt-4">
+            <button class="btn btn-primary px-4" @onclick="GoToClassList">Login</button>
+        </div>
+        <div class="text-center mt-3">
+            <small class="text-muted">
+                Don't have an account? <a href="#" class="signup-link">Sign up</a>
+            </small>
+        </div>
+    </div>
 </div>
+<style>
+    /* Reset body margins that might affect centering */
+    :root, body, html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+    }
+    .login-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        height: 100%;
+        padding: 0; /* Removed padding */
+        margin: 0;
+        position: fixed; /* Fix the container in place */
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: url('/images/image.png');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+    
+    .login-card {
+        width: 100%;
+        max-width: 500px;
+        padding: 40px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        background-color: #fff;
+        margin: 0 auto; /* Center horizontally */
+    }
+    
+    .form-control:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+    
+    .text-start {
+        text-align: left !important;
+        width: 100%;
+    }
+    
+    .btn-primary {
+        min-width: 150px;
+    }
+    
+    .signup-link {
+        color: #0d6efd;
+        text-decoration: none;
+    }
+    
+    .signup-link:hover {
+        text-decoration: underline;
+    }
+    
+    .text-muted {
+        color: #6c757d;
+    }
+</style>
