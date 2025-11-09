@@ -10,6 +10,7 @@
     <PackageReference Include="Microsoft.SemanticKernel" Version="1.67.1" />
     <PackageReference Include="Microsoft.SemanticKernel.Connectors.OpenAI" Version="1.67.1" />
     <PackageReference Include="Microsoft.SemanticKernel.Connectors.AzureOpenAI" Version="1.67.1" />
+    <PackageReference Include="PdfPig" />
   </ItemGroup>
 
 </Project>
