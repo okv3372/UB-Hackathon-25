@@ -10,7 +10,7 @@ namespace SmartStudy.API.Services;
 /// Usage:
 ///   var text = PDFPigService.ExtractText("/path/to/file.pdf");
 /// </summary>
-public static class PDFPigService
+public class PDFPigService
 {
     /// <summary>
     /// Extracts and returns the text content from the provided PDF file path.

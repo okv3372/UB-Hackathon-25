@@ -5,7 +5,7 @@ using SmartStudy.Models;
 namespace SmartStudy.Services;
 
 // Service: resolve a PracticeSet starting from an AssignmentId via the assignment's PracticeSetId
-public static class PracticeSetsService
+public class PracticeSetsService
 {
     /// <summary>
     /// Given an assignmentId, look up the assignment in Assignments.Json to get its PracticeSetId,

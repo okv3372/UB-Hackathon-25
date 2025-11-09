@@ -15,8 +15,10 @@ builder.Services.AddSingleton<SemanticKernelService>();
 builder.Services.AddSingleton<ClassesService>();
 builder.Services.AddSingleton<EnrollmentService>();
 // Breadcrumb helper service
-builder.Services.AddScoped<SmartStudy.Services.BreadcrumbService>();
+builder.Services.AddScoped<BreadcrumbService>();
 builder.Services.AddSingleton<AssignmentService>();
+builder.Services.AddSingleton<PracticeSetsService>();
+builder.Services.AddSingleton<PDFPigService>();
 
 var app = builder.Build();
 

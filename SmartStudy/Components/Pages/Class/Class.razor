@@ -19,7 +19,7 @@ else
         @foreach(var assignment in AssignmentList)
         {
             <div class="d-flex flex-column align-items-center">
-                <AssignmentListItem AssignmentName="@assignment.FileName" GradedFileName="@assignment.FileName"
+                <AssignmentListItem AssignmentName="@assignment.Title" GradedFileName="@assignment.FileName"
                     DetailPageUrl="@($"/{UserId}/Class/{ClassId}/assignment/{assignment.Id}")" />
             </div>
         }

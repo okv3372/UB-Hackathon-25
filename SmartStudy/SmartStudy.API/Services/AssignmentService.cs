@@ -23,7 +23,7 @@ public class AssignmentService
 		_sk = sk;
     }
 
-	public async Task<AssignmentDTO> AddAssignmentAsync(string studentId, string teacherId, string classId, string filePath, string teacherComment)
+	public async Task<AssignmentDTO> AddAssignmentAsync(string studentId, string teacherId, string classId, string filePath, string teacherComment, string title)
 	{
 		// Load existing assignments
 		var assignments = await LoadAssignmentsAsync();
@@ -51,7 +51,7 @@ public class AssignmentService
 			StudentId = studentId,
 			TeacherId = teacherId,
 			ClassId = classId,
-			Title = Path.GetFileNameWithoutExtension(filePath) ?? "New Assignment",
+			Title = title,
 			FileName = Path.GetFileName(filePath) ?? string.Empty,
 			FilePath = filePath,
 			TeacherComments = teacherComment,
@@ -76,35 +76,36 @@ public class AssignmentService
 		string prompt = $"You are an expert at creating practice question sets for students based on study materials provided.\n" +
 						"Given the following extracted text from a student's assignment, generate a set of practice questions that would help the student review and understand the material better.\n\n" +
 						$"Extracted Text:\n {extractedText} \n\n" +
-                        "Output ONLY valid JSON (no commentary) following exactly this structure and naming. Return only the JSON in a response that can be parsed using JSON.Deserialize, DONT PRINT OUT '''json ''' IN YOUR OUTPUT, JUST THE JSON ITSELF!!:\n" +
-                        "{\n" +
-                        "  \"test\": {\n" +
-                        "    \"questions\": [\n" +
-                        "      {\n" +
-                        "        \"questionType\": \"multipleChoice\",\n" +
-                        "        \"questionText\": \"What is the capital of France?\",\n" +
-                        "        \"choices\": [\"London\", \"Berlin\", \"Paris\", \"Rome\"],\n" +
-                        "        \"correctAnswer\": \"Paris\",\n" +
-                        "        \"explanation\": \"Paris is the capital and largest city of France, situated on the river Seine.\"\n" +
-                        "      },\n" +
-                        "      {\n" +
-                        "        \"questionType\": \"multipleChoice\",\n" +
-                        "        \"questionText\": \"Which of the following is a primary color?\",\n" +
-                        "        \"choices\": [\"Green\", \"Orange\", \"Blue\", \"Purple\"],\n" +
-                        "        \"correctAnswer\": \"Blue\",\n" +
-                        "        \"explanation\": \"The three primary colors are Red, Blue, and Yellow. Blue is the only primary color listed among the options.\"\n" +
-                        "      },\n" +
-                        "      {\n" +
-                        "        \"questionType\": \"multipleChoice\",\n" +
-                        "        \"questionText\": \"The Earth is flat.\",\n" +
-                        "        \"choices\": [\"True\", \"False\"],\n" +
-                        "        \"correctAnswer\": \"False\",\n" +
-                        "        \"explanation\": \"The Earth is approximately spherical in shape, slightly flattened at the poles and bulging at the equator.\"\n" +
-                        "      }\n" +
-                        "    ]\n" +
-                        "  }\n" +
-                        "}\n\n" +
-                        "Replace the example questions with new ones derived from the extracted text. Keep field names identical.";
+						"Output ONLY valid JSON (no commentary) following exactly this structure and naming. Return only the JSON in a response that can be parsed using JSON.Deserialize, DONT PRINT OUT '''json ''' IN YOUR OUTPUT, JUST THE JSON ITSELF!!:\n" +
+						"{\n" +
+						"  \"test\": {\n" +
+						"    \"questions\": [\n" +
+						"      {\n" +
+						"        \"questionType\": \"multipleChoice\",\n" +
+						"        \"questionText\": \"What is the capital of France?\",\n" +
+						"        \"choices\": [\"London\", \"Berlin\", \"Paris\", \"Rome\"],\n" +
+						"        \"correctAnswer\": \"Paris\",\n" +
+						"        \"explanation\": \"Paris is the capital and largest city of France, situated on the river Seine.\"\n" +
+						"      },\n" +
+						"      {\n" +
+						"        \"questionType\": \"multipleChoice\",\n" +
+						"        \"questionText\": \"Which of the following is a primary color?\",\n" +
+						"        \"choices\": [\"Green\", \"Orange\", \"Blue\", \"Purple\"],\n" +
+						"        \"correctAnswer\": \"Blue\",\n" +
+						"        \"explanation\": \"The three primary colors are Red, Blue, and Yellow. Blue is the only primary color listed among the options.\"\n" +
+						"      },\n" +
+						"      {\n" +
+						"        \"questionType\": \"multipleChoice\",\n" +
+						"        \"questionText\": \"The Earth is flat.\",\n" +
+						"        \"choices\": [\"True\", \"False\"],\n" +
+						"        \"correctAnswer\": \"False\",\n" +
+						"        \"explanation\": \"The Earth is approximately spherical in shape, slightly flattened at the poles and bulging at the equator.\"\n" +
+						"      }\n" +
+						"    ]\n" +
+						"  }\n" +
+						"}\n\n" +
+						"Replace the example questions with new ones derived from the extracted text. Keep field names identical." +
+						"DONT PRINT OUT '''json ''' IN YOUR OUTPUT, JUST THE JSON ITSELF!!";
 
 		// Call the model with the prompt and capture the response (best-effort)
 		string modelResp = string.Empty;
