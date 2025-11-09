@@ -7,6 +7,7 @@ public class ProfileDTO
 
     // URL to profile picture
     public string PictureUrl { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
 
     // Short biography or notes about the student
     public string Bio { get; set; } = string.Empty;
