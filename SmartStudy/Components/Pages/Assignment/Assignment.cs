@@ -38,11 +38,9 @@ public partial class Assignment : ComponentBase
     private readonly string mockJson = @"
 {
   ""test"": {
-    ""id"": ""test123"",
     ""title"": ""Sample Practice Test"",
     ""questions"": [
       {
-        ""id"": ""q1"",
         ""questionType"": ""multipleChoice"",
         ""questionText"": ""What is the capital of France?"",
         ""choices"": [
@@ -55,7 +53,6 @@ public partial class Assignment : ComponentBase
         ""explanation"": ""Paris is the capital and largest city of France, situated on the river Seine.""
       },
       {
-        ""id"": ""q2"",
         ""questionType"": ""multipleChoice"",
         ""questionText"": ""Which of the following is a primary color?"",
         ""choices"": [
@@ -68,7 +65,6 @@ public partial class Assignment : ComponentBase
         ""explanation"": ""The three primary colors are Red, Blue, and Yellow. Blue is the only primary color listed among the options.""
       },
       {
-        ""id"": ""q3"",
         ""questionType"": ""trueFalse"",
         ""questionText"": ""The Earth is flat."",
         ""choices"": [

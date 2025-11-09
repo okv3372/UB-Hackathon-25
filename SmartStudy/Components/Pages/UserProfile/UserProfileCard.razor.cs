@@ -17,7 +17,7 @@ public partial class UserProfileCard : ComponentBase
 
     [Parameter] public string UserName { get; set; } = "No Name";
     [Parameter] public string UserTitle { get; set; } = string.Empty;
-    [Parameter] public string ProfileImageUrl { get; set; } = "https://via.placeholder.com/90/F7C59F/004E89?text=👤";
+    [Parameter] public string ProfileImageUrl { get; set; } = "/profile_pictures/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg";
     [Parameter] public string ProfileDetailPageUrl { get; set; } = "/userprofile";
     [Parameter] public string UserEmail { get; set; } = string.Empty;
     [Parameter] public string UserPhoneNumber { get; set; } = string.Empty;
