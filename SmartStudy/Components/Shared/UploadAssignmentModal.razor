@@ -4,6 +4,18 @@
 @inject IWebHostEnvironment Env
 @inject SmartStudy.API.Services.AssignmentService AssignmentService
 
+@* Fullscreen loading overlay shown while the model (SK) is being called *@
+<div class="loading-overlay" style="display:@(IsLoadingModel ? "flex" : "none")">
+    <div class="spinner"></div>
+    <div class="loading-text">Generating practice set...</div>
+    <small class="loading-sub">Analyzing the file & creating questions</small>
+</div>
+
+@* Snackbar notification *@
+<div class="snackbar @SnackbarStyle" style="display:@(ShowSnackbar ? "block" : "none")">
+    @SnackbarMessage
+</div>
+
 <div class="upload-modal-backdrop" style="display:@(IsOpen ? "flex" : "none")">
     <div class="upload-modal">
         <div class="modal-header d-flex align-items-center">
@@ -72,6 +84,49 @@
         max-width: 520px;
         box-shadow: 0 8px 30px rgba(0,0,0,0.2);
     }
+
+    /* Loading overlay */
+    .loading-overlay {
+        position: fixed;
+        inset: 0;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 12px;
+        background: rgba(255,255,255,0.85);
+        z-index: 2000; /* above modal */
+        color: #1f2937;
+        text-align: center;
+    }
+    .spinner {
+        width: 64px; height: 64px;
+        border: 6px solid #e5e7eb;
+        border-top-color: #2563eb;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+    .loading-text { font-weight: 600; margin-top: 8px; }
+    .loading-sub { color:#6b7280; }
+    @@keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Snackbar */
+    .snackbar {
+        position: fixed;
+        left: 50%;
+        bottom: 28px;
+        transform: translateX(-50%);
+        background: #111827;
+        color: #fff;
+        padding: 12px 18px;
+        border-radius: 10px;
+        box-shadow: 0 6px 24px rgba(0,0,0,0.18);
+        z-index: 2100;
+        max-width: 90vw;
+        white-space: pre-wrap;
+    }
+    .snackbar.success { background:#16a34a; }
+    .snackbar.error { background:#dc2626; }
 
     .avatar-placeholder {
         width:56px; height:56px;
@@ -144,6 +199,12 @@
     private string Title = string.Empty;
     private string TeacherComments = string.Empty;
 
+    // Loading & snackbar state
+    private bool IsLoadingModel = false;
+    private bool ShowSnackbar = false;
+    private string SnackbarMessage = string.Empty;
+    private string SnackbarStyle = "success"; // or "error"
+
     public void OpenModal()
     {
         IsOpen = true;
@@ -192,8 +253,11 @@
 
             StatusMessage = "File uploaded successfully.";
 
-
             Console.WriteLine("Uploading assignment with file path: " + filePath);
+
+            // Show loading overlay while the model generates a practice set
+            IsLoadingModel = true;
+            StateHasChanged();
 
             // Call central AssignmentService to add and persist the assignment (service handles JSON write & practice set generation)
             var dto = await AssignmentService.AddAssignmentAsync(
@@ -204,15 +268,35 @@
                 teacherComment: TeacherComments ?? string.Empty,
                 title: Title ?? string.Empty);
 
+            // Hide loading overlay and show success snackbar
+            IsLoadingModel = false;
+            SnackbarStyle = "success";
+            SnackbarMessage = "Assignment uploaded and practice set ready.";
+            ShowSnackbar = true;
+            _ = HideSnackbarSoon();
+
             if (OnUploaded.HasDelegate)
                 await OnUploaded.InvokeAsync(dto);
 
-            await Task.Delay(900);
+            await Task.Delay(600);
             CloseModal();
         }
         catch (Exception ex)
         {
+            IsLoadingModel = false;
             StatusMessage = $"Upload failed: {ex.Message}";
+            SnackbarStyle = "error";
+            SnackbarMessage = $"Upload failed: {ex.Message}";
+            ShowSnackbar = true;
+            _ = HideSnackbarSoon();
         }
+    }
+
+    private async Task HideSnackbarSoon()
+    {
+        try { await Task.Delay(3500); }
+        catch { }
+        ShowSnackbar = false;
+        StateHasChanged();
     }
 }

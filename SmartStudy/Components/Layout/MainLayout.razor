@@ -24,16 +24,16 @@
 @code {
     private List<SmartStudy.Services.BreadcrumbItem> _crumbs = new();
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        RefreshCrumbs();
+        await RefreshCrumbsAsync();
         Nav.LocationChanged += OnLocationChanged;
     }
 
-    private void OnLocationChanged(object? sender, Microsoft.AspNetCore.Components.Routing.LocationChangedEventArgs e)
+    private async void OnLocationChanged(object? sender, Microsoft.AspNetCore.Components.Routing.LocationChangedEventArgs e)
     {
-        RefreshCrumbs(e.Location);
-        InvokeAsync(StateHasChanged);
+        await RefreshCrumbsAsync(e.Location);
+        await InvokeAsync(StateHasChanged);
     }
 
     /// <summary>
@@ -42,12 +42,12 @@
     /// - No "/Class" dead link; "Class List" points to "/{userId}/ClassList"
     /// - Avoid duplicate "Student" crumbs when navigating into assignments
     /// </summary>
-    private void RefreshCrumbs(string? location = null)
+    private async Task RefreshCrumbsAsync(string? location = null)
     {
-        // Let the service fully shape the list (it already inserts "Home", maps Class -> ClassList, and de-dupes)
-        var items = Breadcrumbs.GetBreadcrumbsFromUri(location) ?? new List<SmartStudy.Services.BreadcrumbItem>();
+        // Await the async breadcrumb building (resolves class name lookups)
+        var items = await Breadcrumbs.GetBreadcrumbsFromUri(location);
+        items ??= new List<SmartStudy.Services.BreadcrumbItem>();
 
-        // Fallback: if nothing came back, still show Home as current
         if (items.Count == 0)
         {
             items.Add(new SmartStudy.Services.BreadcrumbItem

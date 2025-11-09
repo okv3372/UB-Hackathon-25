@@ -1,3 +1,4 @@
+@namespace SmartStudy.Components.Pages.Class
 @* Pretty Profile Modal — Bootstrap-friendly, accessible, and responsive *@
 @* Controlled by parent via @ref. Example:
    <ProfileModal @ref="profileModalRef"
@@ -10,34 +11,67 @@
 @if (showModal)
 {
     <div class="modal fade show profile-modal" style="display:block;" tabindex="-1" role="dialog" aria-modal="true"
-         aria-labelledby="profileModalTitle" @onkeydown="HandleKeyDown">
+        aria-labelledby="profileModalTitle" @onkeydown="HandleKeyDown">
         <div class="modal-dialog modal-md modal-dialog-centered profile-modal-dialog" role="document">
             <div class="modal-content shadow">
                 <!-- Compact gradient header with avatar (no overflow clipping) -->
                 <div class="modal-hero">
                     <button type="button" class="btn btn-sm btn-light subtle-close d-none d-md-inline-flex"
-                            @onclick="CloseModal" aria-label="Close">
+                        @onclick="CloseModal" aria-label="Close">
                         ✕
                     </button>
 
-                    <img src="@ResolvedPictureUrl"
-                         class="avatar-img"
-                         alt="Profile picture of @(UserName ?? "user")" />
+                    <img src="@ResolvedPictureUrl" class="avatar-img" alt="Profile picture of @(UserName ?? "user")" />
 
                     <div class="hero-text text-center">
-                        <h2 id="profileModalTitle" class="hero-title mb-1">@DisplayTitle</h2>
+                        <h2 id="profileModalTitle" class="hero-title mb-1">
+                            @(string.IsNullOrWhiteSpace(UserName) ? "Unnamed" : UserName)
+                        </h2>
+
                         <p class="hero-subtitle mb-0 text-white-75">
-                            @((string.IsNullOrWhiteSpace(UserName) ? "Unnamed" : UserName))
+                            @DisplayTitle
                         </p>
+
                     </div>
                 </div>
+                
 
                 <!-- Body -->
                 <div class="modal-body px-4 pb-4 pt-3">
+                    
+                    <section class="section-block mb-3">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <label class="section-label fw-semibold mb-0">Guardian</label>
+                        </div>
+
+                        @if (!string.IsNullOrWhiteSpace(GuardianName) || !string.IsNullOrWhiteSpace(GuardianEmail))
+                        {
+                            <div class="row g-2">
+                                @if (!string.IsNullOrWhiteSpace(GuardianName))
+                                {
+                                    <div class="col-12 col-sm-6">
+                                        <div class="form-control" readonly>@GuardianName</div>
+                                        <small class="text-muted">Name</small>
+                                    </div>
+                                }
+                                @if (!string.IsNullOrWhiteSpace(GuardianEmail))
+                                {
+                                    <div class="col-12 col-sm-6">
+                                        <a class="form-control link-primary text-truncate" href="mailto:@GuardianEmail">@GuardianEmail</a>
+                                        <small class="text-muted">Email</small>
+                                    </div>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <p class="text-muted mb-0">No guardian information provided.</p>
+                        }
+                    </section>
+
                     <section class="section-block">
                         <div class="d-flex align-items-center justify-content-between mb-2">
                             <label class="section-label fw-semibold mb-0">Interests</label>
-
                             @if (EnableEditButton)
                             {
                                 @if (isEditing)
@@ -58,13 +92,14 @@
                                     </button>
                                 }
                             }
+                        
                         </div>
 
                         @if (isEditing)
                         {
                             <div class="mb-2 text-muted small">Tip: separate interests with commas to show them as tags.</div>
                             <textarea class="form-control" rows="4" @bind="UserInterests"
-                                      placeholder="e.g., Basketball, Data Visualization, Hiking, Machine Learning"></textarea>
+                                placeholder="e.g., Basketball, Data Visualization, Hiking, Machine Learning"></textarea>
                         }
                         else
                         {
@@ -107,83 +142,34 @@
     <div class="modal-backdrop fade show" @onclick="BackdropClick"></div>
 }
 
-@code {
-    // Visibility & state
-    private bool showModal = false;
-    private bool isEditing = false;
-
-    // Parameters provided by parent
-    [Parameter] public string? UserName { get; set; }
-    [Parameter] public string? ProfilePictureUrl { get; set; }
-    [Parameter] public string? UserInterests { get; set; }
-    [Parameter] public string? Title { get; set; }
-    [Parameter] public bool EnableEditButton { get; set; } = false;
-
-    private string ResolvedPictureUrl => string.IsNullOrWhiteSpace(ProfilePictureUrl) ? "/favicon.png" : ProfilePictureUrl;
-    private string DisplayTitle => !string.IsNullOrWhiteSpace(Title)
-        ? Title!
-        : (!string.IsNullOrWhiteSpace(UserName) ? UserName! : "Profile");
-
-    // Control methods exposed to parent
-    public void OpenModal()
-    {
-        showModal = true;
-        isEditing = false;
-        StateHasChanged();
-    }
-
-    public void CloseModal()
-    {
-        showModal = false;
-        isEditing = false;
-        StateHasChanged();
-    }
-
-    private void BackdropClick(MouseEventArgs _) => CloseModal();
-
-    private void EnableEditing() => isEditing = true;
-
-    private void CancelEditing() => isEditing = false;
-
-    private void SaveProfile()
-    {
-        // TODO: Persist changes if needed.
-        isEditing = false;
-    }
-
-    private IEnumerable<string> SplitInterests(string? interests)
-        => string.IsNullOrWhiteSpace(interests)
-           ? Enumerable.Empty<string>()
-           : interests.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-
-    private void HandleKeyDown(KeyboardEventArgs e)
-    {
-        if (e.Key == "Escape") CloseModal();
-    }
-}
-
 <style>
     /* Make the dialog a bit more square and compact */
     .profile-modal-dialog {
-        max-width: 560px; /* narrower than modal-lg; feels boxier */
-        margin: 1.25rem auto; /* ensure room at top so nothing is clipped */
+        max-width: 560px;
+        /* narrower than modal-lg; feels boxier */
+        margin: 1.25rem auto;
+        /* ensure room at top so nothing is clipped */
     }
 
     .profile-modal .modal-content {
         border: 1px solid #e9edf2;
-        border-radius: 10px; /* smaller radius = more square */
-        overflow: hidden;    /* keeps corners crisp without clipping content now */
+        border-radius: 10px;
+        /* smaller radius = more square */
+        overflow: hidden;
+        /* keeps corners crisp without clipping content now */
     }
 
-    .profile-modal .modal-hero {
-        position: relative;
-        padding: 18px 16px 16px;
-        background: linear-gradient(135deg, #5b86e5 0%, #36d1dc 100%);
-        color: #fff;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
+.profile-modal .modal-hero {
+    position: relative;
+    padding: 18px 16px 16px;
+    background: #004E89; /* was gradient before */
+    color: #2b2f36;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-bottom: 1px solid #e5e7eb;
+}
+
 
     /* Keep avatar fully inside header; no negative offsets */
     .profile-modal .avatar-img {
@@ -192,7 +178,7 @@
         border-radius: 999px;
         object-fit: cover;
         border: 4px solid #fff;
-        box-shadow: 0 8px 24px rgba(0,0,0,.18);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, .18);
         background: #fff;
         margin-top: 4px;
         margin-bottom: 10px;
@@ -217,12 +203,12 @@
         font-weight: 800;
         letter-spacing: .2px;
         color: #fff;
-        text-shadow: 0 2px 12px rgba(0,0,0,.18);
+        text-shadow: 0 2px 12px rgba(0, 0, 0, .18);
         font-size: 1.35rem;
     }
 
     .profile-modal .hero-subtitle {
-        color: rgba(255,255,255,.9) !important;
+        color: rgba(255, 255, 255, .9) !important;
         font-weight: 500;
         font-size: .95rem;
     }
@@ -232,7 +218,7 @@
         border: 1px solid #eef0f3;
         border-radius: 10px;
         padding: 14px 14px 10px;
-        box-shadow: 0 3px 12px rgba(0,0,0,.04);
+        box-shadow: 0 3px 12px rgba(0, 0, 0, .04);
     }
 
     .profile-modal .section-label {
@@ -259,23 +245,38 @@
         transition: transform .12s ease;
     }
 
-    .profile-modal .tag-pill:hover { transform: translateY(-1px); }
+    .profile-modal .tag-pill:hover {
+        transform: translateY(-1px);
+    }
 
-    .profile-modal .modal-footer { background: transparent; }
+    .profile-modal .modal-footer {
+        background: transparent;
+    }
 
     /* Small screens */
     @@media (max-width: 576px) {
-        .profile-modal-dialog { margin: .75rem auto; }
+        .profile-modal-dialog {
+            margin: .75rem auto;
+        }
+
         .profile-modal .avatar-img {
             width: 96px;
             height: 96px;
         }
-        .profile-modal .hero-title { font-size: 1.25rem; }
+
+        .profile-modal .hero-title {
+            font-size: 1.25rem;
+        }
     }
 
     /* Respect reduced motion */
     @@media (prefers-reduced-motion: reduce) {
-        .profile-modal .tag-pill { transition: none; }
-        .profile-modal .hero-title { text-shadow: none; }
+        .profile-modal .tag-pill {
+            transition: none;
+        }
+
+        .profile-modal .hero-title {
+            text-shadow: none;
+        }
     }
 </style>
