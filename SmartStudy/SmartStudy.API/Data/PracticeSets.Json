@@ -4,23 +4,62 @@
     "StudentId": "u001",
     "ClassId": "Math101",
     "SrcAssignmentId": "a001",
-    "FilePath": "",
-    "Notes": "Extra practice on quadratic equations."
+    "Questions": [
+      {
+        "QuestionText": "Solve for x: 2x + 3 = 7",
+        "QuestionType": "MultipleChoice",
+        "Options": [
+          "1",
+          "2",
+          "3",
+          "4"
+        ],
+        "CorrectAnswer": "2",
+        "Explanation": "Subtract 3 from both sides and then divide by 2."
+      }
+    ],
+    "Notes": "Needs to not be a stupid little fucking dumb fuck ass."
   },
   {
     "Id": "p002",
     "StudentId": "u002",
     "ClassId": "Chem101",
     "SrcAssignmentId": "a002",
-    "FilePath": "",
-    "Notes": "Focus on titration calculations."
+    "Questions": [
+      {
+        "QuestionText": "What is the chemical symbol for iron?",
+        "QuestionType":"MultipleChoice",
+        "Options":[
+          "Tr",
+          "Ir",
+          "Fe",
+          "Rf"
+        ],
+        "CorrectAnswer": "Fe",
+        "Explanation": "Fe is the symbol for Iron on the periodic table"
+      }
+    ],
+    "Notes": "lock in bozo!"
   },
   {
     "Id": "p003",
     "StudentId": "u005",
     "ClassId": "Phys210",
     "SrcAssignmentId": "a003",
-    "FilePath": "",
-    "Notes": "Kinematics practice problems."
+    "Questions": [
+      {
+        "QuestionText":"What is the speed of gravity",
+        "QuestionType":"MultipleChoice",
+        "Options":[
+          "9.81",
+          "7.33",
+          "3.41",
+          "8.91"
+        ],
+        "CorrectAnswer": "9.81",
+        "Explanation": "Gravity accelerates objects at 9.81 m/s² on Earth."
+      }
+    ],
+    "Notes": "Kinematics practice problems need more work."
   }
 ]
