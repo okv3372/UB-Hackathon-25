@@ -38,5 +38,15 @@
     "FileName": "confetti.png",
     "FilePath": "/Users/ansle/Documents/UB-Hackathon-25/SmartStudy/wwwroot/uploads/2ab01f2bd4e74076a7eca4310e86b79c_confetti.png",
     "TeacherComments": "Not good. "
+  },
+  {
+    "Id": "f04b10bee1be4806a386fc76661c0a2b",
+    "StudentId": "u001",
+    "TeacherId": "",
+    "ClassId": "Math101",
+    "Title": "Sois Essay",
+    "FileName": "SOIS Essay #1.pdf",
+    "FilePath": "/Users/ansle/Documents/UB-Hackathon-25/SmartStudy/wwwroot/uploads/2a288778e3dc40d78bf31cf34201b763_SOIS Essay #1.pdf",
+    "TeacherComments": "Great Work!"
   }
 ]
