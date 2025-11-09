@@ -1,68 +1,100 @@
 @page "/{userId}/ClassList"
 @using SmartStudy.Components.Pages.ClassList
 
-    <div class="container">
+<div class="container classlist-page">
+    <header class="page-header">
         <h1 class="page-title">My Classes</h1>
+    </header>
 
-        @if (_isLoading)
-        {
-            <div class="row g-4">
-                @for (var i = 0; i < 6; i++)
-                {
-                    <div class="col-12 col-md-6 col-lg-4">
-                        <div class="skeleton-card"></div>
-                    </div>
-                }
-            </div>
-        }
-        else if (!string.IsNullOrWhiteSpace(_error))
-        {
-            <div class="alert alert-danger">@_error</div>
-        }
-        else if (_classes.Count == 0)
-        {
-            <div class="empty">
-                <p>You’re not enrolled in any classes yet.</p>
-            </div>
-        }
-        else
-        {
-            <div class="row g-4">
-                @foreach (var c in _classes)
-                {
-                    <div class="col-12 col-md-6 col-lg-4">
-                        <ClassItem Id="@c.Id"
-                                   Name="@c.Name"
-                                   Teacher="@c.Teacher"
-                                   Color="@c.Color"
-                                   OnOpen="NavigateToClass" />
-                    </div>
-                }
-            </div>
-        }
-    </div>
+    @if (_isLoading)
+    {
+        <div class="row g-4">
+            @for (var i = 0; i < 6; i++)
+            {
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="skeleton-card"></div>
+                </div>
+            }
+        </div>
+    }
+    else if (!string.IsNullOrWhiteSpace(_error))
+    {
+        <div class="alert alert-danger">@_error</div>
+    }
+    else if (_classes.Count == 0)
+    {
+        <div class="empty">
+            <p>You’re not enrolled in any classes yet.</p>
+        </div>
+    }
+    else
+    {
+        <div class="row g-4 cards-grid">
+            @foreach (var c in _classes)
+            {
+                <div class="col-12 col-md-6 col-lg-4">
+                    <ClassItem Id="@c.Id"
+                               Name="@c.Name"
+                               Teacher="@c.Teacher"
+                               Color="@c.Color"
+                               OnOpen="NavigateToClass" />
+                </div>
+            }
+        </div>
+    }
+</div>
+
 <style>
-/* Smooth, clean, non-distracting background */
-
-
-/* Modern page title */
-.page-title{
-  font-weight: 700;
-  margin: 0 0 32px;
-  font-size: 2.2rem;
-  color: #111;
-  letter-spacing: -.5px;
+/* Page spacing:
+   - margin-top gives breathing room after the breadcrumbs
+   - margin-bottom separates title from the grid */
+.classlist-page .page-header{
+  padding-top: 20px;     /* instead of margin-top */
+  padding-bottom: 2px;  /* instead of margin-bottom */ß
 }
 
-/* Center empty message a bit nicer */
-.empty{ 
-  text-align:center; 
-  color:#6b7280; 
-  padding:60px 0; 
+
+@@media (min-width: 768px){
+  .classlist-page .page-header{
+    margin-top: 20px;
+    margin-bottom: 28px;
+  }
+}
+
+.page-title {
+  margin: 0;
+  font-weight: 700;
+  font-size: clamp(1.9rem, 1.1rem + 2vw, 2.6rem);
+  letter-spacing: -0.025em;
+  color: #004E89;
+  opacity: 0;
+  transform: translateY(8px);
+  animation: fadeUp 0.35s ease-out forwards;
+}
+
+@@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+
+/* Slight extra top space before the grid on small screens */
+.cards-grid{
+  margin-top: 2px;
+}
+
+/* Empty state */
+.empty{
+  text-align: center;
+  color: #6b7280;
+  padding: 60px 0;
   font-size: 1.1rem;
 }
 
-/* Skeleton load cards */
+/* Skeletons */
 .skeleton-card{
   height: 240px;
   border-radius: 18px;
@@ -72,13 +104,10 @@
   border: none;
 }
 
-@@keyframes shimmer { 
-  to { background-position: -200% 0; }
-}
+@@keyframes shimmer { to { background-position: -200% 0; } }
 
-/* Dark mode respect (optional) */
+/* Dark mode (optional) */
 @@media (prefers-color-scheme: dark){
-  .classes-wrap{ background:#0f1115; }
   .page-title{ color:#f3f4f6; }
   .skeleton-card{
     background: linear-gradient(110deg, #2a2d31 8%, #34383e 18%, #2a2d31 33%);
