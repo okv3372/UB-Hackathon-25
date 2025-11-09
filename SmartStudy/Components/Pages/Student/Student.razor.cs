@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Components;
+using SmartStudy.API.Services;
+using SmartStudy.Models;
 
 namespace SmartStudy.Components.Pages.Student;
 
@@ -10,30 +12,17 @@ public partial class Student : ComponentBase
     [Parameter] public string StudentId { get; set; } = default!;
 
     [Inject] protected NavigationManager Navigation { get; set; } = default!;
+    [Inject] protected AssignmentService AssignmentService { get; set; } = default!;
 
-    // Replace with your real service/model as needed
-    public List<AssignmentVM>? Assignments { get; private set; }
+    // Real assignments list populated from AssignmentService
+    public List<AssignmentDTO>? Assignments { get; private set; }
 
     protected override async Task OnParametersSetAsync()
     {
-        // TODO: swap to your real data call:
-        // Assignments = await _assignmentService.GetForStudentAsync(ClassId, StudentId);
-        await Task.Yield();
-        Assignments = new()
-            {
-                new() { Id="assignmentId1", Name="Intro Worksheet", GradedFile="intro_worksheet.pdf" },
-                new() { Id="assignmentId2", Name="Reading Quiz 1",   GradedFile="quiz1_results.pdf" },
-                new() { Id="assignmentId3", Name="Project Proposal", GradedFile="proposal_feedback.docx" },
-            };
+        // Load assignments for this student & class
+        Assignments = await AssignmentService.GetAssignmentsAsync(StudentId, ClassId);
     }
 
     protected string BuildDetailUrl(string assignmentId)
         => $"/{UserId}/Class/{ClassId}/assignment/{assignmentId}?studentId={StudentId}";
-
-    public sealed class AssignmentVM
-    {
-        public string Id { get; set; } = "";
-        public string Name { get; set; } = "";
-        public string GradedFile { get; set; } = "";
-    }
 }

@@ -18,12 +18,12 @@ else if (Assignments.Count == 0)
 else
 {
     <div class="assignment-list">
-        @foreach (var a in Assignments)
+        @foreach(var assignment in Assignments)
         {
-            <AssignmentListItem
-                AssignmentName="@a.Name"
-                GradedFileName="@a.GradedFile"
-                DetailPageUrl="@BuildDetailUrl(a.Id)" />
+            <div class="d-flex flex-column align-items-center">
+                <AssignmentListItem AssignmentName="@assignment.Title" GradedFileName="@assignment.FileName"
+                    DetailPageUrl="@($"/{UserId}/Class/{ClassId}/assignment/{assignment.Id}")" />
+            </div>
         }
     </div>
 }
