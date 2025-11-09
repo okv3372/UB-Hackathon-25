@@ -1,42 +1,43 @@
 @page "/login"
 @page "/"
-
 <div class="login-container">
     <div class="company-header">
         <img src="/images/icons8-study-50.png" alt="SmartStudy Logo" class="company-logo" />
         <h2 class="company-name">SmartStudy</h2>
     </div>
-
     <div class="login-card" role="form" aria-labelledby="login-title">
         <h1 id="login-title" class="login-title">Sign In</h1>
-
         @if (!string.IsNullOrWhiteSpace(Error))
         {
             <div class="alert alert-danger" role="alert" aria-live="assertive">@Error</div>
         }
-
         <div class="mb-3">
             <label for="userId" class="form-label">Username</label>
             <div class="input-wrap">
-                <span class="input-icon">👤</span>
+                <span class="input-icon" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16" focusable="false" aria-hidden="true">
+                      <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
+                    </svg>
+                </span>
                 <input id="userId" class="form-control" @bind="UserIdInput" placeholder="Enter your username" />
             </div>
         </div>
-
         <div class="mb-4">
             <label for="password" class="form-label">Password</label>
             <div class="input-wrap">
-                <span class="input-icon">🔒</span>
+                <span class="input-icon" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lock-fill" viewBox="0 0 16 16" focusable="false" aria-hidden="true">
+                      <path fill-rule="evenodd" d="M8 0a4 4 0 0 1 4 4v2.05a2.5 2.5 0 0 1 2 2.45v5a2.5 2.5 0 0 1-2.5 2.5h-7A2.5 2.5 0 0 1 2 13.5v-5a2.5 2.5 0 0 1 2-2.45V4a4 4 0 0 1 4-4m0 1a3 3 0 0 0-3 3v2h6V4a3 3 0 0 0-3-3"/>
+                    </svg>
+                </span>
                 <input id="password" type="password" class="form-control" @bind="PasswordInput" placeholder="Enter your password" />
             </div>
         </div>
-
         <button class="btn-primary-cta"
                 @onclick="HandleLoginAsync"
                 disabled="@IsSubmitting">
             @(IsSubmitting ? "Signing in..." : "Continue")
         </button>
-
         <div class="text-center mt-3">
             <small class="text-muted">
                 Don't have an account? <a href="#" class="signup-link">Sign up</a>
