@@ -6,7 +6,9 @@
         <h2 class="assignment-name">@AssignmentName</h2>
         <p class="assignment-file">
             <span class="file-icon">📄</span>
-            @GradedFileName
+            <a href="@($"/uploads/{GradedFileName}")" download class="file-link">
+                @GradedFileName
+            </a>
         </p>
     </div>
     <button class="view-button" @onclick="NavigateToDetails">

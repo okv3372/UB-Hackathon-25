@@ -8,10 +8,10 @@ public partial class Class : ComponentBase
 {
     [Inject] public UsersService UsersService { get; set; } = default!;
     [Inject] public EnrollmentService EnrollmentService { get; set; } = default!;
+    [Inject] public AssignmentService AssignmentService { get; set; } = default!;
 
     [Parameter] public string? UserId { get; set; }
     [Parameter] public string? ClassId { get; set; }
-    [Inject] public AssignmentService AssignmentService { get; set; } = default!;
 
     protected bool isStudent { get; set; }
 
@@ -24,7 +24,11 @@ public partial class Class : ComponentBase
     protected string? SelectedProfileImageUrl { get; set; }
     protected string? SelectedUserInterests { get; set; }
     protected string? SelectedTitle { get; set; }
+
     public List<AssignmentDTO> AssignmentList { get; set; } = new();
+
+    // Base path where files are served from (ensure app.UseStaticFiles(); and files are under wwwroot/uploads)
+    protected string UploadBasePath => "/uploads";
 
     protected override async Task OnParametersSetAsync()
     {
@@ -41,6 +45,7 @@ public partial class Class : ComponentBase
             StudentsInClass = await EnrollmentService.GetStudentsForClassAsync(ClassId) ?? new();
         }
 
+        // Load assignments for this user & class
         AssignmentList = await AssignmentService.GetAssignmentsAsync(UserId ?? string.Empty, ClassId ?? string.Empty);
     }
 
@@ -55,10 +60,10 @@ public partial class Class : ComponentBase
 
     protected void OpenBottomProfileModal()
     {
-        SelectedUserName = SelectedUserName ?? "Class Member";
-        SelectedTitle = SelectedTitle ?? "Student";
-        SelectedProfileImageUrl = SelectedProfileImageUrl ?? "/favicon.png";
-        SelectedUserInterests = SelectedUserInterests ?? "No interests provided.";
+        SelectedUserName ??= "Class Member";
+        SelectedTitle ??= "Student";
+        SelectedProfileImageUrl ??= "/favicon.png";
+        SelectedUserInterests ??= "No interests provided.";
         profileModalRef?.OpenModal();
     }
 }

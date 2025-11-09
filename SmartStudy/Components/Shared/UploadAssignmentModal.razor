@@ -201,8 +201,9 @@
                 teacherId: TeacherId ?? string.Empty,
                 classId: ClassId ?? string.Empty,
                 filePath: filePath,
-                teacherComment: TeacherComments ?? string.Empty);
-            
+                teacherComment: TeacherComments ?? string.Empty,
+                title: Title ?? string.Empty);
+
             if (OnUploaded.HasDelegate)
                 await OnUploaded.InvokeAsync(dto);
 
