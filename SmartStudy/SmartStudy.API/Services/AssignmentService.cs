@@ -22,7 +22,7 @@ public class AssignmentService
         _assignmentsPath = Path.Combine(dataRoot, "Assignments.Json");
 		_sk = sk;
     }
-    
+
 	public async Task<AssignmentDTO> AddAssignmentAsync(string studentId, string teacherId, string classId, string filePath, string teacherComment)
 	{
 		// Load existing assignments
@@ -30,20 +30,20 @@ public class AssignmentService
 
 		// Generate a simple ID (a###). In production you'd use a GUID.
 		string NextId()
-        {
-            // find max numeric suffix
-            var max = 0;
-            foreach (var a in assignments)
-            {
-                if (!string.IsNullOrEmpty(a.Id) && a.Id.Length > 1 && a.Id[0] == 'a')
-                {
-                    if (int.TryParse(a.Id[1..], out var n))
-                        max = Math.Max(max, n);
-                }
-            }
-            return $"a{(max + 1).ToString("D3")}";
-        }
-        
+		{
+			// find max numeric suffix
+			var max = 0;
+			foreach (var a in assignments)
+			{
+				if (!string.IsNullOrEmpty(a.Id) && a.Id.Length > 1 && a.Id[0] == 'a')
+				{
+					if (int.TryParse(a.Id[1..], out var n))
+						max = Math.Max(max, n);
+				}
+			}
+			return $"a{(max + 1).ToString("D3")}";
+		}
+
 
 		var assignment = new AssignmentDTO
 		{
@@ -61,59 +61,84 @@ public class AssignmentService
 		string extractedText = string.Empty;
 		try
 		{
+			Console.WriteLine("EXTRACTING TEXT FROM PDF...: " + filePath);
 			extractedText = PDFPigService.ExtractText(filePath);
 		}
 		catch
 		{
+			Console.WriteLine("ERROR ERROR TEXT EXTRACTION FAILED");
 			// Swallow exceptions to avoid breaking flow; keep text empty if extraction fails
 			extractedText = string.Empty;
 		}
-        assignment.ExtractedText = extractedText;
+		assignment.ExtractedText = extractedText;
 
-								// Build prompt with escaped braces for JSON example
-        string prompt = $"You are an expert at creating practice question sets for students based on study materials provided.\n" +
-                        "Given the following extracted text from a student's assignment, generate a set of practice questions that would help the student review and understand the material better.\n\n" +
-                        "Extracted Text:\n" + extractedText + "\n\n" +
-                        "Output ONLY valid JSON (no commentary) following exactly this structure and naming. Return only the JSON in a response that can be parsed using JSON.Deserialize:\n" +
-                        "{{\n" +
-                        "  \"test\": {{\n" +
+		// Build prompt with escaped braces for JSON example
+		string prompt = $"You are an expert at creating practice question sets for students based on study materials provided.\n" +
+						"Given the following extracted text from a student's assignment, generate a set of practice questions that would help the student review and understand the material better.\n\n" +
+						$"Extracted Text:\n {extractedText} \n\n" +
+                        "Output ONLY valid JSON (no commentary) following exactly this structure and naming. Return only the JSON in a response that can be parsed using JSON.Deserialize, DONT PRINT OUT '''json ''' IN YOUR OUTPUT, JUST THE JSON ITSELF!!:\n" +
+                        "{\n" +
+                        "  \"test\": {\n" +
                         "    \"questions\": [\n" +
-                        "      {{\n" +
+                        "      {\n" +
                         "        \"questionType\": \"multipleChoice\",\n" +
                         "        \"questionText\": \"What is the capital of France?\",\n" +
                         "        \"choices\": [\"London\", \"Berlin\", \"Paris\", \"Rome\"],\n" +
                         "        \"correctAnswer\": \"Paris\",\n" +
                         "        \"explanation\": \"Paris is the capital and largest city of France, situated on the river Seine.\"\n" +
-                        "      }},\n" +
-                        "      {{\n" +
+                        "      },\n" +
+                        "      {\n" +
                         "        \"questionType\": \"multipleChoice\",\n" +
                         "        \"questionText\": \"Which of the following is a primary color?\",\n" +
                         "        \"choices\": [\"Green\", \"Orange\", \"Blue\", \"Purple\"],\n" +
                         "        \"correctAnswer\": \"Blue\",\n" +
                         "        \"explanation\": \"The three primary colors are Red, Blue, and Yellow. Blue is the only primary color listed among the options.\"\n" +
-                        "      }},\n" +
-                        "      {{\n" +
-                        "        \"questionType\": \"trueFalse\",\n" +
+                        "      },\n" +
+                        "      {\n" +
+                        "        \"questionType\": \"multipleChoice\",\n" +
                         "        \"questionText\": \"The Earth is flat.\",\n" +
                         "        \"choices\": [\"True\", \"False\"],\n" +
                         "        \"correctAnswer\": \"False\",\n" +
                         "        \"explanation\": \"The Earth is approximately spherical in shape, slightly flattened at the poles and bulging at the equator.\"\n" +
-                        "      }}\n" +
+                        "      }\n" +
                         "    ]\n" +
-                        "  }}\n" +
-                        "}}\n\n" +
+                        "  }\n" +
+                        "}\n\n" +
                         "Replace the example questions with new ones derived from the extracted text. Keep field names identical.";
 
-        // Call the model with the prompt and capture the response
-        string modelResp = await _sk.PromptAsync(prompt);
+		// Call the model with the prompt and capture the response (best-effort)
+		string modelResp = string.Empty;
+		try
+		{
+			var ext = Path.GetExtension(filePath)?.ToLowerInvariant();
+			if (!string.IsNullOrWhiteSpace(extractedText) && ext == ".pdf")
+			{
+				modelResp = await _sk.PromptAsync(prompt);
+			}
+			else
+			{
+				Console.WriteLine("ERROR ERROR ERROR: Skipping model call - either non-PDF or no extracted text.");
+				Console.WriteLine($"File extension: {ext}, Extracted text length: {extractedText.Length}");
+				// Non-PDF or no text extracted; skip model call
+				modelResp = "{\"test\":{\"questions\":[]}}";
+			}
+		}
+		catch (Exception exModel)
+		{
+			Console.WriteLine("[AssignmentService] MODEL CALL FAILED: " + exModel.GetType().Name + ": " + exModel.Message);
+			Console.WriteLine("[AssignmentService] StackTrace: " + exModel.StackTrace);
+			// Keep going with empty questions to avoid breaking upload flow
+			modelResp = "{\"test\":{\"questions\":[]}}";
+		}
 
-        var practiceSet = PracticeSetsService.MakePracticeSet(studentId: studentId, classId: classId, srcAssignmentId: assignment.Id, questions: modelResp);
+	var practiceSet = await PracticeSetsService.MakePracticeSetAsync(studentId: studentId, classId: classId, srcAssignmentId: assignment.Id, questions: modelResp);
         assignment.PracticeSetId = practiceSet.Id;
 
 		// Append and persist
 		assignments.Add(assignment);
 		await SaveAssignmentsAsync(assignments);
 
+		Console.WriteLine("ADDED ASSIGNMENT: " + assignment.Id);
 		return assignment;
 	}
 
