@@ -42,11 +42,11 @@ else
                     ClassId="@ClassId"
                     UserId="@UserId"
 
-                    UserName="@(s.DisplayName ?? s.Username ?? "Unknown")"
-                    UserTitle="Student"
-                    ProfileImageUrl="@($"https://via.placeholder.com/90/F7C59F/004E89?text={initials}")"
-                    ProfileDetailPageUrl="@profileUrl"
-                    UserPhoneNumber="@string.Empty"
+                        UserName="@(s.DisplayName ?? s.Username ?? "Unknown")"
+                        UserTitle="Studen"
+                        ProfileImageUrl="@GetProfileImageUrl(s)"
+                        ProfileDetailPageUrl="@profileUrl"
+                        UserPhoneNumber="@string.Empty"
 
                     OnViewProfile="@OnStudentViewProfile" />
             }

@@ -2,7 +2,7 @@
   {
     "UserId": "u001",
     "StudentId": "S1001",
-    "PictureUrl": "https://example.com/images/alice.jpg",
+    "PictureUrl": "/profile_pictures/Ainslee5.jpg",
     "Bio": "Enthusiastic sophomore who loves biology and math.",
     "GradeLevel": "10",
     "GuardianName": "Karen Johnson",
@@ -11,7 +11,7 @@
   {
     "UserId": "u002",
     "StudentId": "S1002",
-    "PictureUrl": "https://example.com/images/bob.jpg",
+    "PictureUrl": "/profile_pictures/profile.jpg",
     "Bio": "Aspiring chemist and member of the robotics club.",
     "GradeLevel": "11",
     "GuardianName": "Luis Martinez",
@@ -20,10 +20,64 @@
   {
     "UserId": "u005",
     "StudentId": "S1005",
-    "PictureUrl": "https://example.com/images/erin.jpg",
+    "PictureUrl": "/profile_pictures/im_goated.webp",
     "Bio": "Loves physics and plays on the school soccer team.",
     "GradeLevel": "12",
     "GuardianName": "Pat O'Neil",
     "GuardianEmail": "pat.oneil@example.com"
+  },
+  {
+  "UserId": "u006",
+  "StudentId": "S1006",
+  "PictureUrl": "/profile_pictures/hehehe.jpg",
+  "Bio": "Underclassman who enjoys problem-solving and athletics; focuses on math and physics.",
+  "GradeLevel": "10",
+  "GuardianName": "Linh Nguyen",
+  "GuardianEmail": "linh.nguyen@example.com"
+  },
+  {
+  "UserId": "u007",
+  "StudentId": "S1007",
+  "PictureUrl": "/profile_pictures/grace_park.jpg",
+  "Bio": "Outgoing student with a passion for chemistry and environmental science.",
+  "GradeLevel": "11",
+  "GuardianName": "Min Park",
+  "GuardianEmail": "min.park@example.com"
+  },
+  {
+  "UserId": "u008",
+  "StudentId": "S1008",
+  "PictureUrl": "/profile_pictures/henry_adams.jpg",
+  "Bio": "History enthusiast who enjoys research and school debate club.",
+  "GradeLevel": "12",
+  "GuardianName": "Sandra Adams",
+  "GuardianEmail": "sandra.adams@example.com"
+  },
+  {
+  "UserId": "u009",
+  "StudentId": "S1009",
+  "PictureUrl": "/profile_pictures/ivy_chen.jpg",
+  "Bio": "Hardworking student active in science clubs; balancing coursework across math, chemistry, and physics.",
+  "GradeLevel": "11",
+  "GuardianName": "Jason Chen",
+  "GuardianEmail": "jason.chen@example.com"
+  },
+  {
+  "UserId": "u010",
+  "StudentId": "S1010",
+  "PictureUrl": "/profile_pictures/james_rivera.jpg",
+  "Bio": "Biology lover who participates in community service and lab activities.",
+  "GradeLevel": "10",
+  "GuardianName": "Maria Rivera",
+  "GuardianEmail": "maria.rivera@example.com"
+  },
+  {
+  "UserId": "u011",
+  "StudentId": "S1011",
+  "PictureUrl": "/profile_pictures/karen_brooks.jpg",
+  "Bio": "Enthusiastic about history and physical sciences; active on the school's track team.",
+  "GradeLevel": "12",
+  "GuardianName": "Thomas Brooks",
+  "GuardianEmail": "thomas.brooks@example.com"
   }
 ]
