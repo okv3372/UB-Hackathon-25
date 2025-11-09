@@ -1,43 +1,14 @@
-
 [
-	{
-		"Id": "u001",
-		"Username": "alice",
-		"Password": "password123",
-		"Role": "Student",
-		"DisplayName": "Alice Johnson",
-		"Classes": ["Math101", "Bio202"]
-	},
-	{
-		"Id": "u002",
-		"Username": "bob",
-		"Password": "hunter2",
-		"Role": "Student",
-		"DisplayName": "Bob Martinez",
-		"Classes": ["Chem101", "Math101", "Hist300"]
-	},
-	{
-		"Id": "u003",
-		"Username": "carol",
-		"Password": "s3cr3t",
-		"Role": "Teacher",
-		"DisplayName": "Dr. Carol Lee",
-		"Classes": ["Math101"]
-	},
-	{
-		"Id": "u004",
-		"Username": "dave",
-		"Password": "passw0rd",
-		"Role": "Teacher",
-		"DisplayName": "Dave Kim",
-		"Classes": []
-	},
-	{
-		"Id": "u005",
-		"Username": "erin",
-		"Password": "letmein",
-		"Role": "Student",
-		"DisplayName": "Erin O'Neil",
-		"Classes": ["Bio202", "Phys210"]
-	}
+  { "Id": "u001", "Username": "alice", "Password": "password123", "Role": "Student", "DisplayName": "Alice Johnson", "Classes": ["Math101", "Bio202"] },
+  { "Id": "u002", "Username": "bob",   "Password": "hunter2",     "Role": "Student", "DisplayName": "Bob Martinez", "Classes": ["Chem101", "Math101", "Hist300"] },
+  { "Id": "u003", "Username": "carol", "Password": "s3cr3t",      "Role": "Teacher", "DisplayName": "Dr. Carol Lee", "Classes": ["Math101","Bio202","Chem101"] },
+  { "Id": "u004", "Username": "dave",  "Password": "passw0rd",    "Role": "Teacher", "DisplayName": "Dave Kim", "Classes": ["Hist300","Phys210"] },
+  { "Id": "u005", "Username": "erin",  "Password": "letmein",     "Role": "Student", "DisplayName": "Erin O'Neil", "Classes": ["Bio202", "Phys210"] },
+
+  { "Id": "u006", "Username": "frank", "Password": "bluebird",    "Role": "Student", "DisplayName": "Frank Nguyen", "Classes": ["Math101","Phys210"] },
+  { "Id": "u007", "Username": "grace", "Password": "sunshine",    "Role": "Student", "DisplayName": "Grace Park", "Classes": ["Chem101","Bio202"] },
+  { "Id": "u008", "Username": "henry", "Password": "p@ss1234",    "Role": "Student", "DisplayName": "Henry Adams", "Classes": ["Hist300"] },
+  { "Id": "u009", "Username": "ivy",   "Password": "ivyvines",    "Role": "Student", "DisplayName": "Ivy Chen", "Classes": ["Math101","Chem101","Phys210"] },
+  { "Id": "u010", "Username": "james", "Password": "r1ver@",       "Role": "Student", "DisplayName": "James Rivera", "Classes": ["Bio202"] },
+  { "Id": "u011", "Username": "karen", "Password": "brook$!",     "Role": "Student", "DisplayName": "Karen Brooks", "Classes": ["Hist300","Phys210"] }
 ]

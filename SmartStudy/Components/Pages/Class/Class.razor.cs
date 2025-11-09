@@ -1,22 +1,21 @@
 using Microsoft.AspNetCore.Components;
-using SmartStudy.API.Services;   // ✅ Add this
-using SmartStudy.Models;        // ✅ For UserDTO
+using SmartStudy.API.Services;
+using SmartStudy.Models;
 
 namespace SmartStudy.Components.Pages.Class;
 
 public partial class Class : ComponentBase
 {
-    [Inject] 
-    public UsersService UsersService { get; set; } = default!; // ✅ Add this
+    [Inject] public UsersService UsersService { get; set; } = default!;
+    [Inject] public EnrollmentService EnrollmentService { get; set; } = default!;
 
-    [Parameter]
-    public string? UserId { get; set; }
+    [Parameter] public string? UserId { get; set; }
+    [Parameter] public string? ClassId { get; set; }
 
-    [Parameter]
-    public string? ClassId { get; set; }
-
-    // ✅ This is the flag your .razor page will use
     protected bool isStudent { get; set; }
+
+    // List of students in this class (for teachers)
+    protected List<UserDTO> StudentsInClass { get; set; } = new();
 
     // Modal reference and selected profile display data
     private ProfileModal? profileModalRef;
@@ -25,17 +24,20 @@ public partial class Class : ComponentBase
     protected string? SelectedUserInterests { get; set; }
     protected string? SelectedTitle { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
+        // Determine role
         if (!string.IsNullOrWhiteSpace(UserId))
         {
             var user = await UsersService.GetUserByIdAsync(UserId);
-
-            // ✅ Teacher → isStudent = false | Student → isStudent = true
             isStudent = !string.Equals(user?.Role, "Teacher", StringComparison.OrdinalIgnoreCase);
         }
 
-        await base.OnInitializedAsync();
+        // If teacher and we have a class id, load students
+        if (!isStudent && !string.IsNullOrWhiteSpace(ClassId))
+        {
+            StudentsInClass = await EnrollmentService.GetStudentsForClassAsync(ClassId) ?? new();
+        }
     }
 
     protected void OnStudentViewProfile(UserProfileCard card)

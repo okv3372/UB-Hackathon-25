@@ -4,28 +4,36 @@ namespace SmartStudy.Components.Pages.Student;
 
 public partial class Student : ComponentBase
 {
-    [Parameter]
-    public string? UserId { get; set; }
+    // Route params from @page directive
+    [Parameter] public string UserId { get; set; } = default!;
+    [Parameter] public string ClassId { get; set; } = default!;
+    [Parameter] public string StudentId { get; set; } = default!;
 
-    [Parameter]
-    public string? ClassId { get; set; }
+    [Inject] protected NavigationManager Navigation { get; set; } = default!;
 
-    [Parameter]
-    public string? StudentId { get; set; }
+    // Replace with your real service/model as needed
+    public List<AssignmentVM>? Assignments { get; private set; }
 
-    // Placeholder state/logic for the Student page
-    protected override Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
-        return Task.CompletedTask;
+        // TODO: swap to your real data call:
+        // Assignments = await _assignmentService.GetForStudentAsync(ClassId, StudentId);
+        await Task.Yield();
+        Assignments = new()
+            {
+                new() { Id="assignmentId1", Name="Intro Worksheet", GradedFile="intro_worksheet.pdf" },
+                new() { Id="assignmentId2", Name="Reading Quiz 1",   GradedFile="quiz1_results.pdf" },
+                new() { Id="assignmentId3", Name="Project Proposal", GradedFile="proposal_feedback.docx" },
+            };
     }
 
-    private void OnAssignmentClick(string assignmentId)
-    {
-        // TODO: implement behavior later (e.g., navigate or open details)
-    }
+    protected string BuildDetailUrl(string assignmentId)
+        => $"/{UserId}/Class/{ClassId}/assignment/{assignmentId}?studentId={StudentId}";
 
-    // Convenience handlers to avoid inline string quoting in Razor
-    private void OnAssignment1() => OnAssignmentClick("assignmentId1");
-    private void OnAssignment2() => OnAssignmentClick("assignmentId2");
-    private void OnAssignment3() => OnAssignmentClick("assignmentId3");
+    public sealed class AssignmentVM
+    {
+        public string Id { get; set; } = "";
+        public string Name { get; set; } = "";
+        public string GradedFile { get; set; } = "";
+    }
 }

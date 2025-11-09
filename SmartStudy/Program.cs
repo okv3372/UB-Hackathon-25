@@ -8,6 +8,7 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 builder.Services.AddSingleton<UsersService>();
 builder.Services.AddSingleton<ClassesService>();
+builder.Services.AddSingleton<EnrollmentService>();
 
 var app = builder.Build();
 
