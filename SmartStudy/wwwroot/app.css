@@ -1,7 +1,16 @@
 html, body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    background-color: #FDFDF2; /* Global page background (updated from #EFEFD0) */
+  background-image: url('/images/background.png');
+   background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
+
+
+/* Make layout wrappers transparent so the background shows through */
+.page, .content, main, .container {
+  background-color: transparent !important;
+}
+
 
 a, .btn-link {
     color: #006bb7;

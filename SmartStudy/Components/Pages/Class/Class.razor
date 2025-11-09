@@ -1,66 +1,96 @@
 @page "/{userId}/Class/{classId}"
 
-
 @if (!string.IsNullOrWhiteSpace(ClassId))
 {
-	<h1 class="text-center">@ClassId</h1>
+    <div class="class-page-header text-center">
+        <h1 class="class-title">@ClassId</h1>
+    </div>
 }
 else
 {
-	<p>No class selected.</p>
+    <p>No class selected.</p>
 }
 
 @if (isStudent)
 {
-	<div class="mt-3">
-		<h3 class="text-center">Assignments</h3>
-		<!-- Temporary hardcoded assignment list items -->
-		<div class="d-flex flex-column align-items-center">
-			<AssignmentListItem AssignmentName="Intro Worksheet" GradedFileName="intro_worksheet.pdf"
-				DetailPageUrl="@($"/{UserId}/Class/{ClassId}/assignment/assignmentId1")" />
+    <div class="mt-4">
+        <h3 class="section-heading text-center">Assignments</h3>
 
-			<AssignmentListItem AssignmentName="Reading Quiz 1" GradedFileName="quiz1_results.pdf"
-				DetailPageUrl="@($"/{UserId}/Class/{ClassId}/assignment/assignmentId2")" />
+        <div class="d-flex flex-column align-items-center mt-3">
+            <AssignmentListItem AssignmentName="Intro Worksheet" GradedFileName="intro_worksheet.pdf"
+                                DetailPageUrl="@($"/{UserId}/Class/{ClassId}/assignment/assignmentId1")" />
 
-			<AssignmentListItem AssignmentName="Project Proposal" GradedFileName="proposal.docx"
-				DetailPageUrl="@($"/{UserId}/Class/{ClassId}/assignment/assignmentId3")" />
-		</div>
-	</div>
+            <AssignmentListItem AssignmentName="Reading Quiz 1" GradedFileName="quiz1_results.pdf"
+                                DetailPageUrl="@($"/{UserId}/Class/{ClassId}/assignment/assignmentId2")" />
+
+            <AssignmentListItem AssignmentName="Project Proposal" GradedFileName="proposal.docx"
+                                DetailPageUrl="@($"/{UserId}/Class/{ClassId}/assignment/assignmentId3")" />
+        </div>
+    </div>
 }
 else
 {
+    <h3 class="section-heading text-center mt-4">Students</h3>
 
-       <h3 class="text-center">Students</h3>
+    @if (StudentsInClass is not null && StudentsInClass.Count > 0)
+    {
+        <div class="d-flex flex-wrap justify-content-center gap-3 mb-4 mt-3">
+            @foreach (var s in StudentsInClass)
+            {
+                var initials = (s.DisplayName ?? s.Username ?? "U")[0].ToString().ToUpperInvariant();
+                var profileUrl = $"/{UserId}/Class/{ClassId}/Student/{s.Id}";
 
-        @if (StudentsInClass is not null && StudentsInClass.Count > 0)
-        {
-            <div class="d-flex flex-wrap justify-content-center gap-3 mb-4">
-                @foreach (var s in StudentsInClass)
-                {
-                    var initials = (s.DisplayName ?? s.Username ?? "U")[0].ToString().ToUpperInvariant();
-                    var profileUrl = $"/{UserId}/Class/{ClassId}/Student/{s.Id}";
+                <UserProfileCard
+                    TargetUserId="@s.Id"
+                    ClassId="@ClassId"
+                    UserId="@UserId"
 
-                    <UserProfileCard
-                        TargetUserId="@s.Id"
-                        ClassId="@ClassId"
-                        UserId="@UserId"
+                    UserName="@(s.DisplayName ?? s.Username ?? "Unknown")"
+                    UserTitle="Student"
+                    ProfileImageUrl="@($"https://via.placeholder.com/90/F7C59F/004E89?text={initials}")"
+                    ProfileDetailPageUrl="@profileUrl"
+                    UserPhoneNumber="@string.Empty"
 
-                        UserName="@(s.DisplayName ?? s.Username ?? "Unknown")"
-                        UserTitle="Student"
-                        ProfileImageUrl="@($"https://via.placeholder.com/90/F7C59F/004E89?text={initials}")"
-                        ProfileDetailPageUrl="@profileUrl"
-                        UserPhoneNumber="@string.Empty"
-
-                        OnViewProfile="@OnStudentViewProfile" />
-                }
-            </div>
-        }
-        else
-        {
-            <p class="text-center text-muted">No students enrolled yet.</p>
-        }
+                    OnViewProfile="@OnStudentViewProfile" />
+            }
+        </div>
+    }
+    else
+    {
+        <p class="text-center text-muted">No students enrolled yet.</p>
+    }
 }
 
-@* A single modal instance at page level *@
-<ProfileModal @ref="profileModalRef" UserName="@SelectedUserName" ProfilePictureUrl="@SelectedProfileImageUrl"
-	UserInterests="@SelectedUserInterests" Title="@SelectedTitle" EnableEditButton="false" />
+<ProfileModal @ref="profileModalRef"
+              UserName="@SelectedUserName"
+              ProfilePictureUrl="@SelectedProfileImageUrl"
+              UserInterests="@SelectedUserInterests"
+              Title="@SelectedTitle"
+              EnableEditButton="false" />
+
+<style>
+    .class-page-header {
+        padding-top: 1.25rem;   /* was 1.75 */
+        padding-bottom: 0;      /* was 0.75 — removed space below */
+        text-align: center;
+    }
+
+    .class-title {
+        font-size: 2.35rem;
+        font-weight: 600;
+        color: #2C3E50;
+        margin: 0 auto;
+        padding-bottom: 0.25rem; /* was 0.4 — reduced */
+        border-bottom: 2px solid #dcdcdc;
+        display: inline-block;
+        letter-spacing: 0.4px;
+    }
+
+    .section-heading {
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 1.75rem;
+        letter-spacing: 0.3px;
+    }
+</style>
+
