@@ -21,8 +21,6 @@ public class SemanticKernelService
             apiVersion: "2025-01-01-preview"
         );
 
-        Console.WriteLine("DEPLOYMENT NAME AND ENDPOINT: " + cfg.ModelName + " " + cfg.Endpoint);
-
         _kernel = builder.Build();
     }
 

@@ -13,6 +13,7 @@ builder.Services.Configure<ModelSettings>(builder.Configuration.GetSection("Mode
 builder.Services.AddSingleton<SemanticKernelService>();
 builder.Services.AddSingleton<ClassesService>();
 builder.Services.AddSingleton<EnrollmentService>();
+builder.Services.AddSingleton<AssignmentService>();
 
 var app = builder.Build();
 

@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using SmartStudy.Models;
 
 namespace SmartStudy.Services;
@@ -65,7 +66,10 @@ public static class PracticeSetsService
                 StudentId = match.StudentId,
                 ClassId = match.ClassId,
                 SrcAssignmentId = match.SrcAssignmentId,
-                FilePath = match.FilePath,
+                // Serialize Questions node back to JSON string for the DTO
+                Questions = match.Questions.ValueKind == JsonValueKind.Undefined
+                    ? string.Empty
+                    : match.Questions.GetRawText(),
                 Notes = match.Notes
             };
         }
@@ -76,28 +80,41 @@ public static class PracticeSetsService
         }
     }
     
-    public static PracticeSetDTO MakeSet()
+    /// <summary>
+    /// Constructs a new PracticeSetDTO from the provided values. This does NOT persist to disk.
+    /// Caller is responsible for saving if needed.
+    /// </summary>
+    /// <param name="id">Unique practice set id</param>
+    /// <param name="studentId">Student owning the practice set</param>
+    /// <param name="classId">Class context for the practice set</param>
+    /// <param name="srcAssignmentId">Source assignment id this set was derived from</param>
+    /// <param name="questions">Serialized questions content (JSON/markdown/etc.)</param>
+    /// <param name="notes">Optional notes</param>
+    public static PracticeSetDTO MakePracticeSet(
+        string studentId,
+        string classId,
+        string srcAssignmentId,
+        string questions)
     {
         return new PracticeSetDTO
         {
-            Id = "demo-set-1",
-            StudentId = "u001",
-            ClassId = "DemoClass",
-            SrcAssignmentId = "a001",
-            FilePath = "", // No file yet
-            Notes = "Generated demo practice set (hard-coded)."
+            Id = Guid.NewGuid().ToString(),
+            StudentId = studentId,
+            ClassId = classId,
+            SrcAssignmentId = srcAssignmentId,
+            Questions = questions,
         };
     }
 
-	private class PracticeSetRecord
-	{
-		public string Id { get; set; } = string.Empty;
-		public string StudentId { get; set; } = string.Empty;
-		public string ClassId { get; set; } = string.Empty;
-		public string SrcAssignmentId { get; set; } = string.Empty;
-		public string FilePath { get; set; } = string.Empty;
-		public string Notes { get; set; } = string.Empty;
-	}
+    private class PracticeSetRecord
+    {
+        public string Id { get; set; } = string.Empty;
+        public string StudentId { get; set; } = string.Empty;
+        public string ClassId { get; set; } = string.Empty;
+        public string SrcAssignmentId { get; set; } = string.Empty;
+        public JsonElement Questions { get; set; }
+        public string Notes { get; set; } = string.Empty;
+    }
 
     private class AssignmentRecord
     {
