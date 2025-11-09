@@ -5,36 +5,51 @@
 
 <div class="upload-modal-backdrop" style="display:@(IsOpen ? "flex" : "none")">
     <div class="upload-modal">
-        <h3>Upload Assignment</h3>
-        <p class="mb-1"><strong>Student:</strong> @(TargetUserId ?? "Unknown")</p>
-        <p class="mb-3"><strong>Class:</strong> @(ClassId ?? "Unknown")</p>
-
-        <div class="mb-2">
-            <label class="form-label">Title</label>
-            <input class="form-control" @bind="Title" placeholder="Assignment title" />
+        <div class="modal-header d-flex align-items-center">
+            <div class="avatar-placeholder me-3" style="background-image: url('@(ProfileImageUrl ?? "/favicon.png")')"></div>
+            <div>
+                <h4 class="mb-0">Upload Assignment</h4>
+                <small class="text-muted">for <strong>@(StudentName ?? TargetUserId ?? "Student")</strong> • Class: <span class="class-pill">@(ClassId ?? "—")</span></small>
+            </div>
+            <button class="btn-close ms-auto" aria-label="Close" @onclick="CloseModal"></button>
         </div>
 
-        <div class="mb-2">
-            <label class="form-label">Comments (optional)</label>
-            <textarea class="form-control" @bind="TeacherComments" placeholder="Comments for teacher or notes"></textarea>
+        <div class="modal-body mt-3">
+
+            <div class="mb-3">
+                <label class="form-label">Title</label>
+                <input class="form-control form-control-lg pretty-input" @bind="Title" placeholder="Assignment title (e.g., Lab 1)" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Comments (optional)</label>
+                <textarea class="form-control pretty-textarea" rows="3" @bind="TeacherComments" placeholder="Notes for the assignment"></textarea>
+            </div>
+
+            <div class="file-dropzone mb-2" tabindex="0">
+                <div class="dz-inner">
+                    <i class="bi bi-upload" style="font-size:1.6rem"></i>
+                    <div class="dz-text">Drag & drop a file here or click to browse</div>
+                    <div class="dz-sub">Accepted: PDF, DOCX, PNG, JPG — Max 50MB</div>
+                    <InputFile OnChange="OnInputFileChange" />
+                </div>
+            </div>
+
+            @if (!string.IsNullOrEmpty(SelectedFileName))
+            {
+                <div class="selected-file mb-2">Selected: <strong>@SelectedFileName</strong></div>
+            }
+
+            @if (!string.IsNullOrEmpty(StatusMessage))
+            {
+                <div class="alert alert-info">@StatusMessage</div>
+            }
         </div>
 
-        <InputFile OnChange="OnInputFileChange" />
-
-        @if (!string.IsNullOrEmpty(SelectedFileName))
-        {
-            <div class="mt-2">Selected file: <strong>@SelectedFileName</strong></div>
-        }
-
-        <div class="modal-actions mt-3">
-            <button class="btn btn-primary me-2" @onclick="UploadAsync" disabled="@(!CanUpload)">Upload</button>
-            <button class="btn btn-secondary" @onclick="CloseModal">Cancel</button>
+        <div class="modal-footer d-flex justify-content-end mt-3">
+            <button class="btn btn-outline-secondary me-2" @onclick="CloseModal">Cancel</button>
+            <button class="btn btn-primary btn-lg" @onclick="UploadAsync" disabled="@(!CanUpload)">Upload Assignment</button>
         </div>
-
-        @if (!string.IsNullOrEmpty(StatusMessage))
-        {
-            <div class="alert alert-info mt-3">@StatusMessage</div>
-        }
     </div>
 </div>
 
@@ -42,7 +57,7 @@
     .upload-modal-backdrop {
         position: fixed;
         inset: 0;
-        display: none; /* toggled by IsOpen */
+        display: none;
         align-items: center;
         justify-content: center;
         background: rgba(0,0,0,0.45);
@@ -51,10 +66,64 @@
     .upload-modal {
         background: #fff;
         padding: 20px;
-        border-radius: 10px;
+        border-radius: 12px;
         width: 90%;
         max-width: 520px;
         box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+    }
+
+    .avatar-placeholder {
+        width:56px; height:56px;
+        background-size:cover; background-position:center;
+        border-radius:12px;
+        box-shadow:0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .class-pill {
+        background:#f1f6ff;
+        color:#1a659e;
+        padding:2px 8px;
+        border-radius:999px;
+        font-size:0.85em;
+    }
+
+    .file-dropzone {
+        border:2px dashed #dbeafe;
+        border-radius:8px;
+        padding:18px;
+        text-align:center;
+        cursor:pointer;
+        background:#fbfdff;
+        position: relative;
+        overflow: hidden;
+    }
+    .file-dropzone .dz-inner {
+        display:flex; flex-direction:column; align-items:center; gap:6px;
+    }
+    .file-dropzone input[type=file] {
+        opacity:0;
+        position:absolute;
+        top:0; left:0;
+        width:100%; height:100%;
+        cursor:pointer;
+        z-index:5;
+    }
+
+    .form-label {
+        font-weight: 500;
+        color: #2d3d50;
+    }
+
+    .pretty-input, .pretty-textarea {
+        border-radius: 10px;
+        background: #fafcff;
+        border: 1px solid #d8e3ef;
+        transition: border-color .2s, box-shadow .2s, background .2s;
+    }
+    .pretty-input:focus, .pretty-textarea:focus {
+        border-color: #6aa7ff;
+        box-shadow: 0 0 0 3px rgba(106,167,255,0.25);
+        background: #ffffff;
     }
 </style>
 
@@ -62,6 +131,8 @@
     [Parameter] public string? TargetUserId { get; set; }
     [Parameter] public string? ClassId { get; set; }
     [Parameter] public EventCallback<SmartStudy.Models.AssignmentDTO> OnUploaded { get; set; }
+    [Parameter] public string? StudentName { get; set; }
+    [Parameter] public string? ProfileImageUrl { get; set; }
 
     private IBrowserFile? selectedFile;
     private string SelectedFileName = string.Empty;
@@ -112,16 +183,15 @@
             var filePath = Path.Combine(uploadsDir, $"{Guid.NewGuid():N}_{safeFileName}");
 
             await using var fs = File.Create(filePath);
-            await selectedFile.OpenReadStream(maxAllowedSize: 50 * 1024 * 1024).CopyToAsync(fs);
+            await selectedFile.OpenReadStream(50 * 1024 * 1024).CopyToAsync(fs);
 
             StatusMessage = "File uploaded successfully.";
 
-            // TODO: Persist metadata (TargetUserId, ClassId, file path) to a backend or JSON store
             var dto = new SmartStudy.Models.AssignmentDTO
             {
                 Id = Guid.NewGuid().ToString("N"),
                 StudentId = TargetUserId ?? string.Empty,
-                TeacherId = "", // Could set from logged-in user or context later
+                TeacherId = "",
                 ClassId = ClassId ?? string.Empty,
                 Title = Title ?? string.Empty,
                 FileName = SelectedFileName,
@@ -129,7 +199,6 @@
                 TeacherComments = TeacherComments ?? string.Empty
             };
 
-            // Persist to Assignments.json in the API Data folder
             try
             {
                 var assignmentsJsonPath = Path.Combine(Env.ContentRootPath, "SmartStudy.API", "Data", "Assignments.json");
@@ -137,12 +206,9 @@
                 if (File.Exists(assignmentsJsonPath))
                 {
                     using var r = File.OpenRead(assignmentsJsonPath);
-                    list = await System.Text.Json.JsonSerializer.DeserializeAsync<List<SmartStudy.Models.AssignmentDTO>>(r) ?? new List<SmartStudy.Models.AssignmentDTO>();
+                    list = await System.Text.Json.JsonSerializer.DeserializeAsync<List<SmartStudy.Models.AssignmentDTO>>(r) ?? new();
                 }
-                else
-                {
-                    list = new List<SmartStudy.Models.AssignmentDTO>();
-                }
+                else list = new();
 
                 list.Add(dto);
 
@@ -152,16 +218,12 @@
             }
             catch (Exception ex)
             {
-                // If persistence fails, still attempt to raise the event but show message
-                StatusMessage = $"Saved locally but failed to persist metadata: {ex.Message}";
+                StatusMessage = $"Saved file but failed metadata save: {ex.Message}";
             }
 
             if (OnUploaded.HasDelegate)
-            {
                 await OnUploaded.InvokeAsync(dto);
-            }
 
-            // Keep the success message for a short moment then close
             await Task.Delay(900);
             CloseModal();
         }
