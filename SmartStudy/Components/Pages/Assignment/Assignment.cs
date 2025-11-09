@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Text.Json;
 using Microsoft.AspNetCore.Components;
 using SmartStudy.API.Services;
@@ -30,7 +32,7 @@ public partial class Assignment : ComponentBase
     {
         public string? Id { get; set; }
         public string? Title { get; set; }
-        public List<QuestionData>? Questions { get; set; }
+        public QuestionData? Question { get; set; }
     }
   public class QuestionData
   {
@@ -45,10 +47,22 @@ public partial class Assignment : ComponentBase
     public bool? IsCorrect { get; set; } // null => not checked, true/false => checked
     public bool ShowExplanation { get; set; } = false;
   }
-  // Practice set JSON source (defaults to empty scaffold, replaced when CurrentPracticeSet available)
+  private class LegacyTestPackage
+  {
+      public LegacyTestData? Test { get; set; }
+  }
+  private class LegacyTestData
+  {
+      public string? Id { get; set; }
+      public string? Title { get; set; }
+      public List<QuestionData>? Questions { get; set; }
+  }
+    // Practice set JSON source (defaults to empty scaffold, replaced when CurrentPracticeSet available)
   private string mockJson = string.Empty;
     // Parsed test data
     public TestData? Test { get; set; }
+    private bool IsRegenerating { get; set; }
+    private string? RegenerateError { get; set; }
   protected override async Task OnInitializedAsync()
   {
     // Fetch assignment and its practice set if an id was provided
@@ -64,15 +78,7 @@ public partial class Assignment : ComponentBase
       mockJson = CurrentPracticeSet!.Questions;
     }
 
-    // Parse whichever JSON we now have
-    try
-    {
-      var opts = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-      var pkg = JsonSerializer.Deserialize<TestPackage>(mockJson, opts);
-      Test = pkg?.Test;
-    }
-
-    catch { Test = null; }
+    Test = DeserializeTestData(mockJson);
 }
   // Action methods used by the UI (bound from razor)
   public void SelectChoice(QuestionData q, string choice)
@@ -103,18 +109,127 @@ public partial class Assignment : ComponentBase
   }
   public void CheckAll()
   {
-      if (Test?.Questions == null) return;
-      foreach (var q in Test.Questions)
-      {
-          CheckAnswer(q);
-      }
+      var question = Test?.Question;
+      if (question == null) return;
+      CheckAnswer(question);
   }
   public void ResetAll()
   {
-      if (Test?.Questions == null) return;
-      foreach (var q in Test.Questions)
+      var question = Test?.Question;
+      if (question == null) return;
+      ResetQuestion(question);
+  }
+  private TestData? DeserializeTestData(string? questionsJson)
+  {
+      if (string.IsNullOrWhiteSpace(questionsJson)) return null;
+
+      try
       {
-          ResetQuestion(q);
+          var cleaned = SanitizeQuestionPayload(questionsJson);
+          if (string.IsNullOrWhiteSpace(cleaned))
+          {
+              return new TestData();
+          }
+
+          var opts = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+          var pkg = JsonSerializer.Deserialize<TestPackage>(cleaned, opts);
+          if (pkg?.Test != null && cleaned.Contains("\"question\"", StringComparison.OrdinalIgnoreCase))
+          {
+              return pkg.Test;
+          }
+
+          var legacy = JsonSerializer.Deserialize<LegacyTestPackage>(cleaned, opts);
+          var legacyTest = legacy?.Test;
+          if (legacyTest == null) return null;
+
+          if (legacyTest.Questions != null && legacyTest.Questions.Count > 0)
+          {
+              return new TestData
+              {
+                  Id = legacyTest.Id,
+                  Title = legacyTest.Title,
+                  Question = legacyTest.Questions[0]
+              };
+          }
+
+          return new TestData
+          {
+              Id = legacyTest.Id,
+              Title = legacyTest.Title,
+              Question = null
+          };
+      }
+      catch
+      {
+          return null;
+      }
+  }
+  private static string SanitizeQuestionPayload(string raw)
+  {
+      if (string.IsNullOrWhiteSpace(raw)) return string.Empty;
+
+      var cleaned = raw.Trim();
+      if (cleaned.StartsWith("```", StringComparison.Ordinal))
+      {
+          var firstLineEnd = cleaned.IndexOf('\n');
+          if (firstLineEnd >= 0)
+          {
+              cleaned = cleaned[(firstLineEnd + 1)..];
+          }
+
+          var closingFence = cleaned.LastIndexOf("```", StringComparison.Ordinal);
+          if (closingFence >= 0)
+          {
+              cleaned = cleaned[..closingFence];
+          }
+      }
+
+      return cleaned.Trim();
+  }
+
+  private async Task LoadNewQuestionsAsync()
+  {
+      if (string.IsNullOrWhiteSpace(AssignmentId)) return;
+
+      RegenerateError = null;
+      IsRegenerating = true;
+      await InvokeAsync(StateHasChanged);
+
+      try
+      {
+          var practiceSet = await AssignmentService.RegeneratePracticeSetAsync(AssignmentId);
+          if (practiceSet == null)
+          {
+              RegenerateError = "Unable to generate a new question right now.";
+          }
+          else
+          {
+              var parsed = DeserializeTestData(practiceSet.Questions);
+              if (parsed == null)
+              {
+                  RegenerateError = "Received invalid question data.";
+              }
+              else
+              {
+                  CurrentPracticeSet = practiceSet;
+                  mockJson = practiceSet.Questions ?? string.Empty;
+                  Test = parsed;
+                  if (parsed.Question == null)
+                  {
+                      RegenerateError = "Received invalid question data.";
+                  }
+              }
+          }
+      }
+      catch (Exception ex)
+      {
+          RegenerateError = "Failed to load new question.";
+          Console.WriteLine("[Assignment] LoadNewQuestionsAsync failed: " + ex.Message);
+      }
+      finally
+      {
+          IsRegenerating = false;
+          await InvokeAsync(StateHasChanged);
       }
   }
 }

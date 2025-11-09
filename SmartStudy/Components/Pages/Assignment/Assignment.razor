@@ -1,18 +1,22 @@
 @page "/{userId}/Class/{classId}/assignment/{assignmentId}"
-
 <div class="assignment-page-bg">
-    <h1>Assignment</h1>
-
+    @if (IsRegenerating)
+    {
+        <div class="loading-overlay">
+            <div class="loading-dialog">
+                <div class="loading-spinner"></div>
+                <span>Generating new questions...</span>
+            </div>
+        </div>
+    }
+    <h1 style="text-align: center;">Assignment</h1>
     @if (!string.IsNullOrWhiteSpace(ClassId) && !string.IsNullOrWhiteSpace(AssignmentId))
     {
-        <p>Class ID: <strong>@ClassId</strong></p>
-        <p>Assignment ID: <strong>@AssignmentId</strong></p>
     }
     else
     {
         <p>Missing class or assignment context.</p>
     }
-
     @if (Test == null)
     {
         <p>Failed to load test data.</p>
@@ -22,117 +26,154 @@
         <!-- Practice Test Box Container -->
         <div
             style="max-width: 1000px; margin: 20px auto; background-color: white; border-radius: 12px; padding: 24px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+            @if (!string.IsNullOrWhiteSpace(RegenerateError))
+            {
+                <div class="regenerate-error">@RegenerateError</div>
+            }
             <!-- Centered Title -->
             <h2 style="text-align: center; margin-bottom: 20px;">@Test.Title</h2>
-
-            <ol style="margin-top:16px;">
-                @if (Test.Questions != null)
-                {
-                    @for (var questionIndex = 0; questionIndex < Test.Questions.Count; questionIndex++)
-                    {
-                        var q = Test.Questions[questionIndex];
-                        var questionKey = string.IsNullOrWhiteSpace(q.Id)
-                        ? $"question_{questionIndex}"
-                        : q.Id;
-
-                        <li style="margin-bottom:18px;">
-                            <div>
-                                <strong>@q.QuestionText</strong>
-                                <div style="margin-top:8px;">
-                                    @if (q.Choices != null)
-                                    {
-                                        @for (var choiceIndex = 0; choiceIndex < q.Choices.Count; choiceIndex++)
-                                        {
-                                            var choice = q.Choices[choiceIndex];
-                                            var inputId = $"{questionKey}_choice_{choiceIndex}";
-                                            <div style="margin-bottom:8px; display: flex;">
-                                                <input type="radio" id="@inputId" name="@questionKey" value="@choice"
-                                                    checked="@(choice == q.SelectedChoice)" @onchange="() => SelectChoice(q, choice)"
-                                                    style="display: none;" />
-
-                                                <label for="@inputId" class="choice @(choice == q.SelectedChoice ? "selected" : "")" style="
-                                                                        display: flex;
-                                                                        align-items: center;
-                                                                        width: 50%;
-                                                                        padding: 8px 12px;
-                                                                        border: 1px solid #000;
-                                                                        border-radius: 8px;
-                                                                        cursor: pointer;
-                                                                        margin: 0;
-                                                                        transition: background-color 0.15s ease;">
-                                                    @choice
-                                                </label>
-                                            </div>
-                                        }
-                                    }
-                                </div>
-                                <div style="margin-top:8px;">
-                                    <button class="btn btn-sm btn-outline-primary" @onclick="() => CheckAnswer(q)">Check
-                                        Answer</button>
-                                </div>
-                                @if (q.IsCorrect != null)
+            @if (Test?.Question != null)
+            {
+                var q = Test.Question!;
+                var questionKey = string.IsNullOrWhiteSpace(q.Id) ? "question_single" : q.Id;
+                <ol style="margin-top:16px; padding-left: 0;">
+                    <li style="margin-bottom:18px; list-style-type: none;">
+                        <div style="text-align: center;">
+                            <strong>@q.QuestionText</strong>
+                            <div style="margin-top:8px; display: flex; flex-direction: column; align-items: center;">
+                                @if (q.Choices != null)
                                 {
-                                    <div style="margin-top:8px;">
-                                        @if (q.IsCorrect == true)
-                                        {
-                                            <span style="color:green;font-weight:bold">Correct ✓</span>
-                                        }
-                                        else
-                                        {
-                                            <span style="color:red;font-weight:bold">Incorrect ✗</span>
-                                        }
-                                        @if (q.ShowExplanation && !string.IsNullOrWhiteSpace(q.Explanation))
-                                        {
-                                            <div style="margin-top:6px;padding:8px;background:#f8f9fa;border-radius:4px;">
-                                                <em>Explanation:</em>
-                                                <div>@q.Explanation</div>
-                                            </div>
-                                        }
-                                    </div>
+                                    @for (var choiceIndex = 0; choiceIndex < q.Choices.Count; choiceIndex++)
+                                    {
+                                        var choice = q.Choices[choiceIndex];
+                                        var inputId = $"{questionKey}_choice_{choiceIndex}";
+                                        <div style="margin-bottom:8px; display: flex; justify-content: center; width: 100%;">
+                                            <input type="radio" id="@inputId" name="@questionKey" value="@choice"
+                                                checked="@(choice == q.SelectedChoice)" @onchange="() => SelectChoice(q, choice)"
+                                                style="display: none;" />
+                                            <label for="@inputId" class="choice @(choice == q.SelectedChoice ? "selected" : "")" style="
+                                                                    display: flex;
+                                                                    align-items: center;
+                                                                    width: 50%;
+                                                                    padding: 8px 12px;
+                                                                    border: 1px solid #000;
+                                                                    border-radius: 8px;
+                                                                    cursor: pointer;
+                                                                    margin: 0;
+                                                                    transition: background-color 0.15s ease;">
+                                                @choice
+                                            </label>
+                                        </div>
+                                    }
                                 }
                             </div>
-                        </li>
-                    }
-                }
-            </ol>
-
+                            @if (q.IsCorrect != null)
+                            {
+                                <div style="margin-top:8px;">
+                                    @if (q.IsCorrect == true)
+                                    {
+                                        <span style="color:green;font-weight:bold">Correct</span>
+                                    }
+                                    else
+                                    {
+                                        <span style="color:red;font-weight:bold">Incorrect</span>
+                                    }
+                                    @if (q.ShowExplanation && !string.IsNullOrWhiteSpace(q.Explanation))
+                                    {
+                                        <div style="margin-top:6px;padding:8px;background:#f8f9fa;border-radius:4px;">
+                                            <em>Explanation:</em>
+                                            <div>@q.Explanation</div>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </li>
+                </ol>
+            }
+            else
+            {
+                <p style="text-align:center; margin-top:16px;">No practice question available yet.</p>
+            }
             <!-- Bottom Buttons -->
             <div style="margin-top:24px; text-align: center;">
-                <button class="btn btn-primary" @onclick="CheckAll">Check All</button>
-                <button class="btn btn-secondary" style="margin-left:16px" @onclick="ResetAll">Reset All</button>
+                <button class="btn btn-primary" @onclick="CheckAll">Check Answer</button>
+                <button class="btn btn-warning" style="margin-left:16px" @onclick="LoadNewQuestionsAsync" disabled="@IsRegenerating">Load New Question</button>
             </div>
         </div>
     }
 </div>
-
 <style>
     body {
         background: #FAF6EF !important;
         background-image: none !important;
     }
-
     .assignment-page-bg {
+        position: relative;
         background-color: #FAF6EF;
         /* cream color */
         min-height: 100vh;
         padding: 40px 0;
     }
-
     .choice {
         background-color: transparent;
     }
-
     .choice:hover {
         background-color: rgba(0, 0, 0, 0.04);
     }
-
     .choice.selected {
         background-color: rgba(0, 0, 0, 0.08);
     }
-
     input[type="radio"]:focus+.choice,
     .choice:focus {
         outline: 2px solid rgba(0, 123, 255, 0.25);
         outline-offset: 2px;
+    }
+    .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(250, 246, 239, 0.9);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 2000;
+    }
+    .loading-dialog {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+        background: #fff;
+        padding: 24px 32px;
+        border-radius: 12px;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+        font-weight: 600;
+        color: #333;
+    }
+    .loading-spinner {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        border: 4px solid rgba(0, 0, 0, 0.15);
+        border-top-color: #ff8c00;
+        animation: spin 1s linear infinite;
+    }
+    @@keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+    .regenerate-error {
+        padding: 12px 16px;
+        margin-bottom: 16px;
+        background: rgba(255, 193, 7, 0.15);
+        border: 1px solid rgba(255, 193, 7, 0.4);
+        border-radius: 8px;
+        color: #8a6500;
+        text-align: center;
+        font-weight: 600;
     }
 </style>

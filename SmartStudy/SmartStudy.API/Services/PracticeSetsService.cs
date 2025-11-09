@@ -96,7 +96,7 @@ public class PracticeSetsService
                     StudentId = a.StudentId ?? string.Empty,
                     ClassId = a.ClassId ?? string.Empty,
                     SrcAssignmentId = a.Id,
-                    Questions = "{\"test\":{\"questions\":[]}}",
+                    Questions = "{\"test\":{\"question\":null}}",
                     Notes = string.Empty
                 };
                 await SavePracticeSetAsync(dto);
@@ -115,7 +115,7 @@ public class PracticeSetsService
     /// <summary>
     /// Persist or update a practice set record on disk (SmartStudy.API/Data/PracticeSets.Json).
     /// If a record with the same Id exists it will be replaced, otherwise it will be appended.
-    /// Ensures Questions are stored as a JSON element (defaults to {"test":{"questions":[]}} if invalid/empty).
+    /// Ensures Questions are stored as a JSON element (defaults to {"test":{"question":null}} if invalid/empty).
     /// </summary>
     public static async Task SavePracticeSetAsync(PracticeSetDTO dto)
     {
