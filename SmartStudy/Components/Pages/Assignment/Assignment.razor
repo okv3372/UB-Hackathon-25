@@ -23,23 +23,28 @@ else
         <ol style="margin-top:16px;">
             @if (Test.Questions != null)
             {
-                foreach (var q in Test.Questions)
+                @for (var questionIndex = 0; questionIndex < Test.Questions.Count; questionIndex++)
                 {
+                    var q = Test.Questions[questionIndex];
+                    var questionKey = string.IsNullOrWhiteSpace(q.Id)
+                        ? $"question_{questionIndex}"
+                        : q.Id;
+
                     <li style="margin-bottom:18px;">
                         <div>
                             <strong>@q.QuestionText</strong>
                             <div style="margin-top:8px;">
                                 @if (q.Choices != null)
                                 {
-                                    int idx = 0;
-                                    foreach (var choice in q.Choices)
+                                    @for (var choiceIndex = 0; choiceIndex < q.Choices.Count; choiceIndex++)
                                     {
-                                        var inputId = $"{q.Id}_choice_{idx}";
+                                        var choice = q.Choices[choiceIndex];
+                                        var inputId = $"{questionKey}_choice_{choiceIndex}";
                                         <div style="margin-bottom:8px; display: flex;">
                                             <!-- Hide original radio button but keep it functional -->
                                             <input type="radio"
                                                    id="@inputId"
-                                                   name="@q.Id"
+                                                   name="@questionKey"
                                                    value="@choice"
                                                    checked="@(choice == q.SelectedChoice)"
                                                    @onchange="() => SelectChoice(q, choice)"
@@ -59,7 +64,6 @@ else
                                                 @choice
                                             </label>
                                         </div>
-                                        idx++;
                                     }
                                 }
                             </div>

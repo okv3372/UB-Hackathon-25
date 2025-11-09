@@ -61,7 +61,6 @@ public partial class Assignment : ComponentBase
     // If we have practice set questions, override mockJson
     if (!string.IsNullOrWhiteSpace(CurrentPracticeSet?.Questions))
     {
-      Console.WriteLine("WE HAVE A QUESTIONS JSON: " + CurrentPracticeSet.Questions);
       mockJson = CurrentPracticeSet!.Questions;
     }
 

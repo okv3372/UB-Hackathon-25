@@ -72,11 +72,19 @@ public class AssignmentService
 		}
 		assignment.ExtractedText = extractedText;
 
+		// Retrieve student profile via ProfileService
+		ProfileDTO? profile = ProfileService.GetProfile(studentId);
+		string profileBio = profile?.Bio ?? string.Empty;
+
 		// Build prompt with escaped braces for JSON example
 		string prompt = $"You are an expert at creating practice question sets for students based on study materials provided.\n" +
 						"Given the following extracted text from a student's assignment, generate a set of practice questions that would help the student review and understand the material better.\n\n" +
 						$"Extracted Text:\n {extractedText} \n\n" +
+						"Read the extracted text and determine which of the users answers were wrong and make your practice questions so that they will help with the users weak areas. " +
+						$"Also consider this addition context about the assignment when making your questions: {teacherComment}\n\n" +
+						$"Also cater the questions based on the users interests, for example if the bio talks about batman make your questions refer to batman. User bio: {profileBio}\n\n" +
 						"Output ONLY valid JSON (no commentary) following exactly this structure and naming. Return only the JSON in a response that can be parsed using JSON.Deserialize, DONT PRINT OUT '''json ''' IN YOUR OUTPUT, JUST THE JSON ITSELF!!:\n" +
+						"DO NOT ADD MARKDOWN FORMATTING OR BAD THINGS WILL HAPPEN\n\n" +
 						"{\n" +
 						"  \"test\": {\n" +
 						"    \"questions\": [\n" +
