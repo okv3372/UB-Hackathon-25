@@ -8,7 +8,8 @@
 		"Title": "Algebra Homework 1",
 		"FileName": "homework1_algebra.pdf",
 		"FilePath": "uploads/u001/math101/homework1_algebra.pdf",
-		"TeacherComments": "Good start — show your work on question 3."
+		"TeacherComments": "Good start — show your work on question 3.",
+		"PracticeSetId": "p001"
 	},
 	{
 		"Id": "a002",
@@ -18,7 +19,8 @@
 		"Title": "Lab Report 1",
 		"FileName": "lab1_report.docx",
 		"FilePath": "uploads/u002/chem101/lab1_report.docx",
-		"TeacherComments": "Well documented, but include units on your graphs."
+		"TeacherComments": "Well documented, but include units on your graphs.",
+		"PracticeSetId": "p002"
 	},
 	{
 		"Id": "a003",
@@ -28,6 +30,7 @@
 		"Title": "Physics Problem Set 2",
 		"FileName": "pset2_physics.pdf",
 		"FilePath": "uploads/u005/phys210/pset2_physics.pdf",
-		"TeacherComments": "Nice improvements from last time."
+		"TeacherComments": "Nice improvements from last time.",
+		"PracticeSetId": "p003"
 	}
 ]
