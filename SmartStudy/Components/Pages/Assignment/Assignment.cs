@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text.Json;
 using Microsoft.AspNetCore.Components;
 using SmartStudy.API.Services;
+using SmartStudy.API.SemanticKernel;
 using SmartStudy.Models;
 using SmartStudy.Services;
 namespace SmartStudy.Components.Pages.Assignment;
@@ -17,6 +18,8 @@ public partial class Assignment : ComponentBase
     
     // Inject the AssignmentService to retrieve assignment details
     [Inject] private AssignmentService AssignmentService { get; set; } = default!;
+    // Inject Semantic Kernel for short answer evaluation
+    [Inject] private SemanticKernelService Sk { get; set; } = default!;
 
     // Retrieved assignment instance (null if not found)
     public AssignmentDTO? CurrentAssignment { get; set; }
@@ -43,6 +46,7 @@ public partial class Assignment : ComponentBase
     public string? CorrectAnswer { get; set; }
     public string? Explanation { get; set; }
     // UI state
+        public string? ShortAnswerResponse { get; set; } // user-entered text for short answer
     public string? SelectedChoice { get; set; }
     public bool? IsCorrect { get; set; } // null => not checked, true/false => checked
     public bool ShowExplanation { get; set; } = false;
@@ -63,6 +67,9 @@ public partial class Assignment : ComponentBase
     public TestData? Test { get; set; }
     private bool IsRegenerating { get; set; }
     private string? RegenerateError { get; set; }
+        // Gamification feedback
+        private bool ShowPointAward { get; set; }
+        private int LatestTotalPoints { get; set; }
   protected override async Task OnInitializedAsync()
   {
     // Fetch assignment and its practice set if an id was provided
@@ -87,10 +94,35 @@ public partial class Assignment : ComponentBase
       // reset previous check result when user changes choice
       q.IsCorrect = null;
       q.ShowExplanation = false;
+      // Hide point award on new selection
+      ShowPointAward = false;
   }
-  public void CheckAnswer(QuestionData q)
+    public async Task CheckAnswerAsync(QuestionData q)
   {
       if (q == null) return;
+            // Prevent resubmitting the same question
+            if (q.ShowExplanation) return;
+
+      // Capture prior state to avoid double-counting on repeated checks
+      var wasCorrect = q.IsCorrect == true;
+
+      // If short answer, treat ShortAnswerResponse as SelectedChoice for validation
+      if (string.Equals(q.QuestionType, "shortAnswer", StringComparison.OrdinalIgnoreCase))
+      {
+          q.SelectedChoice = q.ShortAnswerResponse; // may be null/empty
+          var wasCorrectShort = q.IsCorrect == true;
+          // Mark as submitted immediately to block further submissions and show 'Checking answer'
+          q.IsCorrect = null;
+          q.ShowExplanation = true;
+          var eval = await CheckShortAnswer(q.QuestionText ?? string.Empty, q.ShortAnswerResponse ?? string.Empty, q.CorrectAnswer ?? string.Empty);
+          q.IsCorrect = eval; // may be null if indeterminate
+          if (q.IsCorrect == true && !wasCorrectShort)
+          {
+              TryAwardPointAndUpdateBadge(isShortAnswer: true);
+          }
+          return; // short answer handled
+      }
+
       if (q.SelectedChoice == null)
       {
           // no selection -> treat as incorrect but mark as checked
@@ -98,26 +130,74 @@ public partial class Assignment : ComponentBase
           q.ShowExplanation = true;
           return;
       }
+
       q.IsCorrect = string.Equals(q.SelectedChoice, q.CorrectAnswer, StringComparison.OrdinalIgnoreCase);
       q.ShowExplanation = true;
+
+      // If the answer transitioned to correct, award a point and update badge
+      if (q.IsCorrect == true && !wasCorrect)
+      {
+          TryAwardPointAndUpdateBadge(isShortAnswer: false);
+      }
   }
   public void ResetQuestion(QuestionData q)
   {
       q.SelectedChoice = null;
       q.IsCorrect = null;
       q.ShowExplanation = false;
+      q.ShortAnswerResponse = null;
   }
-  public void CheckAll()
+  public async Task CheckAll()
   {
       var question = Test?.Question;
       if (question == null) return;
-      CheckAnswer(question);
+      await CheckAnswerAsync(question);
   }
   public void ResetAll()
   {
       var question = Test?.Question;
       if (question == null) return;
       ResetQuestion(question);
+  }
+
+    private void TryAwardPointAndUpdateBadge(bool isShortAnswer)
+  {
+      try
+      {
+          if (string.IsNullOrWhiteSpace(UserId)) return;
+
+          var profile = ProfileService.GetProfile(UserId);
+          if (profile == null) return; // no profile to update
+
+          // Increment points: +2 for short answer, +1 for multiple choice
+          int increment = isShortAnswer ? 2 : 1;
+          var capSafe = profile.Points <= int.MaxValue - increment ? profile.Points + increment : profile.Points; // guard overflow
+          var newPoints = capSafe;
+
+          // Compute badge level: floor(points/10), max 5, but less than 10 => 0 implicitly
+          var computedLevel = newPoints / 10;
+          if (computedLevel > 5) computedLevel = 5;
+
+          // Persist using helper that updates by StudentId key
+          ProfileService.UpdateProfileFromValues(
+              profile.StudentId,
+              profile.PictureUrl,
+              profile.Name,
+              profile.Bio,
+              profile.GradeLevel,
+              profile.GuardianName,
+              profile.GuardianEmail,
+              newPoints,
+              computedLevel);
+
+          // Update UI feedback state
+          LatestTotalPoints = newPoints;
+          ShowPointAward = true;
+      }
+      catch (Exception ex)
+      {
+          Console.WriteLine("[Assignment] Failed to award point: " + ex.Message);
+      }
   }
   private TestData? DeserializeTestData(string? questionsJson)
   {
@@ -230,6 +310,32 @@ public partial class Assignment : ComponentBase
       {
           IsRegenerating = false;
           await InvokeAsync(StateHasChanged);
+      }
+  }
+
+  // Invoke Semantic Kernel to evaluate a short answer using the agent's invoke function
+  public async Task<bool?> CheckShortAnswer(string questionText, string answer, string correctAnswer)
+  {
+      try
+      {
+          // Build grading prompt; simple correctness classification.
+          string prompt =
+              "You are an expert assignment grader. Given the question: '" + questionText +
+              "', and the correct answer: '" + correctAnswer +
+              "', determine if the student's answer: '" + answer +
+              "' is correct. Respond with JUST THE STRING 'correct' or 'incorrect', no other formatting or anything else.";
+
+          var response = await Sk.PromptAsync(prompt);
+            Console.WriteLine("[Assignment] Semantic Kernel short answer evaluation: " + response);
+          var normalized = response?.Trim().Trim('"').ToLowerInvariant();
+          if (normalized == "correct") return true;
+          if (normalized == "incorrect") return false;
+          return null; // unexpected output
+      }
+      catch (Exception ex)
+      {
+          Console.WriteLine("[Assignment] CheckShortAnswer failed: " + ex.Message);
+          return null;
       }
   }
 }

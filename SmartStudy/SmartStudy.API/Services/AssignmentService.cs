@@ -253,6 +253,19 @@ public class AssignmentService
 			   "    }\n" +
 			   "  }\n" +
 			   "}\n\n" +
+			   "You can also respond with a short answer questions in this format, also as a JSON:\n" +
+			   "{\n" +
+			   "  \"test\": {\n" +
+			   "    \"question\": {\n" +
+			   "      \"questionType\": \"shortAnswer\",\n" +
+			   "      \"questionText\": \"What is the capital of France?\",\n" +
+			   "      \"correctAnswer\": \"Paris\",\n" +
+			   "      \"explanation\": \"Paris is the capital and largest city of France, situated on the river Seine.\"\n" +
+			   "    }\n" +
+			   "  }\n" +
+			   "}\n\n" +
+			   "You should use a short answer format for questions that require specific responses, such as definitions or factual information, and multiple choice for broader topics.\n\n" +
+			   "YOU SHOULD OUTPUT SHORT ANSWER QUESTIONS ROUGHLY HALF THE TIME\n\n" +
 			   "Replace the example question with a new one derived from the extracted text. Keep field names identical." +
 			   "DONT PRINT OUT '''json ''' IN YOUR OUTPUT, JUST THE JSON ITSELF!!";
 	}

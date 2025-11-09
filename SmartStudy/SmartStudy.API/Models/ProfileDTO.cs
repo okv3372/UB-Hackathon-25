@@ -18,4 +18,6 @@ public class ProfileDTO
     // Guardian information
     public string GuardianName { get; set; } = string.Empty;
     public string GuardianEmail { get; set; } = string.Empty;
+    public int Points { get; set; }
+    public int BadgeLevel { get; set; }
 }

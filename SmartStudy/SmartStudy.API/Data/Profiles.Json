@@ -7,7 +7,9 @@
     "Bio": "Enthusiastic sophomore who loves biology and math.",
     "GradeLevel": "10",
     "GuardianName": "Karen Johnson",
-    "GuardianEmail": "karen.johnson@example.com"
+    "GuardianEmail": "karen.johnson@example.com",
+    "Points": 31,
+    "BadgeLevel": 3
   },
   {
     "UserId": "u002",
@@ -17,7 +19,9 @@
     "Bio": "loves hiking, cats, boxing and going to the gym.",
     "GradeLevel": "11",
     "GuardianName": "Luis Martinez",
-    "GuardianEmail": "luis.martinez@gmail.com"
+    "GuardianEmail": "luis.martinez@gmail.com",
+    "Points": 74,
+    "BadgeLevel": 5
   },
   {
     "UserId": "u005",
@@ -27,7 +31,9 @@
     "Bio": "Loves physics and plays on the school soccer team.",
     "GradeLevel": "12",
     "GuardianName": "Pat O\u0027Neil",
-    "GuardianEmail": "pat.oneil@example.com"
+    "GuardianEmail": "pat.oneil@example.com",
+    "Points": 11,
+    "BadgeLevel": 1
   },
   {
     "UserId": "u006",
@@ -37,7 +43,9 @@
     "Bio": "Underclassman who enjoys problem-solving and athletics; focuses on math and physics.",
     "GradeLevel": "10",
     "GuardianName": "Linh Nguyen",
-    "GuardianEmail": "linh.nguyen@example.com"
+    "GuardianEmail": "linh.nguyen@example.com",
+    "Points": 1,
+    "BadgeLevel": 0
   },
   {
     "UserId": "u007",
@@ -47,7 +55,9 @@
     "Bio": "Outgoing student with a passion for chemistry and environmental science.",
     "GradeLevel": "11",
     "GuardianName": "Min Park",
-    "GuardianEmail": "min.park@example.com"
+    "GuardianEmail": "min.park@example.com",
+    "Points": 51,
+    "BadgeLevel": 5
   },
   {
     "UserId": "u008",
@@ -57,7 +67,9 @@
     "Bio": "History enthusiast who enjoys research and school debate club.",
     "GradeLevel": "12",
     "GuardianName": "Sandra Adams",
-    "GuardianEmail": "sandra.adams@gmail.com"
+    "GuardianEmail": "sandra.adams@gmail.com",
+    "Points": 12,
+    "BadgeLevel": 1
   },
   {
     "UserId": "u009",
@@ -67,7 +79,9 @@
     "Bio": "Hardworking student active in science clubs, balancing coursework across math, chemistry, and physics.",
     "GradeLevel": "11",
     "GuardianName": "Jason Chen",
-    "GuardianEmail": "jason.chen@example.com"
+    "GuardianEmail": "jason.chen@example.com",
+    "Points": 31,
+    "BadgeLevel": 3
   },
   {
     "UserId": "u010",
@@ -77,7 +91,9 @@
     "Bio": "Biology lover who participates in community service and lab activities.",
     "GradeLevel": "10",
     "GuardianName": "Maria Rivera",
-    "GuardianEmail": "maria.rivera@example.com"
+    "GuardianEmail": "maria.rivera@example.com",
+    "Points": 38,
+    "BadgeLevel": 3
   },
   {
     "UserId": "u011",
@@ -87,6 +103,8 @@
     "Bio": "Enthusiastic about history and physical sciences; active on the school\u0027s track team.",
     "GradeLevel": "12",
     "GuardianName": "Thomas Brooks",
-    "GuardianEmail": "thomas.brooks@example.com"
+    "GuardianEmail": "thomas.brooks@example.com",
+    "Points": 16,
+    "BadgeLevel": 1
   }
 ]
