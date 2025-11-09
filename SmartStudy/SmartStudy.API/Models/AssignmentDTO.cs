@@ -16,4 +16,8 @@ public class AssignmentDTO
 
     // Comments left by the teacher
     public string TeacherComments { get; set; } = string.Empty;
+
+    // Extracted fulltext content of the uploaded PDF (if available)
+    public string ExtractedText { get; set; } = string.Empty;
+    public string PracticeSetId { get; set; } = string.Empty;
 }

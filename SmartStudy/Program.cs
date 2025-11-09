@@ -15,6 +15,7 @@ builder.Services.AddSingleton<ClassesService>();
 builder.Services.AddSingleton<EnrollmentService>();
 // Breadcrumb helper service
 builder.Services.AddScoped<SmartStudy.Services.BreadcrumbService>();
+builder.Services.AddSingleton<AssignmentService>();
 
 var app = builder.Build();
 
