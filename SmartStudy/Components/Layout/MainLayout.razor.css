@@ -42,6 +42,80 @@
     text-decoration: none;
 }
 
+.app-header .header-actions {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+}
+
+.app-header .profile-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: .45rem;
+    background: #ffffff22;
+    border: 1px solid #ffffff40;
+    color: #fff;
+    padding: .45rem .85rem;
+    border-radius: 999px;
+    font-size: .85rem;
+    font-weight: 500;
+    cursor: pointer;
+    backdrop-filter: blur(2px);
+    transition: background .15s ease, box-shadow .15s ease;
+}
+
+.app-header .profile-btn:hover {
+    background: #ffffff35;
+    box-shadow: 0 2px 6px rgba(0,0,0,.2);
+}
+
+.app-header .profile-btn:active {
+    background: #ffffff45;
+}
+
+.app-header .profile-avatar {
+    width: 22px;
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+    background: #ffffff33;
+    border-radius: 50%;
+    font-size: .9rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.app-header .profile-label {
+    letter-spacing: .3px;
+}
+
+.app-header .logout-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: .45rem;
+    background: #ffffff15;
+    border: 1px solid #ffffff30;
+    color: #fff;
+    padding: .45rem .85rem;
+    border-radius: 999px;
+    font-size: .85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background .15s ease, box-shadow .15s ease;
+}
+
+.app-header .logout-btn:hover {
+    background: #ffffff28;
+    box-shadow: 0 2px 6px rgba(0,0,0,.2);
+}
+
+.app-header .logout-icon {
+    width: 20px;
+    text-align: center;
+}
+
 main {
     flex: 1;
 }
