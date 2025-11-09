@@ -11,6 +11,7 @@ public partial class Class : ComponentBase
 
     [Parameter] public string? UserId { get; set; }
     [Parameter] public string? ClassId { get; set; }
+    [Inject] public AssignmentService AssignmentService { get; set; } = default!;
 
     protected bool isStudent { get; set; }
 
@@ -23,6 +24,7 @@ public partial class Class : ComponentBase
     protected string? SelectedProfileImageUrl { get; set; }
     protected string? SelectedUserInterests { get; set; }
     protected string? SelectedTitle { get; set; }
+    public List<AssignmentDTO> AssignmentList { get; set; } = new();
 
     protected override async Task OnParametersSetAsync()
     {
@@ -38,6 +40,8 @@ public partial class Class : ComponentBase
         {
             StudentsInClass = await EnrollmentService.GetStudentsForClassAsync(ClassId) ?? new();
         }
+
+        AssignmentList = await AssignmentService.GetAssignmentsAsync(UserId ?? string.Empty, ClassId ?? string.Empty);
     }
 
     protected void OnStudentViewProfile(UserProfileCard card)
