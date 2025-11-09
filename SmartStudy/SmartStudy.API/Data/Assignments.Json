@@ -1,36 +1,42 @@
-
 [
-	{
-		"Id": "a001",
-		"StudentId": "u001",
-		"TeacherId": "u003",
-		"ClassId": "Math101",
-		"Title": "Algebra Homework 1",
-		"FileName": "homework1_algebra.pdf",
-		"FilePath": "uploads/u001/math101/homework1_algebra.pdf",
-		"TeacherComments": "Good start — show your work on question 3.",
-		"PracticeSetId": "p001"
-	},
-	{
-		"Id": "a002",
-		"StudentId": "u002",
-		"TeacherId": "u003",
-		"ClassId": "Chem101",
-		"Title": "Lab Report 1",
-		"FileName": "lab1_report.docx",
-		"FilePath": "uploads/u002/chem101/lab1_report.docx",
-		"TeacherComments": "Well documented, but include units on your graphs.",
-		"PracticeSetId": "p002"
-	},
-	{
-		"Id": "a003",
-		"StudentId": "u005",
-		"TeacherId": "u004",
-		"ClassId": "Phys210",
-		"Title": "Physics Problem Set 2",
-		"FileName": "pset2_physics.pdf",
-		"FilePath": "uploads/u005/phys210/pset2_physics.pdf",
-		"TeacherComments": "Nice improvements from last time.",
-		"PracticeSetId": "p003"
-	}
+  {
+    "Id": "a001",
+    "StudentId": "u001",
+    "TeacherId": "u003",
+    "ClassId": "Math101",
+    "Title": "Algebra Homework 1",
+    "FileName": "homework1_algebra.pdf",
+    "FilePath": "uploads/u001/math101/homework1_algebra.pdf",
+    "TeacherComments": "Good start \u2014 show your work on question 3."
+  },
+  {
+    "Id": "a002",
+    "StudentId": "u002",
+    "TeacherId": "u003",
+    "ClassId": "Chem101",
+    "Title": "Lab Report 1",
+    "FileName": "lab1_report.docx",
+    "FilePath": "uploads/u002/chem101/lab1_report.docx",
+    "TeacherComments": "Well documented, but include units on your graphs."
+  },
+  {
+    "Id": "a003",
+    "StudentId": "u005",
+    "TeacherId": "u004",
+    "ClassId": "Phys210",
+    "Title": "Physics Problem Set 2",
+    "FileName": "pset2_physics.pdf",
+    "FilePath": "uploads/u005/phys210/pset2_physics.pdf",
+    "TeacherComments": "Nice improvements from last time."
+  },
+  {
+    "Id": "97edcaa02a8c4dc2ab23bdd187a82e15",
+    "StudentId": "u001",
+    "TeacherId": "",
+    "ClassId": "Math101",
+    "Title": "Science101",
+    "FileName": "confetti.png",
+    "FilePath": "/Users/ansle/Documents/UB-Hackathon-25/SmartStudy/wwwroot/uploads/2ab01f2bd4e74076a7eca4310e86b79c_confetti.png",
+    "TeacherComments": "Not good. "
+  }
 ]

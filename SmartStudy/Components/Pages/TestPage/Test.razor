@@ -1,11 +1,14 @@
 @page "/Testing"
 @using SmartStudy.API.SemanticKernel
+@using SmartStudy.API.Services
 @inject SemanticKernelService Sk
+@inject IWebHostEnvironment Env
 
 <div class="mb-3">
     <label class="form-label">Prompt</label>
     <input class="form-control" @bind="prompt" placeholder="Enter a prompt..." />
     <button class="btn btn-primary mt-2" @onclick="RunSemanticKernel">Run Semantic Kernel</button>
+    <button class="btn btn-secondary mt-2 ms-2" @onclick="RunPdfPig">Extract PDF (PDFPig)</button>
 </div>
 
 @if (!string.IsNullOrWhiteSpace(response))
@@ -18,6 +21,24 @@
     </div>
 }
 
+@if (pdfLoading)
+{
+    <div class="alert alert-info mt-3">Extracting text with PDFPig...</div>
+}
+else if (!string.IsNullOrWhiteSpace(pdfError))
+{
+    <div class="alert alert-danger mt-3">@pdfError</div>
+}
+else if (!string.IsNullOrWhiteSpace(pdfText))
+{
+    <div class="card mt-3">
+        <div class="card-header">PDFPig Output</div>
+        <div class="card-body">
+            <pre class="mb-0">@pdfText</pre>
+        </div>
+    </div>
+}
+
 @code {
     [Parameter] public string UserId { get; set; } = string.Empty;
     [Parameter] public string ClassId { get; set; } = string.Empty;
@@ -25,9 +46,34 @@
 
     private string prompt = "Hello, how are you?";
     private string? response;
+    private string? pdfText;
+    private bool pdfLoading = false;
+    private string? pdfError;
 
     private async Task RunSemanticKernel()
     {
         response = await Sk.PromptAsync(prompt);
+    }
+
+    private async Task RunPdfPig()
+    {
+        pdfError = null;
+        pdfText = null;
+        var pdfRelativePath = Path.Combine("SmartStudy.API", "Services", "HWAssignment.pdf");
+        string absolutePath = Path.Combine(Env.ContentRootPath, pdfRelativePath);
+        pdfLoading = true;
+        try
+        {
+            // Run synchronous PDFPig extraction off the UI thread
+            pdfText = await Task.Run(() => PDFPigService.ExtractText(absolutePath));
+        }
+        catch (Exception ex)
+        {
+            pdfError = ex.Message;
+        }
+        finally
+        {
+            pdfLoading = false;
+        }
     }
 }

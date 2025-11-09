@@ -1,0 +1,173 @@
+@namespace SmartStudy.Components.Shared
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components
+@inject IWebHostEnvironment Env
+
+<div class="upload-modal-backdrop" style="display:@(IsOpen ? "flex" : "none")">
+    <div class="upload-modal">
+        <h3>Upload Assignment</h3>
+        <p class="mb-1"><strong>Student:</strong> @(TargetUserId ?? "Unknown")</p>
+        <p class="mb-3"><strong>Class:</strong> @(ClassId ?? "Unknown")</p>
+
+        <div class="mb-2">
+            <label class="form-label">Title</label>
+            <input class="form-control" @bind="Title" placeholder="Assignment title" />
+        </div>
+
+        <div class="mb-2">
+            <label class="form-label">Comments (optional)</label>
+            <textarea class="form-control" @bind="TeacherComments" placeholder="Comments for teacher or notes"></textarea>
+        </div>
+
+        <InputFile OnChange="OnInputFileChange" />
+
+        @if (!string.IsNullOrEmpty(SelectedFileName))
+        {
+            <div class="mt-2">Selected file: <strong>@SelectedFileName</strong></div>
+        }
+
+        <div class="modal-actions mt-3">
+            <button class="btn btn-primary me-2" @onclick="UploadAsync" disabled="@(!CanUpload)">Upload</button>
+            <button class="btn btn-secondary" @onclick="CloseModal">Cancel</button>
+        </div>
+
+        @if (!string.IsNullOrEmpty(StatusMessage))
+        {
+            <div class="alert alert-info mt-3">@StatusMessage</div>
+        }
+    </div>
+</div>
+
+<style>
+    .upload-modal-backdrop {
+        position: fixed;
+        inset: 0;
+        display: none; /* toggled by IsOpen */
+        align-items: center;
+        justify-content: center;
+        background: rgba(0,0,0,0.45);
+        z-index: 1050;
+    }
+    .upload-modal {
+        background: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        width: 90%;
+        max-width: 520px;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+    }
+</style>
+
+@code {
+    [Parameter] public string? TargetUserId { get; set; }
+    [Parameter] public string? ClassId { get; set; }
+    [Parameter] public EventCallback<SmartStudy.Models.AssignmentDTO> OnUploaded { get; set; }
+
+    private IBrowserFile? selectedFile;
+    private string SelectedFileName = string.Empty;
+    private bool IsOpen = false;
+    private string StatusMessage = string.Empty;
+    private string Title = string.Empty;
+    private string TeacherComments = string.Empty;
+
+    public void OpenModal()
+    {
+        IsOpen = true;
+        StateHasChanged();
+    }
+
+    public void CloseModal()
+    {
+        IsOpen = false;
+        selectedFile = null;
+        SelectedFileName = string.Empty;
+        StatusMessage = string.Empty;
+        StateHasChanged();
+    }
+
+    private void OnInputFileChange(InputFileChangeEventArgs e)
+    {
+        selectedFile = e.File;
+        SelectedFileName = selectedFile?.Name ?? string.Empty;
+        StatusMessage = string.Empty;
+    }
+
+    private bool CanUpload => selectedFile != null;
+
+    private async Task UploadAsync()
+    {
+        if (selectedFile == null)
+        {
+            StatusMessage = "No file selected.";
+            return;
+        }
+
+        try
+        {
+            var uploadsDir = Path.Combine(Env.ContentRootPath, "wwwroot", "uploads");
+            if (!Directory.Exists(uploadsDir))
+                Directory.CreateDirectory(uploadsDir);
+
+            var safeFileName = Path.GetFileName(selectedFile.Name).Replace("\n", "_").Replace("\r", "_");
+            var filePath = Path.Combine(uploadsDir, $"{Guid.NewGuid():N}_{safeFileName}");
+
+            await using var fs = File.Create(filePath);
+            await selectedFile.OpenReadStream(maxAllowedSize: 50 * 1024 * 1024).CopyToAsync(fs);
+
+            StatusMessage = "File uploaded successfully.";
+
+            // TODO: Persist metadata (TargetUserId, ClassId, file path) to a backend or JSON store
+            var dto = new SmartStudy.Models.AssignmentDTO
+            {
+                Id = Guid.NewGuid().ToString("N"),
+                StudentId = TargetUserId ?? string.Empty,
+                TeacherId = "", // Could set from logged-in user or context later
+                ClassId = ClassId ?? string.Empty,
+                Title = Title ?? string.Empty,
+                FileName = SelectedFileName,
+                FilePath = filePath,
+                TeacherComments = TeacherComments ?? string.Empty
+            };
+
+            // Persist to Assignments.json in the API Data folder
+            try
+            {
+                var assignmentsJsonPath = Path.Combine(Env.ContentRootPath, "SmartStudy.API", "Data", "Assignments.json");
+                List<SmartStudy.Models.AssignmentDTO> list;
+                if (File.Exists(assignmentsJsonPath))
+                {
+                    using var r = File.OpenRead(assignmentsJsonPath);
+                    list = await System.Text.Json.JsonSerializer.DeserializeAsync<List<SmartStudy.Models.AssignmentDTO>>(r) ?? new List<SmartStudy.Models.AssignmentDTO>();
+                }
+                else
+                {
+                    list = new List<SmartStudy.Models.AssignmentDTO>();
+                }
+
+                list.Add(dto);
+
+                var serOptions = new System.Text.Json.JsonSerializerOptions { WriteIndented = true };
+                using var w = File.Create(assignmentsJsonPath);
+                await System.Text.Json.JsonSerializer.SerializeAsync(w, list, serOptions);
+            }
+            catch (Exception ex)
+            {
+                // If persistence fails, still attempt to raise the event but show message
+                StatusMessage = $"Saved locally but failed to persist metadata: {ex.Message}";
+            }
+
+            if (OnUploaded.HasDelegate)
+            {
+                await OnUploaded.InvokeAsync(dto);
+            }
+
+            // Keep the success message for a short moment then close
+            await Task.Delay(900);
+            CloseModal();
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = $"Upload failed: {ex.Message}";
+        }
+    }
+}

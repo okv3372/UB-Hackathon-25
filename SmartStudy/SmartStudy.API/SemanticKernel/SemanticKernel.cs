@@ -17,7 +17,8 @@ public class SemanticKernelService
         builder.AddAzureOpenAIChatCompletion(
             deploymentName: cfg.ModelName,
             endpoint: cfg.Endpoint,
-            apiKey: cfg.ApiKey
+            apiKey: cfg.ApiKey,
+            apiVersion: "2025-01-01-preview"
         );
 
         Console.WriteLine("DEPLOYMENT NAME AND ENDPOINT: " + cfg.ModelName + " " + cfg.Endpoint);

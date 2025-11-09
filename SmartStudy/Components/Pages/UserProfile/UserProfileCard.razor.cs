@@ -1,5 +1,7 @@
  using Microsoft.AspNetCore.Components;
 
+using SmartStudy.Components.Shared;
+
 namespace SmartStudy.Components.Pages;
 
 public partial class UserProfileCard : ComponentBase
@@ -23,6 +25,22 @@ public partial class UserProfileCard : ComponentBase
     [Parameter] public EventCallback<UserProfileCard> OnViewProfile { get; set; }
 
     [Inject] protected NavigationManager NavigationManager { get; set; } = default!;
+
+    // Reference to the upload modal component instance
+    private UploadAssignmentModal? uploadModal;
+
+    private void ShowUploadModal()
+    {
+        uploadModal?.OpenModal();
+    }
+
+    // Receives the created AssignmentDTO from the modal after upload
+    private Task OnAssignmentUploaded(SmartStudy.Models.AssignmentDTO dto)
+    {
+        // Placeholder: log the DTO - later replace with persistence to API/JSON store
+        Console.WriteLine($"[UserProfileCard] Assignment uploaded: Id={dto.Id}, Title={dto.Title}, File={dto.FileName}, Path={dto.FilePath}");
+        return Task.CompletedTask;
+    }
 
 protected void OpenAssignmentsPage()
 {
