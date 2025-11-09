@@ -10,65 +10,49 @@ else
 	<p>No class selected.</p>
 }
 
-<div class="mt-3">
-	<h3 class="text-center">Assignments</h3>
-	<!-- Temporary hardcoded assignment list items -->
-	<div class="d-flex flex-column align-items-center">
-		<AssignmentListItem 
-			AssignmentName="Intro Worksheet"
-			GradedFileName="intro_worksheet.pdf"
-			DetailPageUrl="@($"/{UserId}/Class/{ClassId}/assignment/assignmentId1")" />
+@if (isStudent)
+{
+	<div class="mt-3">
+		<h3 class="text-center">Assignments</h3>
+		<!-- Temporary hardcoded assignment list items -->
+		<div class="d-flex flex-column align-items-center">
+			<AssignmentListItem AssignmentName="Intro Worksheet" GradedFileName="intro_worksheet.pdf"
+				DetailPageUrl="@($"/{UserId}/Class/{ClassId}/assignment/assignmentId1")" />
 
-		<AssignmentListItem 
-			AssignmentName="Reading Quiz 1"
-			GradedFileName="quiz1_results.pdf"
-			DetailPageUrl="@($"/{UserId}/Class/{ClassId}/assignment/assignmentId2")" />
+			<AssignmentListItem AssignmentName="Reading Quiz 1" GradedFileName="quiz1_results.pdf"
+				DetailPageUrl="@($"/{UserId}/Class/{ClassId}/assignment/assignmentId2")" />
 
-		<AssignmentListItem 
-			AssignmentName="Project Proposal"
-			GradedFileName="proposal.docx"
-			DetailPageUrl="@($"/{UserId}/Class/{ClassId}/assignment/assignmentId3")" />
+			<AssignmentListItem AssignmentName="Project Proposal" GradedFileName="proposal.docx"
+				DetailPageUrl="@($"/{UserId}/Class/{ClassId}/assignment/assignmentId3")" />
+		</div>
 	</div>
-</div>
+}
+else
+{
 
-<div class="mt-3">
-	<h3 class="text-center">Students</h3>
-	<!-- Temporary hardcoded student profile cards -->
-	<div class="d-flex flex-wrap justify-content-center gap-3 mb-4">
-		<UserProfileCard 
-			UserName="Alice Johnson"
-			UserTitle="Freshman"
-			ProfileImageUrl="https://via.placeholder.com/90/F7C59F/004E89?text=A"
-			ProfileDetailPageUrl="@($"/{UserId}/Class/{ClassId}/Student/studentId1")"
-			UserEmail="alice.johnson@example.com"
-			UserPhoneNumber="+155555501"
-			OnViewProfile="@OnStudentViewProfile" />
 
-		<UserProfileCard 
-			UserName="Brian Lee"
-			UserTitle="Sophomore"
-			ProfileImageUrl="https://via.placeholder.com/90/F7C59F/004E89?text=B"
-			ProfileDetailPageUrl="@($"/{UserId}/Class/{ClassId}/Student/studentId2")"
-			UserEmail="brian.lee@example.com"
-			UserPhoneNumber="+155555502"
-			OnViewProfile="@OnStudentViewProfile" />
+	<div class="mt-3">
+		<h3 class="text-center">Students</h3>
+		<!-- Temporary hardcoded student profile cards -->
+		<div class="d-flex flex-wrap justify-content-center gap-3 mb-4">
+			<UserProfileCard UserName="Alice Johnson" UserTitle="Freshman"
+				ProfileImageUrl="https://via.placeholder.com/90/F7C59F/004E89?text=A"
+				ProfileDetailPageUrl="@($"/{UserId}/Class/{ClassId}/Student/studentId1")"
+				UserEmail="alice.johnson@example.com" UserPhoneNumber="+155555501" OnViewProfile="@OnStudentViewProfile" />
 
-		<UserProfileCard 
-			UserName="Carla Martinez"
-			UserTitle="Junior"
-			ProfileImageUrl="https://via.placeholder.com/90/F7C59F/004E89?text=C"
-			ProfileDetailPageUrl="@($"/{UserId}/Class/{ClassId}/Student/studentId3")"
-			UserEmail="carla.martinez@example.com"
-			UserPhoneNumber="+155555503"
-			OnViewProfile="@OnStudentViewProfile" />
+			<UserProfileCard UserName="Brian Lee" UserTitle="Sophomore"
+				ProfileImageUrl="https://via.placeholder.com/90/F7C59F/004E89?text=B"
+				ProfileDetailPageUrl="@($"/{UserId}/Class/{ClassId}/Student/studentId2")" UserEmail="brian.lee@example.com"
+				UserPhoneNumber="+155555502" OnViewProfile="@OnStudentViewProfile" />
+
+			<UserProfileCard UserName="Carla Martinez" UserTitle="Junior"
+				ProfileImageUrl="https://via.placeholder.com/90/F7C59F/004E89?text=C"
+				ProfileDetailPageUrl="@($"/{UserId}/Class/{ClassId}/Student/studentId3")"
+				UserEmail="carla.martinez@example.com" UserPhoneNumber="+155555503" OnViewProfile="@OnStudentViewProfile" />
+		</div>
 	</div>
-</div>
+}
 
 @* A single modal instance at page level *@
-<ProfileModal @ref="profileModalRef"
-			  UserName="@SelectedUserName"
-			  ProfilePictureUrl="@SelectedProfileImageUrl"
-			  UserInterests="@SelectedUserInterests"
-			  Title="@SelectedTitle"
-			  EnableEditButton="false" />
-
+<ProfileModal @ref="profileModalRef" UserName="@SelectedUserName" ProfilePictureUrl="@SelectedProfileImageUrl"
+	UserInterests="@SelectedUserInterests" Title="@SelectedTitle" EnableEditButton="false" />

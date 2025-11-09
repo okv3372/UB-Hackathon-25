@@ -1,47 +1,58 @@
 using Microsoft.AspNetCore.Components;
+using SmartStudy.API.Services;   // ✅ Add this
+using SmartStudy.Models;        // ✅ For UserDTO
 
 namespace SmartStudy.Components.Pages.Class;
 
 public partial class Class : ComponentBase
 {
-	[Parameter]
-	public string? UserId { get; set; }
+    [Inject] 
+    public UsersService UsersService { get; set; } = default!; // ✅ Add this
 
-	[Parameter]
-	public string? ClassId { get; set; }
+    [Parameter]
+    public string? UserId { get; set; }
 
-	// Modal reference and selected profile display data
-	private ProfileModal? profileModalRef;
-	protected string? SelectedUserName { get; set; }
-	protected string? SelectedProfileImageUrl { get; set; }
-	protected string? SelectedUserInterests { get; set; }
-	protected string? SelectedTitle { get; set; }
+    [Parameter]
+    public string? ClassId { get; set; }
 
-	protected override Task OnInitializedAsync()
-	{
-		// Placeholder for future data fetch using UserId & ClassId
-		return Task.CompletedTask;
-	}
+    // ✅ This is the flag your .razor page will use
+    protected bool isStudent { get; set; }
 
-	protected void OnStudentViewProfile(UserProfileCard card)
-	{
-		// Pull basic info from the card's public parameters
-		SelectedUserName = card.UserName;
-		SelectedTitle = card.UserTitle;
-		SelectedProfileImageUrl = card.ProfileImageUrl;
-		// Interests are not present on the card; use a placeholder for now
-		SelectedUserInterests = "Reading, learning, and collaborating.";
-		profileModalRef?.OpenModal();
-	}
+    // Modal reference and selected profile display data
+    private ProfileModal? profileModalRef;
+    protected string? SelectedUserName { get; set; }
+    protected string? SelectedProfileImageUrl { get; set; }
+    protected string? SelectedUserInterests { get; set; }
+    protected string? SelectedTitle { get; set; }
 
-	protected void OpenBottomProfileModal()
-	{
-		// If no selection yet, open a generic profile modal content
-		SelectedUserName = SelectedUserName ?? "Class Member";
-		SelectedTitle = SelectedTitle ?? "Student";
-		SelectedProfileImageUrl = SelectedProfileImageUrl ?? "/favicon.png";
-		SelectedUserInterests = SelectedUserInterests ?? "No interests provided.";
-		profileModalRef?.OpenModal();
-	}
+    protected override async Task OnInitializedAsync()
+    {
+        if (!string.IsNullOrWhiteSpace(UserId))
+        {
+            var user = await UsersService.GetUserByIdAsync(UserId);
+
+            // ✅ Teacher → isStudent = false | Student → isStudent = true
+            isStudent = !string.Equals(user?.Role, "Teacher", StringComparison.OrdinalIgnoreCase);
+        }
+
+        await base.OnInitializedAsync();
+    }
+
+    protected void OnStudentViewProfile(UserProfileCard card)
+    {
+        SelectedUserName = card.UserName;
+        SelectedTitle = card.UserTitle;
+        SelectedProfileImageUrl = card.ProfileImageUrl;
+        SelectedUserInterests = "Reading, learning, and collaborating.";
+        profileModalRef?.OpenModal();
+    }
+
+    protected void OpenBottomProfileModal()
+    {
+        SelectedUserName = SelectedUserName ?? "Class Member";
+        SelectedTitle = SelectedTitle ?? "Student";
+        SelectedProfileImageUrl = SelectedProfileImageUrl ?? "/favicon.png";
+        SelectedUserInterests = SelectedUserInterests ?? "No interests provided.";
+        profileModalRef?.OpenModal();
+    }
 }
-

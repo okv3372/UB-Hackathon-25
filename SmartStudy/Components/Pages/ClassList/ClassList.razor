@@ -5,12 +5,27 @@
 <div class="container mt-4">
 	<h1 class="mb-4">My Classes</h1>
 
-	<div class="row g-4">
-		@foreach (var c in _mockClasses)
-		{
-			<div class="col-12 col-md-6 col-lg-4">
-				<ClassItem Id="@c.Id" Name="@c.Name" Teacher="@c.Teacher" Color="@c.Color" OnOpen="NavigateToClass" />
-			</div>
-		}
-	</div>
+	@if (_isLoading)
+	{
+		<p>Loading your classes...</p>
+	}
+	else if (!string.IsNullOrWhiteSpace(_error))
+	{
+		<div class="alert alert-danger">@_error</div>
+	}
+	else if (_classes.Count == 0)
+	{
+		<p>You are not enrolled in any classes yet.</p>
+	}
+	else
+	{
+		<div class="row g-4">
+			@foreach (var c in _classes)
+			{
+				<div class="col-12 col-md-6 col-lg-4">
+					<ClassItem Id="@c.Id" Name="@c.Name" Teacher="@c.Teacher" Color="@c.Color" OnOpen="NavigateToClass" />
+				</div>
+			}
+		</div>
+	}
 </div>

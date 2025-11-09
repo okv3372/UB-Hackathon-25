@@ -11,6 +11,7 @@ builder.Services.AddSingleton<UsersService>();
 // Bind model settings from configuration section "Model" and register SemanticKernelService
 builder.Services.Configure<ModelSettings>(builder.Configuration.GetSection("Model"));
 builder.Services.AddSingleton<SemanticKernelService>();
+builder.Services.AddSingleton<ClassesService>();
 
 var app = builder.Build();
 
