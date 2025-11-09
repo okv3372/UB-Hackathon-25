@@ -10,7 +10,7 @@
      @onkeydown="HandleKeyDown">
 
     <div class="card-media" aria-hidden="true">
-        <img src="images/books.webp" alt="">
+        <img src="@CardImage" alt="Class banner for @Name">
         <div class="media-overlay"></div>
         <div class="accent-pill"></div>
     </div>
@@ -39,7 +39,10 @@
     [Parameter] public string Name { get; set; } = string.Empty;
     [Parameter] public string Teacher { get; set; } = string.Empty;
     [Parameter] public string Color { get; set; } = "#4CAF50";
+    [Parameter] public string ImageUrl { get; set; } = string.Empty;
     [Parameter] public EventCallback<string> OnOpen { get; set; }
+
+    private string CardImage => string.IsNullOrWhiteSpace(ImageUrl) ? "images/books.webp" : ImageUrl;
 
     private Task HandleKeyDown(KeyboardEventArgs e)
         => (e.Key is "Enter" or " ") ? OnOpen.InvokeAsync(Id) : Task.CompletedTask;

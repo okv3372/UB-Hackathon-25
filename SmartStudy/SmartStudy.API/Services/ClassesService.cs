@@ -46,6 +46,7 @@ public class ClassesService
                     Id         = c.Id,
                     Name       = c.Name,
                     TeacherId  = c.TeacherId,
+                    ImageUrl   = c.ImageUrl,
                     StudentIds = c.StudentIds?.ToList() ?? new List<string>()
                 });
             }

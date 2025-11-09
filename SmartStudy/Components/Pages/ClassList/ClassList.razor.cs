@@ -94,7 +94,8 @@ public partial class ClassList : ComponentBase
                     Id = schoolClass.Id,
                     Name = schoolClass.Name,
                     Teacher = teacherName,
-                    Color = ColorPalette[index % ColorPalette.Length]
+                    Color = ColorPalette[index % ColorPalette.Length],
+                    ImageUrl = schoolClass.ImageUrl
                 });
 
                 index++;
@@ -122,5 +123,6 @@ public partial class ClassList : ComponentBase
         public string Name { get; init; } = string.Empty;
         public string Teacher { get; init; } = string.Empty;
         public string Color { get; init; } = "#4CAF50";
+        public string ImageUrl { get; init; } = string.Empty;
     }
 }

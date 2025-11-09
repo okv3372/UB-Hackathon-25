@@ -2,26 +2,31 @@
   {
     "Id": "Math101",
     "Name": "Algebra I",
-    "TeacherId": "u003"
+    "TeacherId": "u003",
+    "imageUrl": "/images/360_F_483901821_46VsNR67uJC3xIKQN4aaxR6GtAZhx9G8.jpg"
   },
   {
     "Id": "Bio202",
     "Name": "Biology II",
-    "TeacherId": "u003"
+    "TeacherId": "u003",
+    "imageUrl": "/images/d3c5ecd7b6d1f36aaecc771d7e8a261c.jpg"
   },
   {
     "Id": "Chem101",
     "Name": "Chemistry I",
-    "TeacherId": "u003"
+    "TeacherId": "u003",
+    "imageUrl": "/images/chem.jpg"
   },
   {
     "Id": "Hist300",
     "Name": "World History",
-    "TeacherId": "u004"
+    "TeacherId": "u004",
+    "imageUrl": "/images/history.jpg"
   },
   {
     "Id": "Phys210",
     "Name": "Physics II",
-    "TeacherId": "u004"
+    "TeacherId": "u004",
+    "imageUrl": "/images/physics.webp"
   }
 ]
