@@ -5,7 +5,7 @@
         <div class="loading-overlay">
             <div class="loading-dialog">
                 <div class="loading-spinner"></div>
-                <span>Generating new questions...</span>
+                <span>Generating new question...</span>
             </div>
         </div>
     }
@@ -73,6 +73,12 @@
                                     @if (q.IsCorrect == true)
                                     {
                                         <span style="color:green;font-weight:bold">Correct</span>
+                                        @if (ShowPointAward)
+                                        {
+                                            <div style="margin-top:4px;font-size:0.9rem;color:#0b5e0b;font-weight:600;">
+                                                +1 point! Total Points: @LatestTotalPoints
+                                            </div>
+                                        }
                                     }
                                     else
                                     {

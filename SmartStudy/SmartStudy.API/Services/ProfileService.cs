@@ -30,7 +30,9 @@ public static class ProfileService
                 Bio = match.Bio,
                 GradeLevel = match.GradeLevel,
                 GuardianName = match.GuardianName,
-                GuardianEmail = match.GuardianEmail
+                GuardianEmail = match.GuardianEmail,
+                Points = match.Points,
+                BadgeLevel = match.BadgeLevel
             };
         }
         catch
@@ -51,7 +53,9 @@ public static class ProfileService
         string? bio,
         string? gradeLevel,
         string? guardianName,
-        string? guardianEmail)
+        string? guardianEmail,
+        int points,
+        int badgeLevel)
     {
         var sid = studentId ?? string.Empty;
         var pic = pictureUrl ?? string.Empty;
@@ -60,6 +64,8 @@ public static class ProfileService
         var gl = gradeLevel ?? string.Empty;
         var gName = guardianName ?? string.Empty;
         var gEmail = guardianEmail ?? string.Empty;
+        var pts = points;
+        var bLevel = badgeLevel;
 
         // Minimal, forgiving implementation (similar to UpdateProfile)
         var path = Path.Combine(Directory.GetCurrentDirectory(), "SmartStudy.API", "Data", "Profiles.Json");
@@ -99,6 +105,8 @@ public static class ProfileService
         existing.GradeLevel = gl;
         existing.GuardianName = gName;
         existing.GuardianEmail = gEmail;
+        existing.Points = pts;
+        existing.BadgeLevel = bLevel;
 
         try
         {
@@ -119,7 +127,9 @@ public static class ProfileService
             Bio = existing.Bio,
             GradeLevel = existing.GradeLevel,
             GuardianName = existing.GuardianName,
-            GuardianEmail = existing.GuardianEmail
+            GuardianEmail = existing.GuardianEmail,
+            Points = existing.Points,
+            BadgeLevel = existing.BadgeLevel
         };
     }
 
@@ -184,7 +194,9 @@ public static class ProfileService
             Bio = existing.Bio,
             GradeLevel = existing.GradeLevel,
             GuardianName = existing.GuardianName,
-            GuardianEmail = existing.GuardianEmail
+            GuardianEmail = existing.GuardianEmail,
+            Points = existing.Points,
+            BadgeLevel = existing.BadgeLevel
         };
     }
 
@@ -198,6 +210,8 @@ public static class ProfileService
         public string GradeLevel { get; set; } = string.Empty;
         public string GuardianName { get; set; } = string.Empty;
         public string GuardianEmail { get; set; } = string.Empty;
+        public int Points { get; set; }
+        public int BadgeLevel { get; set; }
     }
 }
 

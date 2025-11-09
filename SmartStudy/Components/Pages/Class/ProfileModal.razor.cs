@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Authorization.Infrastructure;
 
 namespace SmartStudy.Components.Pages.Class;
 
-public partial class ProfileModal : ComponentBase
+public partial class ProfileModal
 {
     // Visibility & state
     private bool showModal = false;
@@ -24,6 +24,11 @@ public partial class ProfileModal : ComponentBase
     [Parameter] public string? GuardianEmail { get; set; }
     [Parameter] public string? StudentId { get; set; }
     [Parameter] public string? GradeLevel { get; set; }
+    // Badge level from profile (numeric)
+    [Parameter] public int BadgeLevel { get; set; } = 0;
+    private string BadgeImageUrl => $"/badges/{BadgeLevel}.png";
+    // Gamification points
+    [Parameter] public int Points { get; set; } = 0;
     public string? fallbackProfileImageUrl { get; set; } = "/Users/olivervarney/Desktop/SmartStudy/UB-Hackathon-25/SmartStudy/wwwroot/profile_pictures/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg";
 
     private string ResolvedPictureUrl => string.IsNullOrWhiteSpace(ProfilePictureUrl) ? "/favicon.png" : ProfilePictureUrl!;
@@ -58,6 +63,8 @@ public partial class ProfileModal : ComponentBase
             ? $"Grade {profile!.GradeLevel}": "";
         GradeLevel = profile?.GradeLevel;
         StudentId = profile?.StudentId;
+    BadgeLevel = profile?.BadgeLevel ?? 0;
+    Points = profile?.Points ?? 0;
 
         UserBio = !string.IsNullOrWhiteSpace(profile?.Bio)
             ? profile!.Bio
@@ -84,7 +91,9 @@ public partial class ProfileModal : ComponentBase
             UserBio,
             GradeLevel,
             GuardianName,
-            GuardianEmail);
+            GuardianEmail,
+            Points,
+            BadgeLevel);
 
         // Refresh UI with saved values
         if (updated != null)
@@ -96,6 +105,8 @@ public partial class ProfileModal : ComponentBase
             GradeLevel = updated.GradeLevel;
             GuardianName = updated.GuardianName;
             GuardianEmail = updated.GuardianEmail;
+            Points = updated.Points;
+            BadgeLevel = updated.BadgeLevel;
         }
 
         isEditing = false;

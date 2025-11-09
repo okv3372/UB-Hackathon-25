@@ -63,6 +63,9 @@ public partial class Assignment : ComponentBase
     public TestData? Test { get; set; }
     private bool IsRegenerating { get; set; }
     private string? RegenerateError { get; set; }
+        // Gamification feedback
+        private bool ShowPointAward { get; set; }
+        private int LatestTotalPoints { get; set; }
   protected override async Task OnInitializedAsync()
   {
     // Fetch assignment and its practice set if an id was provided
@@ -87,10 +90,16 @@ public partial class Assignment : ComponentBase
       // reset previous check result when user changes choice
       q.IsCorrect = null;
       q.ShowExplanation = false;
+      // Hide point award on new selection
+      ShowPointAward = false;
   }
   public void CheckAnswer(QuestionData q)
   {
       if (q == null) return;
+
+      // Capture prior state to avoid double-counting on repeated checks
+      var wasCorrect = q.IsCorrect == true;
+
       if (q.SelectedChoice == null)
       {
           // no selection -> treat as incorrect but mark as checked
@@ -98,8 +107,15 @@ public partial class Assignment : ComponentBase
           q.ShowExplanation = true;
           return;
       }
+
       q.IsCorrect = string.Equals(q.SelectedChoice, q.CorrectAnswer, StringComparison.OrdinalIgnoreCase);
       q.ShowExplanation = true;
+
+      // If the answer transitioned to correct, award a point and update badge
+      if (q.IsCorrect == true && !wasCorrect)
+      {
+          TryAwardPointAndUpdateBadge();
+      }
   }
   public void ResetQuestion(QuestionData q)
   {
@@ -118,6 +134,44 @@ public partial class Assignment : ComponentBase
       var question = Test?.Question;
       if (question == null) return;
       ResetQuestion(question);
+  }
+
+  private void TryAwardPointAndUpdateBadge()
+  {
+      try
+      {
+          if (string.IsNullOrWhiteSpace(UserId)) return;
+
+          var profile = ProfileService.GetProfile(UserId);
+          if (profile == null) return; // no profile to update
+
+          // Increment points by 1
+          var newPoints = (profile.Points <= int.MaxValue - 1) ? profile.Points + 1 : profile.Points; // guard overflow
+
+          // Compute badge level: floor(points/10), max 5, but less than 10 => 0 implicitly
+          var computedLevel = newPoints / 10;
+          if (computedLevel > 5) computedLevel = 5;
+
+          // Persist using helper that updates by StudentId key
+          ProfileService.UpdateProfileFromValues(
+              profile.StudentId,
+              profile.PictureUrl,
+              profile.Name,
+              profile.Bio,
+              profile.GradeLevel,
+              profile.GuardianName,
+              profile.GuardianEmail,
+              newPoints,
+              computedLevel);
+
+          // Update UI feedback state
+          LatestTotalPoints = newPoints;
+          ShowPointAward = true;
+      }
+      catch (Exception ex)
+      {
+          Console.WriteLine("[Assignment] Failed to award point: " + ex.Message);
+      }
   }
   private TestData? DeserializeTestData(string? questionsJson)
   {
