@@ -9,7 +9,7 @@
             </div>
         </div>
     }
-    <h1 style="text-align: center;">Assignment</h1>
+    <h1 style="text-align: center;">@(CurrentAssignment?.Title ?? Test?.Title ?? "Assignment")</h1>
     @if (!string.IsNullOrWhiteSpace(ClassId) && !string.IsNullOrWhiteSpace(AssignmentId))
     {
     }
@@ -32,14 +32,19 @@
             }
             <!-- Centered Title -->
             <h2 style="text-align: center; margin-bottom: 20px;">@Test.Title</h2>
-            @if (Test?.Question != null)
+            @if (Test?.Question is { } q)
             {
-                var q = Test.Question!;
                 var questionKey = string.IsNullOrWhiteSpace(q.Id) ? "question_single" : q.Id;
                 <ol style="margin-top:16px; padding-left: 0;">
                     <li style="margin-bottom:18px; list-style-type: none;">
                         <div style="text-align: center;">
                             <strong>@q.QuestionText</strong>
+                            @if (string.Equals(q.QuestionType, "shortAnswer", StringComparison.OrdinalIgnoreCase))
+                            {
+                                <div style="margin-top:14px; width:100%; display:flex; justify-content:center;">
+                                    <input @bind="q.ShortAnswerResponse" @bind:event="oninput" type="text" placeholder="Type your answer" class="form-control" style="max-width:560px;" disabled="@q.ShowExplanation" />
+                                </div>
+                            }
                             <div style="margin-top:8px; display: flex; flex-direction: column; align-items: center;">
                                 @if (q.Choices != null)
                                 {
@@ -50,7 +55,7 @@
                                         <div style="margin-bottom:8px; display: flex; justify-content: center; width: 100%;">
                                             <input type="radio" id="@inputId" name="@questionKey" value="@choice"
                                                 checked="@(choice == q.SelectedChoice)" @onchange="() => SelectChoice(q, choice)"
-                                                style="display: none;" />
+                                                style="display: none;" disabled="@q.ShowExplanation" />
                                             <label for="@inputId" class="choice @(choice == q.SelectedChoice ? "selected" : "")" style="
                                                                     display: flex;
                                                                     align-items: center;
@@ -67,31 +72,39 @@
                                     }
                                 }
                             </div>
-                            @if (q.IsCorrect != null)
+                            @if (q.ShowExplanation)
                             {
-                                <div style="margin-top:8px;">
-                                    @if (q.IsCorrect == true)
-                                    {
-                                        <span style="color:green;font-weight:bold">Correct</span>
-                                        @if (ShowPointAward)
+                                @if (q.IsCorrect != null)
+                                {
+                                    <div style="margin-top:8px;">
+                                        @if (q.IsCorrect == true)
                                         {
-                                            <div style="margin-top:4px;font-size:0.9rem;color:#0b5e0b;font-weight:600;">
-                                                +1 point! Total Points: @LatestTotalPoints
+                                            <span style="color:green;font-weight:bold">Correct</span>
+                                            @if (ShowPointAward)
+                                            {
+                                                <div style="margin-top:4px;font-size:0.9rem;color:#0b5e0b;font-weight:600;">
+                                                    @(string.Equals(q.QuestionType, "shortAnswer", StringComparison.OrdinalIgnoreCase) ? "+2 points! " : "+1 point! ")
+                                                    Total Points: @LatestTotalPoints
+                                                </div>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <span style="color:red;font-weight:bold">Incorrect</span>
+                                        }
+                                        @if (q.ShowExplanation && !string.IsNullOrWhiteSpace(q.Explanation))
+                                        {
+                                            <div style="margin-top:6px;padding:8px;background:#f8f9fa;border-radius:4px;">
+                                                <em>Explanation:</em>
+                                                <div>@q.Explanation</div>
                                             </div>
                                         }
-                                    }
-                                    else
-                                    {
-                                        <span style="color:red;font-weight:bold">Incorrect</span>
-                                    }
-                                    @if (q.ShowExplanation && !string.IsNullOrWhiteSpace(q.Explanation))
-                                    {
-                                        <div style="margin-top:6px;padding:8px;background:#f8f9fa;border-radius:4px;">
-                                            <em>Explanation:</em>
-                                            <div>@q.Explanation</div>
-                                        </div>
-                                    }
-                                </div>
+                                    </div>
+                                }
+                                else if (string.Equals(q.QuestionType, "shortAnswer", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    <div style="margin-top:10px;font-style:italic;color:#444;">Checking answer</div>
+                                }
                             }
                         </div>
                     </li>
@@ -103,7 +116,7 @@
             }
             <!-- Bottom Buttons -->
             <div style="margin-top:24px; text-align: center;">
-                <button class="btn btn-primary" @onclick="CheckAll">Check Answer</button>
+                <button class="btn btn-primary" @onclick="async _ => await CheckAll()" disabled="@(Test?.Question?.ShowExplanation == true)">Check Answer</button>
                 <button class="btn btn-warning" style="margin-left:16px" @onclick="LoadNewQuestionsAsync" disabled="@IsRegenerating">Load New Question</button>
             </div>
         </div>
