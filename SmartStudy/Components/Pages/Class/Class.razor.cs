@@ -12,6 +12,7 @@ public partial class Class : ComponentBase
 
     [Parameter] public string? UserId { get; set; }
     [Parameter] public string? ClassId { get; set; }
+    [Inject] public AssignmentService AssignmentService { get; set; } = default!;
 
     protected bool isStudent { get; set; }
 
@@ -26,6 +27,7 @@ public partial class Class : ComponentBase
     protected string? SelectedTitle { get; set; }
 
     private readonly Dictionary<string, ProfileDTO> _profiles = new();
+    public List<AssignmentDTO> AssignmentList { get; set; } = new();
 
     protected override async Task OnParametersSetAsync()
     {
@@ -50,6 +52,8 @@ public partial class Class : ComponentBase
                 _profiles[student.Id] = profile;
             }
         }
+
+        AssignmentList = await AssignmentService.GetAssignmentsAsync(UserId ?? string.Empty, ClassId ?? string.Empty);
     }
 
     private void LoadProfileFromService(UserProfileCard card)

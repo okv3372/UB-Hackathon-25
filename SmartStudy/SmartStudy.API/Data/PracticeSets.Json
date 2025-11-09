@@ -1,65 +1,90 @@
 [
   {
-    "Id": "p001",
-    "StudentId": "u001",
-    "ClassId": "Math101",
-    "SrcAssignmentId": "a001",
-    "Questions": [
-      {
-        "QuestionText": "Solve for x: 2x + 3 = 7",
-        "QuestionType": "MultipleChoice",
-        "Options": [
-          "1",
-          "2",
-          "3",
-          "4"
-        ],
-        "CorrectAnswer": "2",
-        "Explanation": "Subtract 3 from both sides and then divide by 2."
-      }
-    ],
-    "Notes": "Needs to not be a stupid little fucking dumb fuck ass."
-  },
-  {
-    "Id": "p002",
+    "Id": "4929cde7-e07a-4af0-9125-d4a881734847",
     "StudentId": "u002",
-    "ClassId": "Chem101",
-    "SrcAssignmentId": "a002",
-    "Questions": [
-      {
-        "QuestionText": "What is the chemical symbol for iron?",
-        "QuestionType":"MultipleChoice",
-        "Options":[
-          "Tr",
-          "Ir",
-          "Fe",
-          "Rf"
-        ],
-        "CorrectAnswer": "Fe",
-        "Explanation": "Fe is the symbol for Iron on the periodic table"
-      }
-    ],
-    "Notes": "lock in bozo!"
+    "ClassId": "Hist300",
+    "SrcAssignmentId": "a004",
+    "Questions": "{\u0022test\u0022:{\u0022questions\u0022:[]}}",
+    "Notes": ""
   },
   {
-    "Id": "p003",
-    "StudentId": "u005",
-    "ClassId": "Phys210",
-    "SrcAssignmentId": "a003",
-    "Questions": [
-      {
-        "QuestionText":"What is the speed of gravity",
-        "QuestionType":"MultipleChoice",
-        "Options":[
-          "9.81",
-          "7.33",
-          "3.41",
-          "8.91"
-        ],
-        "CorrectAnswer": "9.81",
-        "Explanation": "Gravity accelerates objects at 9.81 m/s² on Earth."
-      }
-    ],
-    "Notes": "Kinematics practice problems need more work."
+    "Id": "c3542c3b-5cf3-4a48-81c5-be5a2244dabe",
+    "StudentId": "u002",
+    "ClassId": "Hist300",
+    "SrcAssignmentId": "a005",
+    "Questions": "{\u0022test\u0022:{\u0022questions\u0022:[]}}",
+    "Notes": ""
+  },
+  {
+    "Id": "9bec7fee-d67d-493a-8197-54c6fddd9724",
+    "StudentId": "u002",
+    "ClassId": "Hist300",
+    "SrcAssignmentId": "a006",
+    "Questions": "{\u0022test\u0022:{\u0022questions\u0022:[]}}",
+    "Notes": ""
+  },
+  {
+    "Id": "7a839ce8-c6b2-4b18-87e9-0013bc84168e",
+    "StudentId": "u008",
+    "ClassId": "Hist300",
+    "SrcAssignmentId": "a007",
+    "Questions": "{\u0022test\u0022:{\u0022questions\u0022:[]}}",
+    "Notes": ""
+  },
+  {
+    "Id": "5512f4f4-7891-44cd-b082-d20efc3b7870",
+    "StudentId": "u002",
+    "ClassId": "Hist300",
+    "SrcAssignmentId": "a008",
+    "Questions": "{\u0022test\u0022:{\u0022questions\u0022:[]}}",
+    "Notes": ""
+  },
+  {
+    "Id": "aa8b75c3-c2fe-41a7-a842-ac0987eda405",
+    "StudentId": "u002",
+    "ClassId": "Hist300",
+    "SrcAssignmentId": "a009",
+    "Questions": "{\u0022test\u0022:{\u0022questions\u0022:[]}}",
+    "Notes": ""
+  },
+  {
+    "Id": "b6f47392-6c0c-417e-bb1d-0a91656eb168",
+    "StudentId": "u002",
+    "ClassId": "Hist300",
+    "SrcAssignmentId": "a010",
+    "Questions": "{\u0022test\u0022:{\u0022questions\u0022:[]}}",
+    "Notes": ""
+  },
+  {
+    "Id": "1097ece2-ecbd-476c-b371-a15a910fb884",
+    "StudentId": "u002",
+    "ClassId": "Hist300",
+    "SrcAssignmentId": "a011",
+    "Questions": "\u0060\u0060\u0060json\n{\n  \u0022test\u0022: {\n    \u0022questions\u0022: [\n      {\n        \u0022questionType\u0022: \u0022multipleChoice\u0022,\n        \u0022questionText\u0022: \u0022What is 5 multiplied by 10?\u0022,\n        \u0022choices\u0022: [\u002230\u0022, \u002240\u0022, \u002250\u0022, \u002260\u0022],\n        \u0022correctAnswer\u0022: \u002250\u0022,\n        \u0022explanation\u0022: \u00225 multiplied by 10 equals 50.\u0022\n      },\n      {\n        \u0022questionType\u0022: \u0022multipleChoice\u0022,\n        \u0022questionText\u0022: \u0022What is 4 multiplied by 5?\u0022,\n        \u0022choices\u0022: [\u002215\u0022, \u002220\u0022, \u002225\u0022, \u002230\u0022],\n        \u0022correctAnswer\u0022: \u002220\u0022,\n        \u0022explanation\u0022: \u00224 multiplied by 5 equals 20.\u0022\n      },\n      {\n        \u0022questionType\u0022: \u0022multipleChoice\u0022,\n        \u0022questionText\u0022: \u0022What is 9 plus 12?\u0022,\n        \u0022choices\u0022: [\u002219\u0022, \u002220\u0022, \u002221\u0022, \u002222\u0022],\n        \u0022correctAnswer\u0022: \u002221\u0022,\n        \u0022explanation\u0022: \u00229 plus 12 equals 21.\u0022\n      },\n      {\n        \u0022questionType\u0022: \u0022multipleChoice\u0022,\n        \u0022questionText\u0022: \u0022What is 14 plus 3?\u0022,\n        \u0022choices\u0022: [\u002216\u0022, \u002217\u0022, \u002218\u0022, \u002219\u0022],\n        \u0022correctAnswer\u0022: \u002217\u0022,\n        \u0022explanation\u0022: \u002214 plus 3 equals 17.\u0022\n      },\n      {\n        \u0022questionType\u0022: \u0022multipleChoice\u0022,\n        \u0022questionText\u0022: \u0022What is 28 divided by 7?\u0022,\n        \u0022choices\u0022: [\u00223\u0022, \u00224\u0022, \u00225\u0022, \u00226\u0022],\n        \u0022correctAnswer\u0022: \u00224\u0022,\n        \u0022explanation\u0022: \u002228 divided by 7 equals 4.\u0022\n      },\n      {\n        \u0022questionType\u0022: \u0022multipleChoice\u0022,\n        \u0022questionText\u0022: \u0022What is 14 multiplied by 1?\u0022,\n        \u0022choices\u0022: [\u002212\u0022, \u002213\u0022, \u002214\u0022, \u002215\u0022],\n        \u0022correctAnswer\u0022: \u002214\u0022,\n        \u0022explanation\u0022: \u002214 multiplied by 1 equals 14.\u0022\n      }\n    ]\n  }\n}\n\u0060\u0060\u0060",
+    "Notes": ""
+  },
+  {
+    "Id": "577938d4-7722-47b3-8f53-b539e0aa4125",
+    "StudentId": "u002",
+    "ClassId": "Hist300",
+    "SrcAssignmentId": "a012",
+    "Questions": "{\n  \u0022test\u0022: {\n    \u0022questions\u0022: [\n      {\n        \u0022questionType\u0022: \u0022multipleChoice\u0022,\n        \u0022questionText\u0022: \u0022What is 5 multiplied by 10?\u0022,\n        \u0022choices\u0022: [\u002240\u0022, \u002245\u0022, \u002250\u0022, \u002255\u0022],\n        \u0022correctAnswer\u0022: \u002250\u0022,\n        \u0022explanation\u0022: \u0022Multiplying 5 by 10 gives 50, based on the multiplication table.\u0022\n      },\n      {\n        \u0022questionType\u0022: \u0022multipleChoice\u0022,\n        \u0022questionText\u0022: \u0022What is 4 times 5?\u0022,\n        \u0022choices\u0022: [\u002220\u0022, \u002225\u0022, \u002230\u0022, \u002235\u0022],\n        \u0022correctAnswer\u0022: \u002220\u0022,\n        \u0022explanation\u0022: \u00224 times 5 equals 20, as per basic multiplication principles.\u0022\n      },\n      {\n        \u0022questionType\u0022: \u0022multipleChoice\u0022,\n        \u0022questionText\u0022: \u0022What is the sum of 9 and 12?\u0022,\n        \u0022choices\u0022: [\u002219\u0022, \u002220\u0022, \u002221\u0022, \u002222\u0022],\n        \u0022correctAnswer\u0022: \u002221\u0022,\n        \u0022explanation\u0022: \u0022Adding 9 to 12 results in 21.\u0022\n      },\n      {\n        \u0022questionType\u0022: \u0022multipleChoice\u0022,\n        \u0022questionText\u0022: \u0022What do you get when you add 14 and 3?\u0022,\n        \u0022choices\u0022: [\u002216\u0022, \u002217\u0022, \u002218\u0022, \u002219\u0022],\n        \u0022correctAnswer\u0022: \u002217\u0022,\n        \u0022explanation\u0022: \u0022The sum of 14 and 3 is 17.\u0022\n      },\n      {\n        \u0022questionType\u0022: \u0022multipleChoice\u0022,\n        \u0022questionText\u0022: \u0022What is 28 divided by 7?\u0022,\n        \u0022choices\u0022: [\u00223\u0022, \u00224\u0022, \u00225\u0022, \u00226\u0022],\n        \u0022correctAnswer\u0022: \u00224\u0022,\n        \u0022explanation\u0022: \u002228 divided by 7 equals 4.\u0022\n      },\n      {\n        \u0022questionType\u0022: \u0022multipleChoice\u0022,\n        \u0022questionText\u0022: \u0022What does 14 times 1 equal?\u0022,\n        \u0022choices\u0022: [\u002213\u0022, \u002214\u0022, \u002215\u0022, \u002216\u0022],\n        \u0022correctAnswer\u0022: \u002214\u0022,\n        \u0022explanation\u0022: \u0022Multiplying any number by 1 results in the number itself, so 14 times 1 is 14.\u0022\n      }\n    ]\n  }\n}",
+    "Notes": ""
+  },
+  {
+    "Id": "2d104343-c804-4a26-a52b-bfd6a221971a",
+    "StudentId": "u002",
+    "ClassId": "Hist300",
+    "SrcAssignmentId": "a001",
+    "Questions": "\u0060\u0060\u0060json\n{\n  \u0022test\u0022: {\n    \u0022questions\u0022: [\n      {\n        \u0022questionType\u0022: \u0022multipleChoice\u0022,\n        \u0022questionText\u0022: \u0022What is 5 multiplied by 10?\u0022,\n        \u0022choices\u0022: [\u002250\u0022, \u002240\u0022, \u002230\u0022, \u002220\u0022],\n        \u0022correctAnswer\u0022: \u002250\u0022,\n        \u0022explanation\u0022: \u00225 multiplied by 10 equals 50.\u0022\n      },\n      {\n        \u0022questionType\u0022: \u0022multipleChoice\u0022,\n        \u0022questionText\u0022: \u0022What is 4 multiplied by 5?\u0022,\n        \u0022choices\u0022: [\u002220\u0022, \u002225\u0022, \u002215\u0022, \u002210\u0022],\n        \u0022correctAnswer\u0022: \u002220\u0022,\n        \u0022explanation\u0022: \u00224 multiplied by 5 equals 20.\u0022\n      },\n      {\n        \u0022questionType\u0022: \u0022multipleChoice\u0022,\n        \u0022questionText\u0022: \u0022What is 28 divided by 7?\u0022,\n        \u0022choices\u0022: [\u00224\u0022, \u00223\u0022, \u00222\u0022, \u00225\u0022],\n        \u0022correctAnswer\u0022: \u00224\u0022,\n        \u0022explanation\u0022: \u002228 divided by 7 equals 4.\u0022\n      }\n    ]\n  }\n}\n\u0060\u0060\u0060",
+    "Notes": ""
+  },
+  {
+    "Id": "b5167e1f-9af2-46d5-8a88-c8aeadf2665b",
+    "StudentId": "u002",
+    "ClassId": "Hist300",
+    "SrcAssignmentId": "a002",
+    "Questions": "{\n  \u0022test\u0022: {\n    \u0022questions\u0022: [\n      {\n        \u0022questionType\u0022: \u0022multipleChoice\u0022,\n        \u0022questionText\u0022: \u0022What is 5 x 10?\u0022,\n        \u0022choices\u0022: [\u002240\u0022, \u002250\u0022, \u002260\u0022, \u002270\u0022],\n        \u0022correctAnswer\u0022: \u002250\u0022,\n        \u0022explanation\u0022: \u0022Multiplying 5 by 10 gives 50.\u0022\n      },\n      {\n        \u0022questionType\u0022: \u0022multipleChoice\u0022,\n        \u0022questionText\u0022: \u0022What is 4 x 5?\u0022,\n        \u0022choices\u0022: [\u002220\u0022, \u002225\u0022, \u002230\u0022, \u002235\u0022],\n        \u0022correctAnswer\u0022: \u002220\u0022,\n        \u0022explanation\u0022: \u0022Multiplying 4 by 5 gives 20, not 25.\u0022\n      },\n      {\n        \u0022questionType\u0022: \u0022multipleChoice\u0022,\n        \u0022questionText\u0022: \u0022What is 9 \u002B 12?\u0022,\n        \u0022choices\u0022: [\u002218\u0022, \u002219\u0022, \u002220\u0022, \u002221\u0022],\n        \u0022correctAnswer\u0022: \u002221\u0022,\n        \u0022explanation\u0022: \u0022Adding 9 and 12 gives 21.\u0022\n      },\n      {\n        \u0022questionType\u0022: \u0022multipleChoice\u0022,\n        \u0022questionText\u0022: \u0022What is 14 \u002B 3?\u0022,\n        \u0022choices\u0022: [\u002216\u0022, \u002217\u0022, \u002218\u0022, \u002219\u0022],\n        \u0022correctAnswer\u0022: \u002217\u0022,\n        \u0022explanation\u0022: \u0022Adding 14 and 3 gives 17.\u0022\n      },\n      {\n        \u0022questionType\u0022: \u0022multipleChoice\u0022,\n        \u0022questionText\u0022: \u0022What is 28 / 7?\u0022,\n        \u0022choices\u0022: [\u00222\u0022, \u00223\u0022, \u00224\u0022, \u00225\u0022],\n        \u0022correctAnswer\u0022: \u00224\u0022,\n        \u0022explanation\u0022: \u0022Dividing 28 by 7 gives 4, not 3.\u0022\n      },\n      {\n        \u0022questionType\u0022: \u0022multipleChoice\u0022,\n        \u0022questionText\u0022: \u0022What is 14 x 1?\u0022,\n        \u0022choices\u0022: [\u002213\u0022, \u002214\u0022, \u002215\u0022, \u002216\u0022],\n        \u0022correctAnswer\u0022: \u002214\u0022,\n        \u0022explanation\u0022: \u0022Multiplying 14 by 1 gives 14.\u0022\n      }\n    ]\n  }\n}",
+    "Notes": ""
   }
 ]

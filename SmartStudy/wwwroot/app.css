@@ -1,7 +1,16 @@
 html, body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    background-color: #FDFDF2; /* Global page background (updated from #EFEFD0) */
+  background-image: url('/images/background.png');
+   background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
+
+
+/* Make layout wrappers transparent so the background shows through */
+.page, .content, main, .container {
+  background-color: transparent !important;
+}
+
 
 a, .btn-link {
     color: #006bb7;
@@ -388,3 +397,45 @@ h1:focus {
     .action-button-secondary .icon {
         font-size: 1.1em; /* Larger icon */
     }
+
+    .pretty-breadcrumbs {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: .35rem;
+    padding: 0;
+    margin: 0 0 1rem 0; /* space below crumbs */
+    font-size: 0.95rem;
+    color: #69758a; /* soft neutral */
+}
+
+.pretty-breadcrumbs li {
+    display: flex;
+    align-items: center;
+}
+
+/* Separator */
+.pretty-breadcrumbs li:not(:first-child)::before {
+    content: "›";
+    margin: 0 .35rem;
+    color: #a5b2c7; /* lighter separator */
+}
+
+/* Link appearance */
+.pretty-breadcrumbs a {
+    color: #004E89; /* brand-ish blue, change if needed */
+    text-decoration: none;
+    transition: color .15s ease;
+}
+
+.pretty-breadcrumbs a:hover {
+    color: #002d7b; /* darker on hover */
+    text-decoration: underline;
+}
+
+/* Current page (last crumb) */
+.pretty-breadcrumbs .is-current span {
+    color: #333; /* darker since current */
+    font-weight: 600;
+    cursor: default;
+}

@@ -2,6 +2,7 @@
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Components
 @inject IWebHostEnvironment Env
+@inject SmartStudy.API.Services.AssignmentService AssignmentService
 
 <div class="upload-modal-backdrop" style="display:@(IsOpen ? "flex" : "none")">
     <div class="upload-modal">
@@ -133,6 +134,8 @@
     [Parameter] public EventCallback<SmartStudy.Models.AssignmentDTO> OnUploaded { get; set; }
     [Parameter] public string? StudentName { get; set; }
     [Parameter] public string? ProfileImageUrl { get; set; }
+    // The user performing the upload (e.g., teacher); used as TeacherId
+    [Parameter] public string? TeacherId { get; set; }
 
     private IBrowserFile? selectedFile;
     private string SelectedFileName = string.Empty;
@@ -182,45 +185,24 @@
             var safeFileName = Path.GetFileName(selectedFile.Name).Replace("\n", "_").Replace("\r", "_");
             var filePath = Path.Combine(uploadsDir, $"{Guid.NewGuid():N}_{safeFileName}");
 
-            await using var fs = File.Create(filePath);
-            await selectedFile.OpenReadStream(50 * 1024 * 1024).CopyToAsync(fs);
+            using (var fs = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.Read))
+            {
+                await selectedFile.OpenReadStream(50 * 1024 * 1024).CopyToAsync(fs);
+            }
 
             StatusMessage = "File uploaded successfully.";
 
-            var dto = new SmartStudy.Models.AssignmentDTO
-            {
-                Id = Guid.NewGuid().ToString("N"),
-                StudentId = TargetUserId ?? string.Empty,
-                TeacherId = "",
-                ClassId = ClassId ?? string.Empty,
-                Title = Title ?? string.Empty,
-                FileName = SelectedFileName,
-                FilePath = filePath,
-                TeacherComments = TeacherComments ?? string.Empty
-            };
 
-            try
-            {
-                var assignmentsJsonPath = Path.Combine(Env.ContentRootPath, "SmartStudy.API", "Data", "Assignments.json");
-                List<SmartStudy.Models.AssignmentDTO> list;
-                if (File.Exists(assignmentsJsonPath))
-                {
-                    using var r = File.OpenRead(assignmentsJsonPath);
-                    list = await System.Text.Json.JsonSerializer.DeserializeAsync<List<SmartStudy.Models.AssignmentDTO>>(r) ?? new();
-                }
-                else list = new();
+            Console.WriteLine("Uploading assignment with file path: " + filePath);
 
-                list.Add(dto);
-
-                var serOptions = new System.Text.Json.JsonSerializerOptions { WriteIndented = true };
-                using var w = File.Create(assignmentsJsonPath);
-                await System.Text.Json.JsonSerializer.SerializeAsync(w, list, serOptions);
-            }
-            catch (Exception ex)
-            {
-                StatusMessage = $"Saved file but failed metadata save: {ex.Message}";
-            }
-
+            // Call central AssignmentService to add and persist the assignment (service handles JSON write & practice set generation)
+            var dto = await AssignmentService.AddAssignmentAsync(
+                studentId: TargetUserId ?? string.Empty,
+                teacherId: TeacherId ?? string.Empty,
+                classId: ClassId ?? string.Empty,
+                filePath: filePath,
+                teacherComment: TeacherComments ?? string.Empty);
+            
             if (OnUploaded.HasDelegate)
                 await OnUploaded.InvokeAsync(dto);
 
