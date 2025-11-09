@@ -3,7 +3,7 @@
 @if (!string.IsNullOrWhiteSpace(ClassId))
 {
     <div class="class-page-header text-center">
-        <h1 class="class-title">@ClassId</h1>
+        <h1 class="class-title">@(CurrentClass?.Name ?? ClassId)</h1>
     </div>
 }
 else
@@ -16,6 +16,10 @@ else
 	<div class="mt-3">
 		<h3 class="text-center">Assignments</h3>
 		<!-- Temporary hardcoded assignment list items -->
+        @if (AssignmentList.Count == 0)
+        {
+            <p class="text-center text-muted">No assignments available.</p>
+        }
         @foreach(var assignment in AssignmentList)
         {
             <div class="d-flex flex-column align-items-center">
@@ -43,7 +47,7 @@ else
                     UserId="@UserId"
 
                         UserName="@(s.DisplayName ?? s.Username ?? "Unknown")"
-                        UserTitle="Studen"
+                        UserTitle="Student"
                         ProfileImageUrl="@GetProfileImageUrl(s)"
                         ProfileDetailPageUrl="@profileUrl"
                         UserPhoneNumber="@string.Empty"

@@ -10,6 +10,7 @@ public partial class Class : ComponentBase
     [Inject] public UsersService UsersService { get; set; } = default!;
     [Inject] public EnrollmentService EnrollmentService { get; set; } = default!;
     [Inject] public AssignmentService AssignmentService { get; set; } = default!;
+    [Inject] public ClassesService ClassesService { get; set; } = default!;
 
     [Parameter] public string? UserId { get; set; }
     [Parameter] public string? ClassId { get; set; }
@@ -29,6 +30,7 @@ public partial class Class : ComponentBase
     private readonly Dictionary<string, ProfileDTO> _profiles = new();
 
     public List<AssignmentDTO> AssignmentList { get; set; } = new();
+    protected ClassDTO? CurrentClass { get; set; }
 
     // Base path where files are served from (ensure app.UseStaticFiles(); and files are under wwwroot/uploads)
     protected string UploadBasePath => "/uploads";
@@ -46,6 +48,12 @@ public partial class Class : ComponentBase
         if (!isStudent && !string.IsNullOrWhiteSpace(ClassId))
         {
             StudentsInClass = await EnrollmentService.GetStudentsForClassAsync(ClassId) ?? new();
+        }
+
+        // Load current class meta for displaying class name
+        if (!string.IsNullOrWhiteSpace(ClassId))
+        {
+            CurrentClass = await ClassesService.GetClassByIdAsync(ClassId);
         }
 
         // Load assignments for this user & class

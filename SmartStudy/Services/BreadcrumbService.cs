@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 
 namespace SmartStudy.Services;
@@ -12,11 +13,16 @@ public class BreadcrumbItem
 public class BreadcrumbService
 {
     private readonly NavigationManager _nav;
+    private readonly SmartStudy.API.Services.ClassesService _classesService;
 
-    public BreadcrumbService(NavigationManager nav) => _nav = nav;
+    public BreadcrumbService(NavigationManager nav, SmartStudy.API.Services.ClassesService classesService)
+    {
+        _nav = nav;
+        _classesService = classesService;
+    }
 
     // Build a clean, rule-based breadcrumb list from current or provided URI
-    public List<BreadcrumbItem> GetBreadcrumbsFromUri(string? location = null)
+    public async Task<List<BreadcrumbItem>> GetBreadcrumbsFromUri(string? location = null)
     {
         var uri = new Uri(location ?? _nav.Uri);
         var segments = uri.AbsolutePath.Split('/', StringSplitOptions.RemoveEmptyEntries);
@@ -77,7 +83,24 @@ public class BreadcrumbService
                     var classId = segments[2];
                     var classUrl = $"/{userId}/Class/{classId}";
                     var isTail = segments.Length == 3;
-                    AddCrumb(classId, classUrl, isTail);
+                    // Attempt to resolve class name; fallback to id
+                    string classLabel = classId;
+                    try
+                    {
+                        var dtoTask = _classesService.GetClassByIdAsync(classId);
+                        if (dtoTask.IsCompletedSuccessfully)
+                        {
+                            var dto = dtoTask.Result;
+                            if (!string.IsNullOrWhiteSpace(dto?.Name))
+                                classLabel = dto.Name;
+                        }
+                        else if (dtoTask.Status == TaskStatus.Running)
+                        {
+                            // Avoid async in breadcrumb builder; keep label as id if not done
+                        }
+                    }
+                    catch { /* swallow */ }
+                    AddCrumb(classLabel, classUrl, isTail);
 
                     // Student branch
                     if (segments.Length >= 4 && segments[3].Equals("student", StringComparison.OrdinalIgnoreCase))

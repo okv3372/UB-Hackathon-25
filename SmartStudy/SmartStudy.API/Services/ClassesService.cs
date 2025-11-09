@@ -21,27 +21,27 @@ public class ClassesService
     }
 
     // 1) Existing method: make it null-safe and concise
-    public async Task<IReadOnlyList<SchoolClassDTO>> GetClassesForUserAsync(string userId)
+    public async Task<IReadOnlyList<ClassDTO>> GetClassesForUserAsync(string userId)
     {
-        if (string.IsNullOrWhiteSpace(userId)) return Array.Empty<SchoolClassDTO>();
+        if (string.IsNullOrWhiteSpace(userId)) return Array.Empty<ClassDTO>();
 
         var users = await LoadUsersAsync();
         var user  = users.FirstOrDefault(u => u.Id.Equals(userId, StringComparison.OrdinalIgnoreCase));
         var userClassIds = user?.Classes ?? new List<string>();   // <-- null-safe
 
-        if (userClassIds.Count == 0) return Array.Empty<SchoolClassDTO>();
+        if (userClassIds.Count == 0) return Array.Empty<ClassDTO>();
 
         var classes = await LoadClassesAsync();
-        if (classes.Count == 0) return Array.Empty<SchoolClassDTO>();
+        if (classes.Count == 0) return Array.Empty<ClassDTO>();
 
         var classesById = classes.ToDictionary(c => c.Id, StringComparer.OrdinalIgnoreCase);
 
-        var result = new List<SchoolClassDTO>(userClassIds.Count);
+        var result = new List<ClassDTO>(userClassIds.Count);
         foreach (var classId in userClassIds)
         {
             if (classesById.TryGetValue(classId, out var c))
             {
-                result.Add(new SchoolClassDTO
+                result.Add(new ClassDTO
                 {
                     Id         = c.Id,
                     Name       = c.Name,
@@ -54,7 +54,7 @@ public class ClassesService
     }
 
     // 2) NEW: get a single class by id (used by Class page)
-    public async Task<SchoolClassDTO?> GetClassByIdAsync(string classId)
+    public async Task<ClassDTO?> GetClassByIdAsync(string classId)
     {
         if (string.IsNullOrWhiteSpace(classId)) return null;
         var classes = await LoadClassesAsync();
@@ -78,11 +78,11 @@ public class ClassesService
     }
 
     // ---- private loaders (unchanged) ----
-    private async Task<List<SchoolClassDTO>> LoadClassesAsync()
+    private async Task<List<ClassDTO>> LoadClassesAsync()
     {
         if (!File.Exists(_classesPath)) return new();
         await using var stream = File.OpenRead(_classesPath);
-        return await JsonSerializer.DeserializeAsync<List<SchoolClassDTO>>(stream, JsonOptions) ?? new();
+        return await JsonSerializer.DeserializeAsync<List<ClassDTO>>(stream, JsonOptions) ?? new();
     }
 
     private async Task<List<UserDTO>> LoadUsersAsync()

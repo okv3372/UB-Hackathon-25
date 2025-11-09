@@ -1,6 +1,6 @@
 namespace SmartStudy.Models;
 
-public class SchoolClassDTO
+public class ClassDTO
 {
     public string Id { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
