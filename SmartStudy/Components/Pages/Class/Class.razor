@@ -13,7 +13,6 @@ else
 
 @if (isStudent)
 {
-<<<<<<< HEAD
 	<div class="mt-3">
 		<h3 class="text-center">Assignments</h3>
 		<!-- Temporary hardcoded assignment list items -->
@@ -25,22 +24,6 @@ else
             </div>
         }
 	</div>
-=======
-    <div class="mt-4">
-        <h3 class="section-heading text-center">Assignments</h3>
-
-        <div class="d-flex flex-column align-items-center mt-3">
-            <AssignmentListItem AssignmentName="Intro Worksheet" GradedFileName="intro_worksheet.pdf"
-                                DetailPageUrl="@($"/{UserId}/Class/{ClassId}/assignment/assignmentId1")" />
-
-            <AssignmentListItem AssignmentName="Reading Quiz 1" GradedFileName="quiz1_results.pdf"
-                                DetailPageUrl="@($"/{UserId}/Class/{ClassId}/assignment/assignmentId2")" />
-
-            <AssignmentListItem AssignmentName="Project Proposal" GradedFileName="proposal.docx"
-                                DetailPageUrl="@($"/{UserId}/Class/{ClassId}/assignment/assignmentId3")" />
-        </div>
-    </div>
->>>>>>> 54b90c16fab18bd7766af1eec69a9994e1905e9c
 }
 else
 {
