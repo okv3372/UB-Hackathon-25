@@ -1,6 +1,7 @@
 @* UserProfileCard.razor *@
 @namespace SmartStudy.Components.Pages
 @using SmartStudy.Components.Pages.Class
+@using SmartStudy.Components.Shared
 
 <div class="user-profile-card">
     <div class="profile-header">
@@ -12,8 +13,8 @@
         }
     </div>
     <div class="profile-actions">
-        <button class="action-button-main" @onclick="OpenAssignmentsPage">
-            Assignments
+        <button class="action-button-main" @onclick="ShowUploadModal">
+            Upload File
         </button>
         <button class="action-button-secondary" @onclick="InvokeViewProfile" title="View Profile">
             <i class="bi bi-person icon" aria-label="Profile"></i>
@@ -23,4 +24,7 @@
             </button>
     </div>
 </div>
+
+@* Upload modal instance *@
+<UploadAssignmentModal @ref="uploadModal" TargetUserId="@TargetUserId" ClassId="@ClassId" />
 
