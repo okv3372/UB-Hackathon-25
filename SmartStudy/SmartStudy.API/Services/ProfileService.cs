@@ -39,6 +39,90 @@ public static class ProfileService
         }
     }
     
+    /// <summary>
+    /// Update a profile using individual values corresponding to ProfileDTO properties.
+    /// Uses StudentId as the record key. Creates a new entry if not found.
+    /// Returns the updated ProfileDTO.
+    /// </summary>
+    public static ProfileDTO UpdateProfileFromValues(
+        string? studentId,
+        string? pictureUrl,
+        string? name,
+        string? bio,
+        string? gradeLevel,
+        string? guardianName,
+        string? guardianEmail)
+    {
+        var sid = studentId ?? string.Empty;
+        var pic = pictureUrl ?? string.Empty;
+        var nm = name ?? string.Empty;
+        var b = bio ?? string.Empty;
+        var gl = gradeLevel ?? string.Empty;
+        var gName = guardianName ?? string.Empty;
+        var gEmail = guardianEmail ?? string.Empty;
+
+        // Minimal, forgiving implementation (similar to UpdateProfile)
+        var path = Path.Combine(Directory.GetCurrentDirectory(), "SmartStudy.API", "Data", "Profiles.Json");
+
+        List<ProfileRecord> records;
+        try
+        {
+            if (File.Exists(path))
+            {
+                var json = File.ReadAllText(path);
+                var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                records = JsonSerializer.Deserialize<List<ProfileRecord>>(json, options) ?? new List<ProfileRecord>();
+            }
+            else
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+                records = new List<ProfileRecord>();
+            }
+        }
+        catch
+        {
+            records = new List<ProfileRecord>();
+        }
+
+        // Use StudentId as key for this helper
+        var existing = records.FirstOrDefault(r => string.Equals(r.StudentId, sid, StringComparison.OrdinalIgnoreCase));
+        if (existing == null)
+        {
+            existing = new ProfileRecord { StudentId = sid };
+            records.Add(existing);
+        }
+
+        // Update fields from supplied values (empty string counts as update)
+        existing.PictureUrl = pic;
+        existing.Name = nm;
+        existing.Bio = b;
+        existing.GradeLevel = gl;
+        existing.GuardianName = gName;
+        existing.GuardianEmail = gEmail;
+
+        try
+        {
+            var writeOptions = new JsonSerializerOptions { WriteIndented = true };
+            var updatedJson = JsonSerializer.Serialize(records, writeOptions);
+            File.WriteAllText(path, updatedJson);
+        }
+        catch
+        {
+            // Ignore write errors for hackathon demo
+        }
+
+        return new ProfileDTO
+        {
+            StudentId = existing.StudentId,
+            PictureUrl = existing.PictureUrl,
+            Name = existing.Name,
+            Bio = existing.Bio,
+            GradeLevel = existing.GradeLevel,
+            GuardianName = existing.GuardianName,
+            GuardianEmail = existing.GuardianEmail
+        };
+    }
+
     public static ProfileDTO UpdateProfile(string userId, string studentId, string? pictureUrl, string? bio, string? gradeLevel, string? guardianName, string? guardianEmail)
     {
         // Minimal, forgiving implementation: update existing or create if missing, then return DTO

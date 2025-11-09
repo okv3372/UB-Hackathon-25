@@ -47,8 +47,8 @@ else
 
                 <div class="user-profile-card">
                     <div class="profile-header">
-                        <img src="@GetProfileImageUrl(s)" alt="Profile Picture" class="profile-image" loading="lazy" onerror="this.onerror=null;this.src='/profile_pictures/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg';">
-                        <h3 class="user-name">@(s.DisplayName ?? s.Username ?? "Unknown")</h3>
+                        <img src="@profile.PictureUrl" alt="Profile Picture" class="profile-image" loading="lazy" onerror="this.onerror=null;this.src='/profile_pictures/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg';">
+                        <h3 class="user-name">@(profile.Name ?? "Unknown")</h3>
                         <p class="user-title">Student</p>
                     </div>
                     <div class="profile-actions">

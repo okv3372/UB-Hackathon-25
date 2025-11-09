@@ -3,13 +3,13 @@
 @if (showModal)
 {
     <div class="modal fade show profile-modal" style="display:block;" tabindex="-1" role="dialog" aria-modal="true"
-        aria-labelledby="profileModalTitle" @onkeydown="HandleKeyDown">
+         aria-labelledby="profileModalTitle" @onkeydown="HandleKeyDown">
         <div class="modal-dialog modal-md modal-dialog-centered profile-modal-dialog" role="document">
             <div class="modal-content shadow">
-                <!-- Compact gradient header with avatar (no overflow clipping) -->
+                <!-- Header / Hero -->
                 <div class="modal-hero">
                     <button type="button" class="btn btn-sm btn-light subtle-close d-none d-md-inline-flex"
-                        @onclick="CloseModal" aria-label="Close">
+                            @onclick="CloseModal" aria-label="Close">
                         ✕
                     </button>
 
@@ -19,53 +19,13 @@
                         <h2 id="profileModalTitle" class="hero-title mb-1">
                             @(string.IsNullOrWhiteSpace(Name) ? "Unnamed" : Name)
                         </h2>
-
-                        <p class="hero-subtitle mb-0 text-white-75">
-                            @DisplayTitle
-                        </p>
-
-                    </div>
-                </div>
-                
-
-                <!-- Body -->
-                <div class="modal-body px-4 pb-4 pt-3">
-                    
-                    <section class="section-block mb-3">
-                        <div class="d-flex align-items-center justify-content-between mb-2">
-                            <label class="section-label fw-semibold mb-0">Guardian</label>
-                        </div>
-
-                        @if (!string.IsNullOrWhiteSpace(GuardianName) || !string.IsNullOrWhiteSpace(GuardianEmail))
+                        @if (!string.IsNullOrWhiteSpace(DisplayTitle))
                         {
-                            <div class="row g-2">
-                                @if (!string.IsNullOrWhiteSpace(GuardianName))
-                                {
-                                    <div class="col-12 col-sm-6">
-                                        <div class="form-control" readonly>@GuardianName</div>
-                                        <small class="text-muted">Name</small>
-                                    </div>
-                                }
-                                @if (!string.IsNullOrWhiteSpace(GuardianEmail))
-                                {
-                                    <div class="col-12 col-sm-6">
-                                        <a class="form-control link-primary text-truncate" href="mailto:@GuardianEmail">@GuardianEmail</a>
-                                        <small class="text-muted">Email</small>
-                                    </div>
-                                }
-                            </div>
+                            <span class="role-chip" title="@DisplayTitle">@DisplayTitle</span>
                         }
-                        else
+                        @if (EnableEditButton)
                         {
-                            <p class="text-muted mb-0">No guardian information provided.</p>
-                        }
-                    </section>
-
-                    <section class="section-block">
-                        <div class="d-flex align-items-center justify-content-between mb-2">
-                            <label class="section-label fw-semibold mb-0">Interests</label>
-                            @if (EnableEditButton)
-                            {
+                            <div class="mt-2">
                                 @if (isEditing)
                                 {
                                     <div class="btn-group">
@@ -83,27 +43,73 @@
                                         <span class="me-1">✎</span> Edit
                                     </button>
                                 }
-                            }
-                        
-                        </div>
+                            </div>
+                        }
+                    </div>
 
+                    <div class="hero-accent" aria-hidden="true"></div>
+                </div>
+
+                <!-- Body -->
+                <div class="modal-body px-4 pb-4 pt-3">
+                    <!-- Guardian -->
+                    <section class="section-block mb-3">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <label class="section-label fw-semibold mb-0">Guardian</label>
+                        </div>
                         @if (isEditing)
                         {
-                            <div class="mb-2 text-muted small">Tip: separate interests with commas to show them as tags.</div>
-                            <textarea class="form-control" rows="4" @bind="UserBio"
-                                placeholder="e.g., Basketball, Data Visualization, Hiking, Machine Learning">
-                            </textarea>
+                            <div class="mb-2">
+                                <label class="form-label small text-muted">Guardian name</label>
+                                <input class="form-control" type="text" @bind="GuardianName" placeholder="e.g., Jane Doe" />
+                            </div>
+                            <div>
+                                <label class="form-label small text-muted">Guardian email</label>
+                                <input class="form-control" type="email" @bind="GuardianEmail" placeholder="name@example.com" />
+                            </div>
+                        }
+                        else
+                        {
+                            @if (!string.IsNullOrWhiteSpace(GuardianName) || !string.IsNullOrWhiteSpace(GuardianEmail))
+                            {
+                                <div class="info-stack">
+                                    @if (!string.IsNullOrWhiteSpace(GuardianName))
+                                    {
+                                        <div class="info-item">
+                                            <div class="info-label">Name</div>
+                                            <div class="info-value text-truncate">@GuardianName</div>
+                                        </div>
+                                    }
+                                    @if (!string.IsNullOrWhiteSpace(GuardianEmail))
+                                    {
+                                        <div class="info-item">
+                                            <div class="info-label">Email</div>
+                                            <a class="info-value link-primary text-truncate" href="mailto:@GuardianEmail">@GuardianEmail</a>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <p class="text-muted mb-0">No guardian information provided.</p>
+                            }
+                        }
+                    </section>
+
+                    <!-- Interests / Bio -->
+                    <section class="section-block">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <label class="section-label fw-semibold mb-0">Interests</label>
+                        </div>
+                        @if (isEditing)
+                        {
+                            <input class="form-control text-start" type="text" @bind="UserBio" placeholder="e.g., Basketball, Data Visualization, Hiking, Machine Learning" />
                         }
                         else
                         {
                             @if (!string.IsNullOrWhiteSpace(UserBio))
                             {
-                                <div class="tag-cloud">
-                                    @foreach (var tag in SplitInterests(UserBio))
-                                    {
-                                        <span class="tag-pill">@tag</span>
-                                    }
-                                </div>
+                                <p class="mb-0 text-body">@UserBio</p>
                             }
                             else
                             {
@@ -115,18 +121,20 @@
 
                 <!-- Footer -->
                 <div class="modal-footer border-0 pt-0 px-4 pb-4">
-                    <button type="button" class="btn btn-outline-secondary" @onclick="CloseModal">Close</button>
-                    @if (EnableEditButton)
+                    @if (isEditing)
                     {
-                        @if (isEditing)
-                        {
-                            <button type="button" class="btn btn-success" @onclick="SaveProfile">Save</button>
-                        }
-                        else
-                        {
-                            <button type="button" class="btn btn-primary" @onclick="EnableEditing">Edit</button>
-                        }
+                        <button type="button" class="btn btn-success me-2" @onclick="SaveProfile">
+                            <span class="me-1"></span> Save
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary me-auto me-md-2" @onclick="CancelEditing">Cancel</button>
                     }
+                    else
+                    {
+                        <button type="button" class="btn btn-primary me-auto me-md-2" @onclick="EnableEditing">
+                            <span class="me-1"></span> Edit
+                        </button>
+                    }
+                    <button type="button" class="btn btn-outline-secondary" @onclick="CloseModal">Close</button>
                 </div>
             </div>
         </div>
@@ -136,45 +144,61 @@
 }
 
 <style>
-    /* Make the dialog a bit more square and compact */
+    /* Palette (scoped to component) */
+    .profile-modal {
+        --ss-primary: #004E89; /* deep blue */
+        --ss-secondary: #1A659E; /* medium blue */
+        --ss-accent: #FF6B35; /* orange */
+        --ss-warm: #F7C59F; /* peach */
+        --ss-cream: #EFEFD0; /* light cream */
+        --ss-border: #e9edf2;
+        --ss-text: #2b2f36;
+    }
+
+    /* Dialog */
     .profile-modal-dialog {
-        max-width: 560px;
-        /* narrower than modal-lg; feels boxier */
-        margin: 1.25rem auto;
-        /* ensure room at top so nothing is clipped */
+        max-width: 620px;
+        margin: 1.2rem auto;
     }
 
     .profile-modal .modal-content {
-        border: 1px solid #e9edf2;
-        border-radius: 10px;
-        /* smaller radius = more square */
+        border: 1px solid var(--ss-border);
+        border-radius: 12px;
         overflow: hidden;
-        /* keeps corners crisp without clipping content now */
+        background: #fff;
     }
 
-.profile-modal .modal-hero {
-    position: relative;
-    padding: 18px 16px 16px;
-    background: #004E89; /* was gradient before */
-    color: #2b2f36;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    border-bottom: 1px solid #e5e7eb;
-}
+    /* Hero */
+    .profile-modal .modal-hero {
+        position: relative;
+        padding: 20px 16px 18px;
+        background: linear-gradient(180deg, var(--ss-primary), var(--ss-secondary));
+        color: #ffffff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
 
+    .profile-modal .hero-accent {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--ss-accent), transparent 60%);
+    }
 
-    /* Keep avatar fully inside header; no negative offsets */
     .profile-modal .avatar-img {
-        width: 108px;
-        height: 108px;
+        width: 112px;
+        height: 112px;
         border-radius: 999px;
         object-fit: cover;
         border: 4px solid #fff;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, .18);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, .2);
         background: #fff;
-        margin-top: 4px;
-        margin-bottom: 10px;
+        margin-top: 2px;
+        margin-bottom: 12px;
     }
 
     .profile-modal .subtle-close {
@@ -184,41 +208,82 @@
         border-radius: 999px;
         padding: 6px 10px;
         line-height: 1;
-        opacity: 0.9;
+        opacity: 0.92;
     }
 
-    .profile-modal .hero-text {
-        padding: 0 8px;
-        text-align: center;
-    }
+    .profile-modal .hero-text { text-align: center; }
 
     .profile-modal .hero-title {
         font-weight: 800;
         letter-spacing: .2px;
         color: #fff;
-        text-shadow: 0 2px 12px rgba(0, 0, 0, .18);
-        font-size: 1.35rem;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, .18);
+        font-size: 1.4rem;
     }
 
-    .profile-modal .hero-subtitle {
-        color: rgba(255, 255, 255, .9) !important;
-        font-weight: 500;
-        font-size: .95rem;
+    .profile-modal .role-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, .12);
+        color: #fff;
+        border: 1px solid rgba(255, 255, 255, .22);
+        font-size: .85rem;
     }
 
+    /* Sections */
     .profile-modal .section-block {
         background: #fff;
-        border: 1px solid #eef0f3;
-        border-radius: 10px;
-        padding: 14px 14px 10px;
+        border: 1px solid var(--ss-border);
+        border-radius: 12px;
+        padding: 14px 14px 12px;
         box-shadow: 0 3px 12px rgba(0, 0, 0, .04);
     }
 
     .profile-modal .section-label {
         font-size: 0.95rem;
-        color: #2b2f36;
+        color: var(--ss-text);
+        position: relative;
+        padding-left: 10px;
     }
 
+    .profile-modal .section-label::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 4px;
+        height: 14px;
+        border-radius: 3px;
+        background: var(--ss-accent);
+        opacity: .85; /* minimal touch of color */
+    }
+
+    /* Guardian info stack */
+    .profile-modal .info-stack { display: grid; gap: 10px; }
+
+    .profile-modal .info-item {
+        display: grid;
+        grid-template-columns: 80px 1fr;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 12px;
+        border: 1px dashed var(--ss-border);
+        border-radius: 10px;
+        background: #fff;
+    }
+
+    .profile-modal .info-label {
+        color: #6b7280;
+        font-size: .85rem;
+    }
+
+    .profile-modal .info-value { color: var(--ss-secondary); font-weight: 600; }
+
+    /* Tags */
     .profile-modal .tag-cloud {
         display: flex;
         flex-wrap: wrap;
@@ -232,44 +297,31 @@
         padding: 6px 10px;
         font-size: 0.85rem;
         border-radius: 999px;
-        background: #f2f6ff;
-        color: #2a4b8d;
-        border: 1px solid #e2eaff;
-        transition: transform .12s ease;
+        background: var(--ss-cream);
+        color: var(--ss-secondary);
+        border: 1px solid var(--ss-warm);
+        box-shadow: 0 1px 0 rgba(0,0,0,.04);
+        transition: transform .12s ease, box-shadow .12s ease;
     }
 
     .profile-modal .tag-pill:hover {
         transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(0,0,0,.08);
     }
 
-    .profile-modal .modal-footer {
-        background: transparent;
-    }
+    .profile-modal .modal-footer { background: transparent; }
 
     /* Small screens */
     @@media (max-width: 576px) {
-        .profile-modal-dialog {
-            margin: .75rem auto;
-        }
-
-        .profile-modal .avatar-img {
-            width: 96px;
-            height: 96px;
-        }
-
-        .profile-modal .hero-title {
-            font-size: 1.25rem;
-        }
+        .profile-modal-dialog { margin: .75rem auto; }
+        .profile-modal .avatar-img { width: 96px; height: 96px; }
+        .profile-modal .hero-title { font-size: 1.25rem; }
+        .profile-modal .info-item { grid-template-columns: 70px 1fr; }
     }
 
     /* Respect reduced motion */
     @@media (prefers-reduced-motion: reduce) {
-        .profile-modal .tag-pill {
-            transition: none;
-        }
-
-        .profile-modal .hero-title {
-            text-shadow: none;
-        }
+        .profile-modal .tag-pill { transition: none; }
+        .profile-modal .hero-title { text-shadow: none; }
     }
 </style>

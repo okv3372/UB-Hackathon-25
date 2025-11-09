@@ -22,6 +22,8 @@ public partial class ProfileModal : ComponentBase
     [Parameter] public bool EnableEditButton { get; set; } = false;
     [Parameter] public string? GuardianName { get; set; }
     [Parameter] public string? GuardianEmail { get; set; }
+    [Parameter] public string? StudentId { get; set; }
+    [Parameter] public string? GradeLevel { get; set; }
     public string? fallbackProfileImageUrl { get; set; } = "/Users/olivervarney/Desktop/SmartStudy/UB-Hackathon-25/SmartStudy/wwwroot/profile_pictures/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg";
 
     private string ResolvedPictureUrl => string.IsNullOrWhiteSpace(ProfilePictureUrl) ? "/favicon.png" : ProfilePictureUrl!;
@@ -54,6 +56,8 @@ public partial class ProfileModal : ComponentBase
 
         Title = !string.IsNullOrWhiteSpace(profile?.GradeLevel)
             ? $"Grade {profile!.GradeLevel}": "";
+        GradeLevel = profile?.GradeLevel;
+        StudentId = profile?.StudentId;
 
         UserBio = !string.IsNullOrWhiteSpace(profile?.Bio)
             ? profile!.Bio
@@ -72,8 +76,30 @@ public partial class ProfileModal : ComponentBase
 
     private void SaveProfile()
     {
-        // TODO: Persist changes if needed.
+        // Persist changes via ProfileService helper, using StudentId as key
+        var updated = ProfileService.UpdateProfileFromValues(
+            StudentId,
+            ProfilePictureUrl,
+            Name,
+            UserBio,
+            GradeLevel,
+            GuardianName,
+            GuardianEmail);
+
+        // Refresh UI with saved values
+        if (updated != null)
+        {
+            StudentId = updated.StudentId;
+            ProfilePictureUrl = updated.PictureUrl;
+            Name = updated.Name;
+            UserBio = updated.Bio;
+            GradeLevel = updated.GradeLevel;
+            GuardianName = updated.GuardianName;
+            GuardianEmail = updated.GuardianEmail;
+        }
+
         isEditing = false;
+        StateHasChanged();
     }
 
     private IEnumerable<string> SplitInterests(string? interests) => string.IsNullOrWhiteSpace(interests)

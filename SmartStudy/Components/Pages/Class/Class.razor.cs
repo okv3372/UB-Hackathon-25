@@ -68,35 +68,10 @@ public partial class Class : ComponentBase
         profileModalRef?.OpenForUser(student);
     }
 
-    // Overload for convenience when invoking from Razor with UserDTO
-    protected void OpenProfileModalForStudent(UserDTO student)
-    {
-        var profile = ProfileService.GetProfile(student.Id) ?? new ProfileDTO
-        {
-            Name = student.DisplayName ?? student.Username ?? "Unknown",
-            PictureUrl = GetProfileImageUrl(student)
-        };
-
-        profileModalRef?.OpenForUser(profile);
-    }
-
-    private string GetProfileImageUrl(UserDTO student)
-    {
-        if (_profiles.TryGetValue(student.Id, out var profile) &&
-            !string.IsNullOrWhiteSpace(profile.PictureUrl))
-        {
-            return profile.PictureUrl!;
-        }
-
-        var initials = (student.DisplayName ?? student.Username ?? "U")[0].ToString().ToUpperInvariant();
-        return $"https://via.placeholder.com/90/F7C59F/004E89?text={initials}";
-    }
-
     protected void ShowUploadModalForStudent(UserDTO student)
     {
         UploadTargetUserId = student.Id;
         UploadStudentName = student.DisplayName ?? student.Username ?? "Unknown";
-        UploadProfileImageUrl = GetProfileImageUrl(student);
         uploadModalRef?.OpenModal();
     }
 
