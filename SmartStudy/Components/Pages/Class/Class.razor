@@ -1,4 +1,7 @@
 @page "/{userId}/Class/{classId}"
+@using SmartStudy.Components.Shared
+@using SmartStudy.Models
+@using SmartStudy.Services
 
 @if (!string.IsNullOrWhiteSpace(ClassId))
 {
@@ -38,21 +41,28 @@ else
         <div class="d-flex flex-wrap justify-content-center gap-3 mb-4 mt-3">
             @foreach (var s in StudentsInClass)
             {
+                ProfileDTO? profile = ProfileService.GetProfile(s.Id);
                 var initials = (s.DisplayName ?? s.Username ?? "U")[0].ToString().ToUpperInvariant();
                 var profileUrl = $"/{UserId}/Class/{ClassId}/Student/{s.Id}";
 
-                <UserProfileCard
-                    TargetUserId="@s.Id"
-                    ClassId="@ClassId"
-                    UserId="@UserId"
-
-                        UserName="@(s.DisplayName ?? s.Username ?? "Unknown")"
-                        UserTitle="Student"
-                        ProfileImageUrl="@GetProfileImageUrl(s)"
-                        ProfileDetailPageUrl="@profileUrl"
-                        UserPhoneNumber="@string.Empty"
-
-                    OnViewProfile="@OnStudentViewProfile" />
+                <div class="user-profile-card">
+                    <div class="profile-header">
+                        <img src="@GetProfileImageUrl(s)" alt="Profile Picture" class="profile-image" loading="lazy" onerror="this.onerror=null;this.src='/profile_pictures/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg';">
+                        <h3 class="user-name">@(s.DisplayName ?? s.Username ?? "Unknown")</h3>
+                        <p class="user-title">Student</p>
+                    </div>
+                    <div class="profile-actions">
+                        <button class="action-button-main" @onclick="(() => ShowUploadModalForStudent(s))">
+                            Upload File
+                        </button>
+                        <button class="action-button-secondary" @onclick="(() => OpenProfileModalForStudent(profile))" title="View Profile">
+                            <i class="bi bi-person icon" aria-label="Profile"></i>
+                        </button>
+                        <button class="action-button-secondary" @onclick="(() => OpenAssignmentsPageForStudent(s))" title="Go to Assignment">
+                            <i class="bi bi-journal-text icon" aria-label="Assignment"></i>
+                        </button>
+                    </div>
+                </div>
             }
         </div>
     }
@@ -62,12 +72,16 @@ else
     }
 }
 
-<ProfileModal @ref="profileModalRef"
-              UserName="@SelectedUserName"
-              ProfilePictureUrl="@SelectedProfileImageUrl"
-              UserInterests="@SelectedUserInterests"
-              Title="@SelectedTitle"
-              EnableEditButton="false" />
+<ProfileModal @ref="profileModalRef" EnableEditButton="false" />
+
+@* Shared upload modal instance; we set its parameters dynamically before opening *@
+<UploadAssignmentModal @ref="uploadModalRef"
+                      TargetUserId="@UploadTargetUserId"
+                      ClassId="@ClassId"
+                      StudentName="@UploadStudentName"
+                      ProfileImageUrl="@UploadProfileImageUrl"
+                      TeacherId="@UserId"
+                      OnUploaded="@OnAssignmentUploaded" />
 
 <style>
     .class-page-header {

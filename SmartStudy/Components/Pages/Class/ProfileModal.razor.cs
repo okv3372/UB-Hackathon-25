@@ -2,6 +2,9 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using System.Collections.Generic;
 using System.Linq;
+using SmartStudy.Services;
+using SmartStudy.Models;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
 
 namespace SmartStudy.Components.Pages.Class;
 
@@ -12,18 +15,19 @@ public partial class ProfileModal : ComponentBase
     private bool isEditing = false;
 
     // Parameters provided by parent
-    [Parameter] public string? UserName { get; set; }
+    [Parameter] public string? Name { get; set; }
     [Parameter] public string? ProfilePictureUrl { get; set; }
-    [Parameter] public string? UserInterests { get; set; }
+    [Parameter] public string? UserBio { get; set; }
     [Parameter] public string? Title { get; set; }
     [Parameter] public bool EnableEditButton { get; set; } = false;
     [Parameter] public string? GuardianName { get; set; }
     [Parameter] public string? GuardianEmail { get; set; }
+    public string? fallbackProfileImageUrl { get; set; } = "/Users/olivervarney/Desktop/SmartStudy/UB-Hackathon-25/SmartStudy/wwwroot/profile_pictures/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg";
 
     private string ResolvedPictureUrl => string.IsNullOrWhiteSpace(ProfilePictureUrl) ? "/favicon.png" : ProfilePictureUrl!;
     private string DisplayTitle => !string.IsNullOrWhiteSpace(Title)
         ? Title!
-        : (!string.IsNullOrWhiteSpace(UserName) ? UserName! : "Profile");
+        : (!string.IsNullOrWhiteSpace(Name) ? Name! : "Profile");
 
     // Control methods exposed to parent
     public void OpenModal()
@@ -38,6 +42,27 @@ public partial class ProfileModal : ComponentBase
         showModal = false;
         isEditing = false;
         StateHasChanged();
+    }
+
+    // New: Open the modal by loading details for a given user id.
+    public void OpenForUser(ProfileDTO profile)
+    {
+        Name = profile.Name;
+        ProfilePictureUrl = !string.IsNullOrWhiteSpace(profile?.PictureUrl)
+            ? profile!.PictureUrl
+            : fallbackProfileImageUrl;
+
+        Title = !string.IsNullOrWhiteSpace(profile?.GradeLevel)
+            ? $"Grade {profile!.GradeLevel}": "";
+
+        UserBio = !string.IsNullOrWhiteSpace(profile?.Bio)
+            ? profile!.Bio
+            : "No profile details available.";
+
+        GuardianName = profile?.GuardianName ?? string.Empty;
+        GuardianEmail = profile?.GuardianEmail ?? string.Empty;
+
+        OpenModal();
     }
 
     private void BackdropClick(MouseEventArgs _) => CloseModal();

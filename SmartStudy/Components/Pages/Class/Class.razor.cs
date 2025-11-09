@@ -7,6 +7,7 @@ namespace SmartStudy.Components.Pages.Class;
 
 public partial class Class : ComponentBase
 {
+    [Inject] public NavigationManager NavigationManager { get; set; } = default!;
     [Inject] public UsersService UsersService { get; set; } = default!;
     [Inject] public EnrollmentService EnrollmentService { get; set; } = default!;
     [Inject] public AssignmentService AssignmentService { get; set; } = default!;
@@ -20,12 +21,14 @@ public partial class Class : ComponentBase
     // List of students in this class (for teachers)
     protected List<UserDTO> StudentsInClass { get; set; } = new();
 
-    // Modal reference and selected profile display data
+    // Modal references
     private ProfileModal? profileModalRef;
-    protected string? SelectedUserName { get; set; }
-    protected string? SelectedProfileImageUrl { get; set; }
-    protected string? SelectedUserInterests { get; set; }
-    protected string? SelectedTitle { get; set; }
+    private SmartStudy.Components.Shared.UploadAssignmentModal? uploadModalRef;
+
+    // Upload modal state
+    protected string? UploadTargetUserId { get; set; }
+    protected string? UploadStudentName { get; set; }
+    protected string? UploadProfileImageUrl { get; set; }
 
     private readonly Dictionary<string, ProfileDTO> _profiles = new();
 
@@ -60,34 +63,21 @@ public partial class Class : ComponentBase
         AssignmentList = await AssignmentService.GetAssignmentsAsync(UserId ?? string.Empty, ClassId ?? string.Empty);
     }
 
-    private void LoadProfileFromService(UserProfileCard card)
+    protected void OpenProfileModalForStudent(ProfileDTO student)
     {
-        SelectedUserName = card.UserName;
-        SelectedTitle = card.UserTitle;
-
-        SmartStudy.Models.ProfileDTO? profile = null;
-        if (!string.IsNullOrWhiteSpace(card.TargetUserId))
-        {
-            profile = ProfileService.GetProfile(card.TargetUserId);
-        }
-
-        SelectedProfileImageUrl = !string.IsNullOrWhiteSpace(profile?.PictureUrl)
-            ? profile.PictureUrl
-            : (!string.IsNullOrWhiteSpace(card.ProfileImageUrl) ? card.ProfileImageUrl : "/favicon.png");
-
-        SelectedTitle = !string.IsNullOrWhiteSpace(profile?.GradeLevel)
-            ? $"Grade {profile.GradeLevel}"
-            : card.UserTitle;
-
-        SelectedUserInterests = !string.IsNullOrWhiteSpace(profile?.Bio)
-            ? profile.Bio
-            : "No profile details available.";
+        profileModalRef?.OpenForUser(student);
     }
 
-    protected void OnStudentViewProfile(UserProfileCard card)
+    // Overload for convenience when invoking from Razor with UserDTO
+    protected void OpenProfileModalForStudent(UserDTO student)
     {
-        LoadProfileFromService(card);
-        profileModalRef?.OpenModal();
+        var profile = ProfileService.GetProfile(student.Id) ?? new ProfileDTO
+        {
+            Name = student.DisplayName ?? student.Username ?? "Unknown",
+            PictureUrl = GetProfileImageUrl(student)
+        };
+
+        profileModalRef?.OpenForUser(profile);
     }
 
     private string GetProfileImageUrl(UserDTO student)
@@ -102,12 +92,24 @@ public partial class Class : ComponentBase
         return $"https://via.placeholder.com/90/F7C59F/004E89?text={initials}";
     }
 
-    protected void OpenBottomProfileModal()
+    protected void ShowUploadModalForStudent(UserDTO student)
     {
-        SelectedUserName ??= "Class Member";
-        SelectedTitle ??= "Student";
-        SelectedProfileImageUrl ??= "/favicon.png";
-        SelectedUserInterests ??= "No interests provided.";
-        profileModalRef?.OpenModal();
+        UploadTargetUserId = student.Id;
+        UploadStudentName = student.DisplayName ?? student.Username ?? "Unknown";
+        UploadProfileImageUrl = GetProfileImageUrl(student);
+        uploadModalRef?.OpenModal();
+    }
+
+    protected void OpenAssignmentsPageForStudent(UserDTO student)
+    {
+        if (string.IsNullOrWhiteSpace(student.Id) || string.IsNullOrWhiteSpace(ClassId)) return;
+        var current = string.IsNullOrWhiteSpace(UserId) ? "me" : UserId;
+        NavigationManager.NavigateTo($"/{current}/Class/{ClassId}/student/{student.Id}");
+    }
+
+    protected Task OnAssignmentUploaded(AssignmentDTO dto)
+    {
+        Console.WriteLine($"[Class] Assignment uploaded: Id={dto.Id}, Title={dto.Title}, File={dto.FileName}, Path={dto.FilePath}");
+        return Task.CompletedTask;
     }
 }

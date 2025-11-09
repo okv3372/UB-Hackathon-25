@@ -1,13 +1,5 @@
 @namespace SmartStudy.Components.Pages.Class
-@* Pretty Profile Modal — Bootstrap-friendly, accessible, and responsive *@
-@* Controlled by parent via @ref. Example:
-   <ProfileModal @ref="profileModalRef"
-                 UserName="Alice Johnson"
-                 ProfilePictureUrl="/images/alice.jpg"
-                 UserInterests="Basketball, Data Viz, Hiking"
-                 Title="Student Profile"
-                 EnableEditButton="true" />
-*@
+
 @if (showModal)
 {
     <div class="modal fade show profile-modal" style="display:block;" tabindex="-1" role="dialog" aria-modal="true"
@@ -21,11 +13,11 @@
                         ✕
                     </button>
 
-                    <img src="@ResolvedPictureUrl" class="avatar-img" alt="Profile picture of @(UserName ?? "user")" />
+                    <img src="@ResolvedPictureUrl" class="avatar-img" alt="Profile picture of @(Name ?? "user")" />
 
                     <div class="hero-text text-center">
                         <h2 id="profileModalTitle" class="hero-title mb-1">
-                            @(string.IsNullOrWhiteSpace(UserName) ? "Unnamed" : UserName)
+                            @(string.IsNullOrWhiteSpace(Name) ? "Unnamed" : Name)
                         </h2>
 
                         <p class="hero-subtitle mb-0 text-white-75">
@@ -98,15 +90,16 @@
                         @if (isEditing)
                         {
                             <div class="mb-2 text-muted small">Tip: separate interests with commas to show them as tags.</div>
-                            <textarea class="form-control" rows="4" @bind="UserInterests"
-                                placeholder="e.g., Basketball, Data Visualization, Hiking, Machine Learning"></textarea>
+                            <textarea class="form-control" rows="4" @bind="UserBio"
+                                placeholder="e.g., Basketball, Data Visualization, Hiking, Machine Learning">
+                            </textarea>
                         }
                         else
                         {
-                            @if (!string.IsNullOrWhiteSpace(UserInterests))
+                            @if (!string.IsNullOrWhiteSpace(UserBio))
                             {
                                 <div class="tag-cloud">
-                                    @foreach (var tag in SplitInterests(UserInterests))
+                                    @foreach (var tag in SplitInterests(UserBio))
                                     {
                                         <span class="tag-pill">@tag</span>
                                     }

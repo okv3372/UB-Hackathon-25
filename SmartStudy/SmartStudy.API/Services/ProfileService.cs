@@ -26,6 +26,7 @@ public static class ProfileService
             {
                 StudentId = match.StudentId,
                 PictureUrl = match.PictureUrl,
+                Name = match.Name,
                 Bio = match.Bio,
                 GradeLevel = match.GradeLevel,
                 GuardianName = match.GuardianName,
@@ -95,6 +96,7 @@ public static class ProfileService
         {
             StudentId = existing.StudentId,
             PictureUrl = existing.PictureUrl,
+            Name = existing.Name,
             Bio = existing.Bio,
             GradeLevel = existing.GradeLevel,
             GuardianName = existing.GuardianName,
@@ -102,15 +104,16 @@ public static class ProfileService
         };
     }
 
-	private class ProfileRecord
-	{
-		public string UserId { get; set; } = string.Empty;
-		public string StudentId { get; set; } = string.Empty;
-		public string PictureUrl { get; set; } = string.Empty;
-		public string Bio { get; set; } = string.Empty;
-		public string GradeLevel { get; set; } = string.Empty;
-		public string GuardianName { get; set; } = string.Empty;
-		public string GuardianEmail { get; set; } = string.Empty;
-	}
+    private class ProfileRecord
+    {
+        public string UserId { get; set; } = string.Empty;
+        public string StudentId { get; set; } = string.Empty;
+        public string PictureUrl { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
+        public string Bio { get; set; } = string.Empty;
+        public string GradeLevel { get; set; } = string.Empty;
+        public string GuardianName { get; set; } = string.Empty;
+        public string GuardianEmail { get; set; } = string.Empty;
+    }
 }
 
