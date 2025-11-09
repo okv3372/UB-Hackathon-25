@@ -1,0 +1,27 @@
+@namespace SmartStudy.Components.Shared
+@using SmartStudy.Services
+@inherits ComponentBase
+
+<ul class="breadcrumb mb-3">
+    @if (Items is not null)
+    {
+        @for (int i = 0; i < Items.Count; i++)
+        {
+            var item = Items[i];
+            <li class="breadcrumb-item @(item.IsCurrent ? "active" : "")">
+                @if (!item.IsCurrent)
+                {
+                    <a href="@item.Url">@item.Label</a>
+                }
+                else
+                {
+                    <span>@item.Label</span>
+                }
+            </li>
+        }
+    }
+</ul>
+
+@code {
+    [Parameter] public List<BreadcrumbItem>? Items { get; set; }
+}

@@ -1,31 +1,87 @@
 @page "/{userId}/ClassList"
-
 @using SmartStudy.Components.Pages.ClassList
 
-<div class="container mt-4">
-	<h1 class="mb-4">My Classes</h1>
+    <div class="container">
+        <h1 class="page-title">My Classes</h1>
 
-	@if (_isLoading)
-	{
-		<p>Loading your classes...</p>
-	}
-	else if (!string.IsNullOrWhiteSpace(_error))
-	{
-		<div class="alert alert-danger">@_error</div>
-	}
-	else if (_classes.Count == 0)
-	{
-		<p>You are not enrolled in any classes yet.</p>
-	}
-	else
-	{
-		<div class="row g-4">
-			@foreach (var c in _classes)
-			{
-				<div class="col-12 col-md-6 col-lg-4">
-					<ClassItem Id="@c.Id" Name="@c.Name" Teacher="@c.Teacher" Color="@c.Color" OnOpen="NavigateToClass" />
-				</div>
-			}
-		</div>
-	}
-</div>
+        @if (_isLoading)
+        {
+            <div class="row g-4">
+                @for (var i = 0; i < 6; i++)
+                {
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="skeleton-card"></div>
+                    </div>
+                }
+            </div>
+        }
+        else if (!string.IsNullOrWhiteSpace(_error))
+        {
+            <div class="alert alert-danger">@_error</div>
+        }
+        else if (_classes.Count == 0)
+        {
+            <div class="empty">
+                <p>You’re not enrolled in any classes yet.</p>
+            </div>
+        }
+        else
+        {
+            <div class="row g-4">
+                @foreach (var c in _classes)
+                {
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <ClassItem Id="@c.Id"
+                                   Name="@c.Name"
+                                   Teacher="@c.Teacher"
+                                   Color="@c.Color"
+                                   OnOpen="NavigateToClass" />
+                    </div>
+                }
+            </div>
+        }
+    </div>
+<style>
+/* Smooth, clean, non-distracting background */
+
+
+/* Modern page title */
+.page-title{
+  font-weight: 700;
+  margin: 0 0 32px;
+  font-size: 2.2rem;
+  color: #111;
+  letter-spacing: -.5px;
+}
+
+/* Center empty message a bit nicer */
+.empty{ 
+  text-align:center; 
+  color:#6b7280; 
+  padding:60px 0; 
+  font-size: 1.1rem;
+}
+
+/* Skeleton load cards */
+.skeleton-card{
+  height: 240px;
+  border-radius: 18px;
+  background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease infinite;
+  border: none;
+}
+
+@@keyframes shimmer { 
+  to { background-position: -200% 0; }
+}
+
+/* Dark mode respect (optional) */
+@@media (prefers-color-scheme: dark){
+  .classes-wrap{ background:#0f1115; }
+  .page-title{ color:#f3f4f6; }
+  .skeleton-card{
+    background: linear-gradient(110deg, #2a2d31 8%, #34383e 18%, #2a2d31 33%);
+  }
+}
+</style>

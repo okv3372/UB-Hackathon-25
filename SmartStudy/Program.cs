@@ -13,6 +13,8 @@ builder.Services.Configure<ModelSettings>(builder.Configuration.GetSection("Mode
 builder.Services.AddSingleton<SemanticKernelService>();
 builder.Services.AddSingleton<ClassesService>();
 builder.Services.AddSingleton<EnrollmentService>();
+// Breadcrumb helper service
+builder.Services.AddScoped<SmartStudy.Services.BreadcrumbService>();
 
 var app = builder.Build();
 
