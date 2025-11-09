@@ -7,25 +7,30 @@
      tabindex="0"
      aria-label="Open class @Name (@Id) by @Teacher"
      @onclick="() => OnOpen.InvokeAsync(Id)"
-     @onkeydown="HandleKeyDown"
-     @onkeydown:preventDefault>
+     @onkeydown="HandleKeyDown">
 
-    <div class="card-media">
-        <img src="images/books.webp" alt="" />
-        <!-- optional label chip (e.g., section) -->
-        <!-- <span class="chip">Period 2</span> -->
+    <div class="card-media" aria-hidden="true">
+        <img src="images/books.webp" alt="">
+        <div class="media-overlay"></div>
+        <div class="accent-pill"></div>
     </div>
 
     <div class="card-body">
-        <h5 class="title">@Name</h5>
-        <p class="subtle">@Id</p>
-        <p class="meta">
-            <!-- tiny inline icon -->
-            <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" class="i">
+        <h3 class="title">@Name</h3>
+        <p class="code">@Id</p>
+
+        <div class="rowline">
+            <svg viewBox="0 0 24 24" width="18" height="18" class="i">
                 <path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-4.418 0-8 2.239-8 5v1h16v-1c0-2.761-3.582-5-8-5Z" fill="currentColor"/>
             </svg>
-            @Teacher
-        </p>
+            <span>@Teacher</span>
+        </div>
+    </div>
+
+    <div class="chevron" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="20" height="20">
+            <path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </svg>
     </div>
 </div>
 
@@ -37,93 +42,93 @@
     [Parameter] public EventCallback<string> OnOpen { get; set; }
 
     private Task HandleKeyDown(KeyboardEventArgs e)
-        => (e.Key == "Enter" || e.Key == " ")
-           ? OnOpen.InvokeAsync(Id)
-           : Task.CompletedTask;
+        => (e.Key is "Enter" or " ") ? OnOpen.InvokeAsync(Id) : Task.CompletedTask;
 }
 
 <style>
-/* Card shell */
+:root{ --elev: 0 2px 8px rgba(0,0,0,.08); --elev2: 0 14px 28px rgba(0,0,0,.14); }
+
+/* Shell */
 .class-card{
-    --radius: 14px;
-    --shadow: 0 2px 6px rgba(0,0,0,.08);
-    --shadow-hover: 0 10px 24px rgba(0,0,0,.12);
-    position: relative;
-    background: #fff;
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    overflow: hidden; /* clips media & accent */
-    cursor: pointer;
-    transition: transform .16s ease, box-shadow .16s ease;
+  position: relative;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #ffffff;
+  box-shadow: 0 4px 14px rgba(0,0,0,.06);
+  transition: transform .18s ease, box-shadow .18s ease;
 }
 
-/* Accent strip */
+
+/* Accent gradient border */
 .class-card::before{
-    content:"";
-    position:absolute;
-    inset: 0 auto 0 0;
-    width: 8px;
-    background: linear-gradient(180deg, var(--accent), color-mix(in oklab, var(--accent), white 25%));
-    border-top-left-radius: var(--radius);
-    border-bottom-left-radius: var(--radius);
+  content:"";
+  position:absolute; inset:0;
+  padding: 1px; border-radius: 18px;
+  background: linear-gradient(135deg, var(--accent), color-mix(in oklab, var(--accent), #6ee7b7 65%));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  pointer-events: none;
+  opacity:.65;
 }
 
-/* Lift + stronger shadow */
+/* Hover/Focus lift */
 .class-card:hover,
-.class-card:focus,
-.class-card:focus-within{
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-hover);
-    outline: none;
-}
-
-/* Visible keyboard ring */
 .class-card:focus-visible{
-    box-shadow: var(--shadow-hover), 0 0 0 3px rgba(33,150,243,.35);
+  transform: translateY(-6px);
+  box-shadow: var(--elev2);
+}
+.class-card:focus-visible{
+  box-shadow: var(--elev2), 0 0 0 3px color-mix(in oklab, var(--accent), white 35%);
 }
 
 /* Media */
 .card-media{
-    position: relative;
-    height: 136px;               /* consistent height across cards */
-    overflow: hidden;
-    border-top-left-radius: calc(var(--radius) - 2px);
-    border-top-right-radius: calc(var(--radius) - 2px);
-    margin-left: 8px;            /* keep clear of accent strip */
+  position: relative; height: 160px; overflow: hidden;
+  background: color-mix(in oklab, var(--accent), #000 86%);
 }
 .card-media img{
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transform: scale(1);
-    transition: transform .3s ease;
+  width:100%; height:100%; object-fit: cover;
+  transform: scale(1.06);
+  transition: transform .6s cubic-bezier(.2,.8,.2,1);
 }
-/* subtle zoom on hover */
-.class-card:hover .card-media img{ transform: scale(1.03); }
-
-/* Optional chip over media */
-.chip{
-    position: absolute; bottom: 10px; left: 12px;
-    background: rgba(0,0,0,.6);
-    color: #fff; font-size: .75rem; line-height: 1;
-    padding: 6px 10px; border-radius: 999px;
-    backdrop-filter: blur(3px);
+.class-card:hover .card-media img{ transform: scale(1.12); }
+.media-overlay{
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,.0) 10%, rgba(0,0,0,.10) 96%);
+  pointer-events:none;
+}
+.accent-pill{
+  position:absolute; top:12px; left:12px;
+  height: 8px; width: 56px; border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent), color-mix(in oklab, var(--accent), white 28%));
+  box-shadow: 0 2px 6px color-mix(in oklab, var(--accent), black 70% / 35%);
 }
 
 /* Body */
-.card-body{
-    padding: 14px 16px 16px 16px;
-    margin-left: 8px; /* align with accent gap */
-}
-.title{
-    margin: 0 0 2px 0; font-weight: 700; letter-spacing: .2px;
-}
-.subtle{
-    margin: 0 0 8px 0; color: #6b7280; font-size: .9rem;
-}
-.meta{
-    margin: 0; color: #111827; font-size: .95rem; display:flex; align-items:center; gap:.5rem;
-}
-.meta .i{ opacity:.6; }
+.card-body{ padding: 16px 18px 18px; }
+.title{ margin:0 0 4px 0; font-weight: 800; letter-spacing:.2px; line-height:1.15; }
+.code{ margin:0 0 10px 0; color:#6b7280; font-size:.93rem; }
+.rowline{ display:flex; align-items:center; gap:.5rem; color:#111827; font-size:.98rem; }
+.rowline .i{ opacity:.55; }
 
+/* Chevron cue */
+.chevron{
+  position:absolute; right:14px; bottom:14px;
+  opacity:.45; transition: transform .2s ease, opacity .2s ease;
+}
+.class-card:hover .chevron{ transform: translateX(3px); opacity:.7; }
+
+/* Reduced motion */
+@@media (prefers-reduced-motion: reduce){
+  .class-card, .card-media img, .chevron{ transition:none; }
+}
+
+/* Dark mode */
+@@media (prefers-color-scheme: dark){
+  .class-card{ background:#0f141b; box-shadow: 0 1px 0 rgba(255,255,255,.06); }
+  .card-media{ background: color-mix(in oklab, var(--accent), #000 92%); }
+  .media-overlay{ background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.02)); }
+  .title, .rowline{ color:#e5e7eb; }
+  .code{ color:#94a3b8; }
+}
 </style>
