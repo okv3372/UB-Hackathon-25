@@ -87,4 +87,5 @@ public partial class Class : ComponentBase
         Console.WriteLine($"[Class] Assignment uploaded: Id={dto.Id}, Title={dto.Title}, File={dto.FileName}, Path={dto.FilePath}");
         return Task.CompletedTask;
     }
+    
 }

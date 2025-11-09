@@ -53,5 +53,5 @@ CodeCoverage/
 TestResult.xml
 nunit-*.xml
 
-appsetting.Development.json
+appsettings.Development.json
 SmartStudy/SmartStudy.API/Data/*
