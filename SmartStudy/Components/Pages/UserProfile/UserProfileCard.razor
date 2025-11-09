@@ -1,11 +1,11 @@
-@* UserProfileCard.razor *@
+﻿@* UserProfileCard.razor *@
 @namespace SmartStudy.Components.Pages
 @using SmartStudy.Components.Pages.Class
 @using SmartStudy.Components.Shared
 
 <div class="user-profile-card">
     <div class="profile-header">
-        <img src="@(string.IsNullOrWhiteSpace(ProfileImageUrl) ? "/profile_pictures/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg" : ProfileImageUrl)" alt="Profile Picture" class="profile-image" loading="lazy" onerror="this.onerror=null;this.src='/profile_pictures/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg';">
+        <img src="@ResolvedProfileImageUrl" alt="Profile Picture" class="profile-image" loading="lazy" onerror="this.onerror=null;this.src='/profile_pictures/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg';">
         <h3 class="user-name">@UserName</h3>
         @if (!string.IsNullOrWhiteSpace(UserTitle))
         {
@@ -19,12 +19,11 @@
         <button class="action-button-secondary" @onclick="InvokeViewProfile" title="View Profile">
             <i class="bi bi-person icon" aria-label="Profile"></i>
         </button>
-            <button class="action-button-secondary" @onclick="OpenAssignmentsPage" title="Go to Assignment">
-                <i class="bi bi-journal-text icon" aria-label="Assignment"></i>
-            </button>
+        <button class="action-button-secondary" @onclick="OpenAssignmentsPage" title="Go to Assignment">
+            <i class="bi bi-journal-text icon" aria-label="Assignment"></i>
+        </button>
     </div>
 </div>
 
 @* Upload modal instance *@
-<UploadAssignmentModal @ref="uploadModal" TargetUserId="@TargetUserId" ClassId="@ClassId" StudentName="@UserName" ProfileImageUrl="@ProfileImageUrl" />
-
+<UploadAssignmentModal @ref="uploadModal" TargetUserId="@TargetUserId" ClassId="@ClassId" StudentName="@UserName" ProfileImageUrl="@ResolvedProfileImageUrl" />

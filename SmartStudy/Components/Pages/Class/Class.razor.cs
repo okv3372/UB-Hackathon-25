@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using SmartStudy.API.Services;
+using SmartStudy.Services;
 using SmartStudy.Models;
 
 namespace SmartStudy.Components.Pages.Class;
@@ -24,6 +25,8 @@ public partial class Class : ComponentBase
     protected string? SelectedUserInterests { get; set; }
     protected string? SelectedTitle { get; set; }
 
+    private readonly Dictionary<string, ProfileDTO> _profiles = new();
+
     protected override async Task OnParametersSetAsync()
     {
         // Determine role
@@ -38,15 +41,57 @@ public partial class Class : ComponentBase
         {
             StudentsInClass = await EnrollmentService.GetStudentsForClassAsync(ClassId) ?? new();
         }
+        _profiles.Clear();
+        foreach (var student in StudentsInClass)
+        {
+            var profile = ProfileService.GetProfile(student.Id);
+            if (profile is not null)
+            {
+                _profiles[student.Id] = profile;
+            }
+        }
+    }
+
+    private void LoadProfileFromService(UserProfileCard card)
+    {
+        SelectedUserName = card.UserName;
+        SelectedTitle = card.UserTitle;
+
+        SmartStudy.Models.ProfileDTO? profile = null;
+        if (!string.IsNullOrWhiteSpace(card.TargetUserId))
+        {
+            profile = ProfileService.GetProfile(card.TargetUserId);
+        }
+
+        SelectedProfileImageUrl = !string.IsNullOrWhiteSpace(profile?.PictureUrl)
+            ? profile.PictureUrl
+            : (!string.IsNullOrWhiteSpace(card.ProfileImageUrl) ? card.ProfileImageUrl : "/favicon.png");
+
+        SelectedTitle = !string.IsNullOrWhiteSpace(profile?.GradeLevel)
+            ? $"Grade {profile.GradeLevel}"
+            : card.UserTitle;
+
+        SelectedUserInterests = !string.IsNullOrWhiteSpace(profile?.Bio)
+            ? profile.Bio
+            : "No profile details available.";
     }
 
     protected void OnStudentViewProfile(UserProfileCard card)
     {
-        SelectedUserName = card.UserName;
-        SelectedTitle = card.UserTitle;
-        SelectedProfileImageUrl = card.ProfileImageUrl;
-        SelectedUserInterests = "Reading, learning, and collaborating.";
+        LoadProfileFromService(card);
         profileModalRef?.OpenModal();
+    }
+
+    private string GetProfileImageUrl(UserDTO student)
+    {
+        if (_profiles.TryGetValue(student.Id, out var profile) &&
+            !string.IsNullOrWhiteSpace(profile.PictureUrl))
+        {
+            return profile.PictureUrl!;
+        }
+
+        var initials = (student.DisplayName ?? student.Username ?? "U")[0].ToString().ToUpperInvariant();
+        return $"https://via.placeholder.com/90/F7C59F/004E89?text={initials}";
     }
 
     protected void OpenBottomProfileModal()

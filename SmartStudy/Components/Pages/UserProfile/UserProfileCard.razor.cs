@@ -1,23 +1,21 @@
- using Microsoft.AspNetCore.Components;
-
+﻿using Microsoft.AspNetCore.Components;
 using SmartStudy.Components.Shared;
+using SmartStudy.Services;
 
 namespace SmartStudy.Components.Pages;
 
 public partial class UserProfileCard : ComponentBase
 {
-    // Who the assignment page should be opened for (student id)
-    [Parameter] public string? TargetUserId { get; set; }
+    private const string DefaultProfileImageUrl = "/profile_pictures/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg";
 
-    // Context of the class and which assignment to open
+    [Parameter] public string? TargetUserId { get; set; }
     [Parameter] public string? ClassId { get; set; }
 
-    // (Optional) keep these if you also use them elsewhere
-    [Parameter] public string? UserId { get; set; }   // current/logged-in user (not used for nav here)
+    [Parameter] public string? UserId { get; set; }
 
     [Parameter] public string UserName { get; set; } = "No Name";
     [Parameter] public string UserTitle { get; set; } = string.Empty;
-    [Parameter] public string ProfileImageUrl { get; set; } = "/profile_pictures/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg";
+    [Parameter] public string ProfileImageUrl { get; set; } = DefaultProfileImageUrl;
     [Parameter] public string ProfileDetailPageUrl { get; set; } = "/userprofile";
     [Parameter] public string UserEmail { get; set; } = string.Empty;
     [Parameter] public string UserPhoneNumber { get; set; } = string.Empty;
@@ -26,50 +24,76 @@ public partial class UserProfileCard : ComponentBase
 
     [Inject] protected NavigationManager NavigationManager { get; set; } = default!;
 
-    // Reference to the upload modal component instance
+    protected string ResolvedProfileImageUrl { get; private set; } = DefaultProfileImageUrl;
+
     private UploadAssignmentModal? uploadModal;
+
+    protected override void OnParametersSet()
+    {
+        ResolvedProfileImageUrl = ResolveProfileImageUrl();
+    }
+
+    private string ResolveProfileImageUrl()
+    {
+        if (!string.IsNullOrWhiteSpace(TargetUserId))
+        {
+            var profile = ProfileService.GetProfile(TargetUserId);
+            if (!string.IsNullOrWhiteSpace(profile?.PictureUrl))
+            {
+                return profile.PictureUrl!;
+            }
+        }
+
+        if (!string.IsNullOrWhiteSpace(ProfileImageUrl))
+        {
+            return ProfileImageUrl;
+        }
+
+        return DefaultProfileImageUrl;
+    }
 
     private void ShowUploadModal()
     {
         uploadModal?.OpenModal();
     }
 
-    // Receives the created AssignmentDTO from the modal after upload
     private Task OnAssignmentUploaded(SmartStudy.Models.AssignmentDTO dto)
     {
-        // Placeholder: log the DTO - later replace with persistence to API/JSON store
         Console.WriteLine($"[UserProfileCard] Assignment uploaded: Id={dto.Id}, Title={dto.Title}, File={dto.FileName}, Path={dto.FilePath}");
         return Task.CompletedTask;
     }
 
-protected void OpenAssignmentsPage()
-{
-    // We need who (TargetUserId) and which class (ClassId)
-    if (string.IsNullOrWhiteSpace(TargetUserId) || string.IsNullOrWhiteSpace(ClassId))
+    protected void OpenAssignmentsPage()
     {
-        Console.WriteLine($"[UserProfileCard] Missing ids: TargetUserId='{TargetUserId}', ClassId='{ClassId}'");
-        return;
+        if (string.IsNullOrWhiteSpace(TargetUserId) || string.IsNullOrWhiteSpace(ClassId))
+        {
+            Console.WriteLine($"[UserProfileCard] Missing ids: TargetUserId='{TargetUserId}', ClassId='{ClassId}'");
+            return;
+        }
+
+        var current = string.IsNullOrWhiteSpace(UserId) ? "me" : UserId;
+
+        // Navigates to /{userId}/Class/{classId}/student/{studentId}
+        NavigationManager.NavigateTo($"/{current}/Class/{ClassId}/student/{TargetUserId}");
     }
-
-    // Use the logged-in user id in the route if you have it; fall back to "me"
-    var current = string.IsNullOrWhiteSpace(UserId) ? "me" : UserId;
-
-    // → /{userId}/Class/{classId}/student/{studentId}
-    NavigationManager.NavigateTo($"/{current}/Class/{ClassId}/student/{TargetUserId}");
-}
-
 
     protected async Task InvokeViewProfile()
     {
         if (OnViewProfile.HasDelegate)
+        {
             await OnViewProfile.InvokeAsync(this);
+        }
         else
+        {
             NavigationManager.NavigateTo(ProfileDetailPageUrl);
+        }
     }
 
     protected void OpenUploadModal()
     {
         if (!string.IsNullOrWhiteSpace(UserPhoneNumber))
+        {
             NavigationManager.NavigateTo($"tel:{UserPhoneNumber}", forceLoad: true);
+        }
     }
 }
